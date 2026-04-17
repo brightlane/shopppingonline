@@ -1,41 +1,108 @@
-const SITE_CONFIG = {
-  siteName: "Best Products 2026",
-  baseUrl: "https://brightlane.github.io/shopppingonline",
+/**
+ * =========================================
+ * 🔐 IMMUTABLE SEO HEAD LOCK SYSTEM
+ * =========================================
+ * Fixes:
+ * - Google verification disappearing
+ * - Bing verification removal
+ * - meta tag overwrite bugs
+ * - schema injection loss
+ * - generator head corruption
+ * =========================================
+ */
 
-  googleVerification: "eWVDN3vbam9nnaZQu7wAQKyfmJJdM7zjI80l4DGeUrQ",
-  bingVerification: "574044E39556B8B8DAAF1D1F233C87B0"
-};
+import fs from "fs";
 
-// ===============================
-// 🔒 IMMUTABLE HEAD SYSTEM
-// ===============================
-function buildHead(title, description) {
-  return `
-<head>
-  <meta charset="UTF-8">
+/* =========================
+   LOCKED HEAD CORE
+========================= */
 
-  <title>${title}</title>
-  <meta name="description" content="${description}">
+export const LOCKED_HEAD = `
+<!-- 🔐 SEO IMMUTABLE LOCK START -->
 
-  <!-- 🔒 VERIFIED LOCK (DO NOT OVERWRITE) -->
-  <meta name="google-site-verification" content="${SITE_CONFIG.googleVerification}">
-  <meta name="msvalidate.01" content="${SITE_CONFIG.bingVerification}">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- CORE SEO -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="canonical" href="${SITE_CONFIG.baseUrl}">
+<!-- ✅ GOOGLE VERIFICATION (LOCKED) -->
+<meta name="google-site-verification" content="eWVDN3vbam9nnaZQu7wAQKyfmJJdM7zjI80l4DGeUrQ" />
 
-  <!-- OPEN GRAPH -->
-  <meta property="og:title" content="${title}">
-  <meta property="og:description" content="${description}">
-  <meta property="og:type" content="website">
+<!-- ✅ BING VERIFICATION (LOCKED) -->
+<meta name="msvalidate.01" content="574044E39556B8B8DAAF1D1F233C87B0" />
 
-  <!-- BASIC INDEX CONTROL -->
-  <meta name="robots" content="index, follow">
-</head>`;
+<!-- SEO CORE -->
+<meta name="robots" content="index, follow" />
+<meta name="author" content="Brightlane Deals" />
+<meta name="theme-color" content="#ff4d00" />
+
+<!-- OPEN GRAPH -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Brightlane Deals" />
+
+<!-- TWITTER -->
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- CANONICAL PLACEHOLDER (DYNAMIC) -->
+<!-- CANONICAL_INJECT -->
+
+<!-- 🔐 SEO IMMUTABLE LOCK END -->
+`;
+
+/* =========================
+   HEAD INJECTION PROTECTION
+========================= */
+
+export function injectLockedHead(html, canonicalUrl = "") {
+  if (!html.includes("<head>")) {
+    console.warn("❌ No <head> found");
+    return html;
+  }
+
+  let headBlock = LOCKED_HEAD;
+
+  // inject canonical safely
+  if (canonicalUrl) {
+    headBlock = headBlock.replace(
+      "<!-- CANONICAL_INJECT -->",
+      `<link rel="canonical" href="${canonicalUrl}" />`
+    );
+  } else {
+    headBlock = headBlock.replace("<!-- CANONICAL_INJECT -->", "");
+  }
+
+  return html.replace(
+    /<head>[\s\S]*?<\/head>/i,
+    `<head>
+${headBlock}
+</head>`
+  );
 }
 
-module.exports = {
-  SITE_CONFIG,
-  buildHead
-};
+/* =========================
+   SAFE HEAD PROTECTOR (ANTI-OVERWRITE)
+========================= */
+
+export function protectHead(filePath, canonicalUrl) {
+  const html = fs.readFileSync(filePath, "utf-8");
+
+  const updated = injectLockedHead(html, canonicalUrl);
+
+  fs.writeFileSync(filePath, updated);
+
+  console.log("🔐 HEAD LOCKED:", filePath);
+}
+
+/* =========================
+   BULK PROTECTOR
+========================= */
+
+export function protectAll(files = []) {
+  files.forEach(file => {
+    try {
+      protectHead(file);
+    } catch (e) {
+      console.log("❌ Error locking head:", file);
+    }
+  });
+
+  console.log("🚀 ALL HEADS LOCKED");
+}
