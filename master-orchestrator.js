@@ -1,39 +1,70 @@
-const { execSync } = require("child_process");
+const MASTER_ORCHESTRATOR = {
+  requiredFields: ["title", "asin"],
 
-console.log("\n🚀 ===============================");
-console.log("   FULL AUTOPILOT BUILD START");
-console.log("================================\n");
+  log: function (msg) {
+    console.log("[MASTER]", msg);
+  },
 
-function run(step, cmd) {
-  console.log(`\n▶️ ${step}...\n`);
-  execSync(`node ${cmd}`, { stdio: "inherit" });
-}
+  validateProduct: function (product) {
+    for (let field of this.requiredFields) {
+      if (!product[field]) {
+        this.log(`❌ Missing field: ${field}`);
+        return false;
+      }
+    }
 
-/**
- * 1. SANITIZE DATA (MUST BE FIRST)
- */
-run("1. Product Sanitizer", "product-sanitizer-final.js");
+    if (product.asin.length !== 10) {
+      this.log(`❌ Invalid ASIN: ${product.asin}`);
+      return false;
+    }
 
-/**
- * 2. BUILD PRODUCT PAGES
- */
-run("2. Product Pages", "product-page-builder.js");
+    return true;
+  },
 
-/**
- * 3. BUILD HUBS (AUTO CATEGORY SYSTEM)
- */
-run("3. Auto Hub Generator", "auto-hub-generator.js");
+  validateProductFile: function (products) {
+    let valid = [];
+    let invalid = [];
 
-/**
- * 4. BUILD NAV SYSTEM (if used)
- */
-run("4. Navigation Builder", "nav-builder.js");
+    products.forEach(p => {
+      if (this.validateProduct(p)) {
+        valid.push(p);
+      } else {
+        invalid.push(p);
+      }
+    });
 
-/**
- * 5. MASTER VALIDATION (DEPLOY GUARD)
- */
-run("5. Deploy Guard", "deploy-guard.js");
+    this.log(`✔ Valid products: ${valid.length}`);
+    this.log(`⚠ Invalid products: ${invalid.length}`);
 
-console.log("\n🏁 ===============================");
-console.log("   BUILD COMPLETE — SYSTEM READY");
-console.log("================================\n");
+    return valid;
+  },
+
+  /**
+   * Normalize product data before rendering
+   */
+  normalize: function (products) {
+    return products.map(p => ({
+      title: p.title || "Untitled Product",
+      asin: p.asin,
+      price: p.price || "",
+      rating: p.rating || 0,
+      reviews: p.reviews || 0,
+      image: p.image || "",
+      description: p.description || ""
+    }));
+  },
+
+  /**
+   * Run full system check
+   */
+  run: function (productData) {
+    this.log("🚀 Running master validation...");
+
+    const normalized = this.normalize(productData);
+    const valid = this.validateProductFile(normalized);
+
+    this.log("✅ System ready");
+
+    return valid;
+  }
+};
