@@ -1,77 +1,52 @@
-/**
- * SAFE AMAZON CLICK TRACKER (NO BROKEN LINKS VERSION)
- * - guarantees redirect always works
- * - logs click safely
- * - prevents broken ASIN navigation
- */
-
 (function () {
-  "use strict";
 
-  // basic click storage (lightweight CTR tracking)
-  function saveClick(data) {
-    try {
-      const key = "affiliate_clicks_v1";
-      const existing = JSON.parse(localStorage.getItem(key) || "[]");
+  const STORAGE_KEY = "affiliate_click_data_v1";
 
-      existing.push({
-        ...data,
-        ts: Date.now()
-      });
-
-      // keep only last 500 clicks (prevents storage bloat)
-      if (existing.length > 500) existing.shift();
-
-      localStorage.setItem(key, JSON.stringify(existing));
-    } catch (e) {
-      console.warn("Tracking failed:", e);
-    }
+  function loadData() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
   }
 
-  /**
-   * MAIN CLICK FUNCTION
-   * ALWAYS USE THIS FOR PRODUCT LINKS
-   */
-  window.trackClick = function (asin, productId, url) {
-    try {
-      // validation
-      if (!url || typeof url !== "string") {
-        console.warn("Missing URL for click:", asin);
-        return;
+  function saveData(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function track(asin, url) {
+    if (!asin) return;
+
+    const data = loadData();
+
+    if (!data[asin]) {
+      data[asin] = { clicks: 0, lastClick: null };
+    }
+
+    data[asin].clicks += 1;
+    data[asin].lastClick = new Date().toISOString();
+
+    saveData(data);
+
+    console.log("Tracked click:", asin, data[asin]);
+  }
+
+  function extractASIN(url) {
+    const match = url.match(/\/dp\/([A-Z0-9]{10})/);
+    return match ? match[1] : null;
+  }
+
+  function enhanceLinks() {
+    const links = document.querySelectorAll("a");
+
+    links.forEach(link => {
+      const href = link.getAttribute("href");
+      if (!href || !href.includes("amazon.com")) return;
+
+      const asin = extractASIN(href);
+
+      if (asin) {
+        link.addEventListener("click", () => track(asin, href));
       }
+    });
+  }
 
-      saveClick({
-        asin: asin || null,
-        productId: productId || null,
-        url: url
-      });
-
-      // small delay ensures tracking fires before navigation
-      setTimeout(() => {
-        window.location.href = url;
-      }, 120);
-
-    } catch (err) {
-      console.error("Click tracking error:", err);
-
-      // fallback = NEVER break navigation
-      window.location.href = url;
-    }
-  };
-
-  /**
-   * OPTIONAL: expose analytics summary (for debugging)
-   */
-  window.getClickStats = function () {
-    try {
-      const data = JSON.parse(localStorage.getItem("affiliate_clicks_v1") || "[]");
-      return {
-        totalClicks: data.length,
-        recent: data.slice(-10)
-      };
-    } catch (e) {
-      return { totalClicks: 0, recent: [] };
-    }
-  };
+  document.addEventListener("DOMContentLoaded", enhanceLinks);
 
 })();
