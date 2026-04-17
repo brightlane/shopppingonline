@@ -1,17 +1,11 @@
-// config.js
+window.AFFILIATE_TAG = "brightlane201-20";
 
-const AFFILIATE_TAG = "brightside20-20";
+window.amazonLink = function (asin) {
+  return `https://www.amazon.com/dp/${asin}?tag=${window.AFFILIATE_TAG}`;
+};
 
-function amazonLink(urlOrAsin) {
-  if (!urlOrAsin) return "#";
-
-  // If it's already a full URL
-  if (urlOrAsin.includes("amazon.com")) {
-    return urlOrAsin.includes("?")
-      ? urlOrAsin + "&tag=" + AFFILIATE_TAG
-      : urlOrAsin + "?tag=" + AFFILIATE_TAG;
-  }
-
-  // If it's just an ASIN
-  return `https://www.amazon.com/dp/${urlOrAsin}?tag=${AFFILIATE_TAG}`;
-}
+/* SEO GLOBAL INJECTION */
+window.SEO_META = `
+<meta name="google-site-verification" content="eWVDN3vbam9nnaZQu7wAQKyfmJJdM7zjI80l4DGeUrQ" />
+<meta name="msvalidate.01" content="574044E39556B8B8DAAF1D1F233C87B0" />
+`;
