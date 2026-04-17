@@ -1,253 +1,151 @@
-/**
- * =========================================
- * 🚀 FINAL SEO GENERATION ENGINE (2026)
- * =========================================
- * Fixes:
- * - Amazon ASIN validation + repair
- * - Duplicate product removal
- * - Internal link graph builder
- * - FAQ schema generator
- * - Product schema (JSON-LD)
- * - CTR tracking hooks
- * - Authority page linking boost
- * =========================================
- */
+const fs = require("fs");
+const path = require("path");
 
-import fs from "fs";
-import path from "path";
-import { amazonLink } from "./config.js";
-
-/* =========================
-   GLOBAL SETTINGS
-========================= */
-
-const SITE = {
-  name: "Brightlane Deals",
+// ===================== CONFIG =====================
+const CONFIG = {
+  affiliateTag: "brightlane201-20",
+  siteName: "Best Products 2026",
   baseUrl: "https://brightlane.github.io/shopppingonline/",
-  affiliateTag: "brightlane201-20"
+  categories: [
+    "vacuum-cleaners",
+    "coffee-makers",
+    "stanley-quencher-tumblers",
+    "acne-patches",
+    "ring-lights-for-phone"
+  ]
 };
 
-/* =========================
-   ASIN CLEANER + VALIDATOR
-========================= */
-
-function cleanASIN(asin) {
-  if (!asin) return null;
-
-  // extract valid ASIN pattern
-  const match = asin.match(/[A-Z0-9]{10}/i);
-  return match ? match[0].toUpperCase() : null;
+// ===================== HELPERS =====================
+function amazonLink(asin) {
+  if (!asin || asin.length < 8) return null;
+  return `https://www.amazon.com/dp/${asin}?tag=${CONFIG.affiliateTag}`;
 }
 
-/* =========================
-   AMAZON LINK BUILDER (FIXED)
-========================= */
-
-function buildAmazonLink(asin) {
-  const clean = cleanASIN(asin);
-
-  if (!clean) {
-    console.warn("❌ Invalid ASIN:", asin);
-    return "#invalid-asin";
-  }
-
-  return amazonLink(clean);
+function safeFileName(name) {
+  return name.toLowerCase().replace(/\s+/g, "-");
 }
 
-/* =========================
-   DUPLICATE REMOVER
-========================= */
-
+// Prevent duplicate ASINs
 function dedupeProducts(products) {
-  const map = new Map();
-
-  for (const p of products) {
-    const asin = cleanASIN(p.asin);
-    if (!asin) continue;
-
-    if (!map.has(asin)) {
-      map.set(asin, {
-        ...p,
-        asin
-      });
-    }
-  }
-
-  return Array.from(map.values());
+  const seen = new Set();
+  return products.filter(p => {
+    if (!p.asin || seen.has(p.asin)) return false;
+    seen.add(p.asin);
+    return true;
+  });
 }
 
-/* =========================
-   INTERNAL LINK GRAPH
-========================= */
-
-function buildInternalLinks(category) {
-  const slug = category.slug;
-
-  return `
-    <div class="internal-links">
-      <h3>Explore more in ${category.name}</h3>
-      <a href="/best-${slug}-en.html">Best</a>
-      <a href="/review-${slug}-en.html">Reviews</a>
-      <a href="/compare-${slug}-en.html">Compare</a>
-      <a href="/guide-${slug}-en.html">Guide</a>
-      <a href="/ranking-${slug}-en.html">Ranking</a>
-    </div>
-  `;
-}
-
-/* =========================
-   FAQ SCHEMA (GOOGLE BOOST)
-========================= */
-
-function buildFAQSchema(category) {
-  const faqs = [
-    {
-      q: `What is the best ${category.name}?`,
-      a: `The best ${category.name} depends on budget, but top-rated models are listed on this page.`
-    },
-    {
-      q: `Are these ${category.name} worth it?`,
-      a: `Yes, these are selected based on reviews, performance, and value.`
-    },
-    {
-      q: `How do we choose products?`,
-      a: `We analyze ratings, durability, and verified buyer feedback.`
-    }
-  ];
-
+// ===================== SEO BLOCKS =====================
+function generateSchema(product) {
   return `
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": ${JSON.stringify(
-    faqs.map(f => ({
-      "@type": "Question",
-      "name": f.q,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": f.a
-      }
-    }))
-  )}
-}
-</script>
-`;
-}
-
-/* =========================
-   PRODUCT SCHEMA (RICH SNIPPETS)
-========================= */
-
-function buildProductSchema(product) {
-  const asin = cleanASIN(product.asin);
-
-  return `
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org/",
   "@type": "Product",
   "name": "${product.title}",
-  "image": "${product.image || ""}",
-  "description": "${product.description || "High quality recommended product"}",
-  "sku": "${asin}",
+  "description": "${product.description || ""}",
+  "sku": "${product.asin}",
   "brand": {
     "@type": "Brand",
     "name": "${product.brand || "Amazon"}"
   },
   "offers": {
     "@type": "Offer",
-    "url": "${buildAmazonLink(asin)}",
     "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock"
+    "availability": "https://schema.org/InStock",
+    "url": "${amazonLink(product.asin)}"
   }
 }
-</script>
-`;
+</script>`;
 }
 
-/* =========================
-   CTR TRACKING
-========================= */
-
-function trackClick(product, position) {
+function generateFAQ(category) {
   return `
-onclick="gtag('event','click',{
-  event_category:'affiliate',
-  event_label:'${product.asin}',
-  value:${position}
-})"
-`;
+<section style="max-width:900px;margin:40px auto;">
+  <h2>FAQ - ${category}</h2>
+  <details><summary>Are these the best ${category}?</summary>
+  Yes, these are AI-ranked and updated for 2026.</details>
+
+  <details><summary>Do Amazon links include affiliate tracking?</summary>
+  Yes, all links include tracking ID ${CONFIG.affiliateTag}.</details>
+
+  <details><summary>Do prices change?</summary>
+  Yes, Amazon prices update frequently.</details>
+</section>`;
 }
 
-/* =========================
-   MAIN PAGE GENERATOR
-========================= */
-
-export function generateCategoryPage(category, products) {
-  const cleanProducts = dedupeProducts(products);
-
-  const productHTML = cleanProducts.map((p, i) => {
-    const asin = cleanASIN(p.asin);
-    const link = buildAmazonLink(asin);
-
-    return `
-      <div class="card">
-        <img src="${p.image}" alt="${p.title}" loading="lazy"/>
-        <h2>${p.title}</h2>
-        <p>${p.description || "Top rated product in this category."}</p>
-
-        <a href="${link}"
-           target="_blank"
-           ${trackClick(p, i + 1)}>
-           🛒 View on Amazon
-        </a>
-      </div>
-    `;
-  }).join("");
+// ===================== PAGE GENERATOR =====================
+function generateProductPage(product, category) {
+  const link = amazonLink(product.asin);
 
   return `
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- 🔐 DO NOT REMOVE: SITE VERIFICATION -->
+<title>${product.title}</title>
+<meta name="description" content="${product.description}">
+
+<!-- GOOGLE VERIFY (LOCKED - DO NOT REMOVE) -->
 <meta name="google-site-verification" content="eWVDN3vbam9nnaZQu7wAQKyfmJJdM7zjI80l4DGeUrQ" />
+
+<!-- BING VERIFY (LOCKED - DO NOT REMOVE) -->
 <meta name="msvalidate.01" content="574044E39556B8B8DAAF1D1F233C87B0" />
 
-<title>${category.name} - Best Picks 2026</title>
-
-<meta name="description" content="Best ${category.name} reviewed and ranked for 2026. Updated deals and comparisons." />
-
-<link rel="canonical" href="${SITE.baseUrl}${category.slug}.html"/>
+<link rel="canonical" href="${CONFIG.baseUrl}${category}/${product.asin}.html">
 
 <style>
-body{font-family:system-ui;background:#f6f7fb;margin:0;padding:40px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
-.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
-.card img{width:100%;height:180px;object-fit:cover;border-radius:10px}
-a{display:inline-block;margin-top:10px;padding:10px 14px;background:#ff4d00;color:#fff;text-decoration:none;border-radius:8px}
-.internal-links{margin:30px 0;padding:15px;background:#fff;border-radius:10px}
+body {font-family:system-ui;background:#f6f7fb;margin:0;padding:20px;}
+.container {max-width:900px;margin:auto;background:white;padding:20px;border-radius:12px;}
+a.button {display:inline-block;background:#111;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;}
+a.button:hover {opacity:0.8;}
 </style>
 
 </head>
-
 <body>
 
-<h1>${category.name} - Best Picks 2026</h1>
+<div class="container">
 
-${buildInternalLinks(category)}
+<h1>${product.title}</h1>
 
-<div class="grid">
-  ${productHTML}
+<p>${product.description}</p>
+
+<a class="button" href="${link}" target="_blank" rel="nofollow sponsored">
+👉 View on Amazon
+</a>
+
+${generateSchema(product)}
+
 </div>
 
-${buildFAQSchema(category)}
+${generateFAQ(category)}
 
 </body>
 </html>
 `;
 }
+
+// ===================== MAIN =====================
+function build() {
+  const data = JSON.parse(fs.readFileSync("products-data.json", "utf8"));
+
+  const cleanProducts = dedupeProducts(data.products || []);
+
+  for (const category of CONFIG.categories) {
+    const categoryDir = path.join(__dirname, "dist", category);
+    fs.mkdirSync(categoryDir, { recursive: true });
+
+    const products = cleanProducts.filter(p => p.category === category);
+
+    for (const product of products) {
+      const filePath = path.join(categoryDir, `${product.asin}.html`);
+      fs.writeFileSync(filePath, generateProductPage(product, category));
+    }
+  }
+
+  console.log("✅ Build complete - no duplicate ASINs, SEO locked, links fixed");
+}
+
+build();
