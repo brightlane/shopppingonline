@@ -1,76 +1,46 @@
-// ===============================
-// 🔒 AMAZON LINK BUILDER (HARDENED)
-// Prevents 404s + invalid ASINs + broken tracking
-// ===============================
+(function () {
 
-window.AFFILIATE_TAG = window.AFFILIATE_TAG || "brightlane201-20";
+  function fixAllAmazonLinks() {
+    const links = document.querySelectorAll("a");
 
-// -------------------------------
-// ASIN VALIDATOR (CRITICAL)
-// -------------------------------
-function isValidASIN(asin) {
-  return typeof asin === "string" && /^[A-Z0-9]{10}$/.test(asin);
-}
+    links.forEach(link => {
+      const href = link.getAttribute("href");
+      if (!href) return;
 
-// -------------------------------
-// CLEAN ASIN INPUT
-// fixes lowercase, spaces, junk
-// -------------------------------
-function cleanASIN(asin) {
-  if (!asin) return null;
-  return String(asin).trim().toUpperCase();
-}
+      // detect broken or raw ASIN usage
+      const asinMatch = href.match(/[A-Z0-9]{10}/);
 
-// -------------------------------
-// SAFE AMAZON LINK BUILDER
-// NEVER allows broken links to escape
-// -------------------------------
-window.amazonLink = function (asin) {
-  const clean = cleanASIN(asin);
+      if (href.includes("amazon") && asinMatch) {
+        const cleanASIN = asinMatch[0];
 
-  if (!isValidASIN(clean)) {
-    console.warn("❌ BLOCKED INVALID ASIN:", asin);
-    return null; // prevents broken Amazon redirects
+        if (window.amazonLink) {
+          link.setAttribute("href", window.amazonLink(cleanASIN));
+          link.setAttribute("target", "_blank");
+          link.setAttribute("rel", "nofollow sponsored");
+        }
+      }
+    });
   }
 
-  return `https://www.amazon.com/dp/${clean}?tag=${window.AFFILIATE_TAG}`;
-};
+  function trackClick(e) {
+    const link = e.target.closest("a");
+    if (!link) return;
 
-// -------------------------------
-// SAFE CLICK BUILDER (HTML HELPER)
-// -------------------------------
-window.amazonButton = function (asin, label = "View on Amazon") {
-  const url = window.amazonLink(asin);
+    if (link.href.includes("amazon.com")) {
+      console.log("Amazon click tracked:", link.href);
 
-  if (!url) {
-    return `<span style="color:red;">Product unavailable</span>`;
+      // optional tracking hook (future ads/analytics)
+      if (window.gtag) {
+        window.gtag("event", "affiliate_click", {
+          url: link.href
+        });
+      }
+    }
   }
 
-  return `
-    <a href="${url}"
-       target="_blank"
-       rel="nofollow sponsored noopener"
-       style="
-         display:inline-block;
-         padding:12px 18px;
-         background:#111;
-         color:#fff;
-         border-radius:8px;
-         text-decoration:none;
-         font-weight:600;
-       ">
-      ${label}
-    </a>
-  `;
-};
+  document.addEventListener("DOMContentLoaded", () => {
+    fixAllAmazonLinks();
+    document.body.addEventListener("click", trackClick);
+  });
 
-// -------------------------------
-// DEBUG TRACKING (optional)
-// -------------------------------
-window.trackAmazonClick = function (asin) {
-  console.log("📦 Amazon click:", asin);
-
-  if (!isValidASIN(cleanASIN(asin))) {
-    console.error("❌ BAD ASIN CLICK BLOCKED");
-  }
-};
+})();
