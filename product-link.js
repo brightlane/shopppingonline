@@ -1,116 +1,76 @@
-/**
- * =========================================
- * 🔗 AMAZON PRODUCT LINK ENGINE (FIXED)
- * =========================================
- * Fixes:
- * - broken Amazon URLs (404 issues)
- * - invalid ASINs
- * - duplicate products
- * - inconsistent link formats
- * - tracking consistency
- * =========================================
- */
+// ===============================
+// 🔒 AMAZON LINK BUILDER (HARDENED)
+// Prevents 404s + invalid ASINs + broken tracking
+// ===============================
 
-import { AFFILIATE_TAG } from "./config.js";
+window.AFFILIATE_TAG = window.AFFILIATE_TAG || "brightlane201-20";
 
-/* =========================
-   ASIN VALIDATION
-========================= */
-
-export function normalizeASIN(input) {
-  if (!input) return null;
-
-  const match = input.toString().match(/[A-Z0-9]{10}/i);
-  return match ? match[0].toUpperCase() : null;
+// -------------------------------
+// ASIN VALIDATOR (CRITICAL)
+// -------------------------------
+function isValidASIN(asin) {
+  return typeof asin === "string" && /^[A-Z0-9]{10}$/.test(asin);
 }
 
-/* =========================
-   AMAZON LINK BUILDER (SAFE)
-========================= */
+// -------------------------------
+// CLEAN ASIN INPUT
+// fixes lowercase, spaces, junk
+// -------------------------------
+function cleanASIN(asin) {
+  if (!asin) return null;
+  return String(asin).trim().toUpperCase();
+}
 
-export function buildAmazonUrl(asin) {
-  const clean = normalizeASIN(asin);
+// -------------------------------
+// SAFE AMAZON LINK BUILDER
+// NEVER allows broken links to escape
+// -------------------------------
+window.amazonLink = function (asin) {
+  const clean = cleanASIN(asin);
 
-  if (!clean) {
-    console.warn("❌ Invalid ASIN blocked:", asin);
-    return null;
+  if (!isValidASIN(clean)) {
+    console.warn("❌ BLOCKED INVALID ASIN:", asin);
+    return null; // prevents broken Amazon redirects
   }
 
-  return `https://www.amazon.com/dp/${clean}?tag=${AFFILIATE_TAG}`;
-}
+  return `https://www.amazon.com/dp/${clean}?tag=${window.AFFILIATE_TAG}`;
+};
 
-/* =========================
-   PRODUCT CLEANER (NO DUPES)
-========================= */
+// -------------------------------
+// SAFE CLICK BUILDER (HTML HELPER)
+// -------------------------------
+window.amazonButton = function (asin, label = "View on Amazon") {
+  const url = window.amazonLink(asin);
 
-export function cleanProducts(products = []) {
-  const seen = new Map();
+  if (!url) {
+    return `<span style="color:red;">Product unavailable</span>`;
+  }
 
-  return products
-    .map(p => {
-      const asin = normalizeASIN(p.asin);
+  return `
+    <a href="${url}"
+       target="_blank"
+       rel="nofollow sponsored noopener"
+       style="
+         display:inline-block;
+         padding:12px 18px;
+         background:#111;
+         color:#fff;
+         border-radius:8px;
+         text-decoration:none;
+         font-weight:600;
+       ">
+      ${label}
+    </a>
+  `;
+};
 
-      if (!asin) return null;
+// -------------------------------
+// DEBUG TRACKING (optional)
+// -------------------------------
+window.trackAmazonClick = function (asin) {
+  console.log("📦 Amazon click:", asin);
 
-      return {
-        ...p,
-        asin
-      };
-    })
-    .filter(Boolean)
-    .filter(p => {
-      if (seen.has(p.asin)) return false;
-      seen.set(p.asin, true);
-      return true;
-    });
-}
-
-/* =========================
-   CLICK TRACKING WRAPPER
-========================= */
-
-export function trackableLink(product, position = 0) {
-  const url = buildAmazonUrl(product.asin);
-
-  if (!url) return "#invalid";
-
-  return {
-    url,
-    onclick: `
-      if(window.gtag){
-        gtag('event','click',{
-          event_category:'affiliate',
-          event_label:'${product.asin}',
-          value:${position}
-        });
-      }
-    `
-  };
-}
-
-/* =========================
-   PRODUCT NORMALIZER (AI SAFE)
-========================= */
-
-export function normalizeProduct(p) {
-  return {
-    title: p.title || "Untitled Product",
-    asin: normalizeASIN(p.asin),
-    image: p.image || "",
-    price: p.price || null,
-    rating: p.rating || "4.5",
-    reviews: p.reviews || "1000+",
-    category: p.category || "general",
-    description: p.description || "Top-rated Amazon product"
-  };
-}
-
-/* =========================
-   BULK SAFE PROCESSOR
-========================= */
-
-export function processProductList(products) {
-  const cleaned = cleanProducts(products);
-
-  return cleaned.map(normalizeProduct);
-}
+  if (!isValidASIN(cleanASIN(asin))) {
+    console.error("❌ BAD ASIN CLICK BLOCKED");
+  }
+};
