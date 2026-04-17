@@ -137,3 +137,138 @@ Object.keys(categories).forEach(cat => {
 });
 
 console.log("DONE - HIGH QUALITY MODE");
+const fs = require("fs");
+
+const PRODUCTS = require("./products-data.json");
+const AFFILIATE_TAG = "brightside20-20";
+
+// -------------------------
+// KEYWORD ENGINE (REAL SEO)
+// -------------------------
+function buildKeywords(category) {
+  return [
+    `best ${category} products 2026`,
+    `best ${category} for beginners`,
+    `top rated ${category} gear`,
+    `best ${category} for value`,
+  ];
+}
+
+// -------------------------
+// SEO INTRO (VARIED BUT STRUCTURED)
+// -------------------------
+function intro(keyword) {
+  return `
+  <p>
+    This guide covers <strong>${keyword}</strong> based on performance, reliability, and real-world use cases.
+    We analyzed top-rated options to help you choose the right product without wasting time or money.
+  </p>
+  `;
+}
+
+// -------------------------
+// PRODUCT ANALYSIS BLOCK
+// -------------------------
+function productBlock(p, index) {
+  const badge = index === 0
+    ? `<div style="background:#ff9900;color:#fff;padding:6px 10px;display:inline-block;border-radius:6px;">🔥 Best Choice</div>`
+    : "";
+
+  return `
+  <div style="margin-bottom:40px;border-bottom:1px solid #eee;padding-bottom:20px;">
+    ${badge}
+    <h2>${p.title}</h2>
+    <img src="${p.image}" width="250"/>
+
+    <p>${p.description}</p>
+
+    <p><strong>Why it stands out:</strong> Strong balance of performance, durability, and value in its category.</p>
+
+    <a href="https://www.amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}"
+       target="_blank"
+       style="display:inline-block;padding:12px 16px;background:#ff9900;color:#fff;border-radius:8px;">
+       Check Price
+    </a>
+  </div>
+  `;
+}
+
+// -------------------------
+// FAQ GENERATOR (SEO BOOST)
+// -------------------------
+function faq(category) {
+  return `
+  <h2>Frequently Asked Questions</h2>
+
+  <h4>What is the best ${category} right now?</h4>
+  <p>The best option depends on your use case, but top-rated models offer a balance of reliability and efficiency.</p>
+
+  <h4>Are expensive ${category} products worth it?</h4>
+  <p>Higher-priced options usually offer better durability and performance, especially for long-term use.</p>
+  `;
+}
+
+// -------------------------
+// INTERNAL LINK NETWORK
+// -------------------------
+function links(category) {
+  const cats = ["solar", "power", "survival", "electronics"];
+
+  return `
+  <h3>Related Guides</h3>
+  <ul>
+    ${cats.filter(c => c !== category).map(c =>
+      `<li><a href="best-${c}.html">Best ${c} guide</a></li>`
+    ).join("")}
+  </ul>
+  `;
+}
+
+// -------------------------
+// PAGE BUILDER
+// -------------------------
+function page(category, items) {
+  const keywords = buildKeywords(category);
+  const keyword = keywords[0];
+
+  return `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>${keyword}</title>
+    <meta name="description" content="${keyword} reviewed and compared for 2026">
+  </head>
+
+  <body style="font-family:Arial;max-width:900px;margin:auto;padding:20px;">
+
+    <h1>${keyword}</h1>
+
+    ${intro(keyword)}
+
+    ${items.map((p, i) => productBlock(p, i)).join("")}
+
+    ${faq(category)}
+
+    ${links(category)}
+
+  </body>
+  </html>
+  `;
+}
+
+// -------------------------
+// GENERATE ALL PAGES
+// -------------------------
+const categories = {};
+
+PRODUCTS.forEach(p => {
+  if (!categories[p.category]) categories[p.category] = [];
+  categories[p.category].push(p);
+});
+
+Object.keys(categories).forEach(cat => {
+  fs.writeFileSync(`best-${cat}.html`, page(cat, categories[cat]));
+  console.log("Generated:", cat);
+});
+
+console.log("LEVEL 3 SEO ENGINE COMPLETE");
