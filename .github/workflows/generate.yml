@@ -1,18 +1,21 @@
-- name: Commit & Push
-  run: |
-    git config --local user.email "action@github.com"
-    git config --local user.name "GitHub Action"
-    
-    # Pull latest (no clean - keeps existing pages!)
-    git pull origin main || true
-    
-    # Generate new pages (overwrites old ones)
-    node generate.js
-    
-    # Add ONLY new/modified files
-    git add *.html sitemap.xml robots.txt index.html || true
-    
-    # Commit ONLY if changes
-    git diff --staged --quiet || git commit -m "🤖 Regenerate $(ls *.html 2>/dev/null | wc -l | xargs) SEO pages"
-    
-    git push origin HEAD:main || true
+name: Generate SEO Pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - run: node generate.js
+    - run: |
+        git config --local user.email action@github.com
+        git config --local user.name GitHubAction
+        git pull origin main || true
+        git add *.html sitemap.xml robots.txt index.html || true
+        git commit -m "Generate SEO pages" || true
+        git push origin HEAD:main || true
