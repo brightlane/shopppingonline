@@ -6,7 +6,7 @@ on:
       - main
 
   schedule:
-    - cron: "0 3 * * *"  # runs every day at 3AM UTC
+    - cron: "0 3 * * *"
 
 jobs:
   build:
@@ -25,12 +25,12 @@ jobs:
         run: npm install
 
       - name: Run generator
-        run: node generate.js
+        run: npm run generate
 
-      - name: Commit generated files
+      - name: Commit changes
         run: |
           git config --global user.name "auto-bot"
           git config --global user.email "auto-bot@users.noreply.github.com"
           git add .
-          git commit -m "Auto-generated affiliate pages" || echo "No changes to commit"
+          git commit -m "Auto-generated pages" || echo "No changes"
           git push
