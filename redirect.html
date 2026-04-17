@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Redirecting...</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f5f6fa;
+      margin: 0;
+    }
+
+    .box {
+      text-align: center;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ddd;
+      border-top: 4px solid #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <div class="spinner"></div>
+  <p>Redirecting to product...</p>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  const asin = params.get("asin");
+  const url = params.get("url");
+
+  /**
+   * 🧠 VALIDATION (CRITICAL SAFETY LAYER)
+   */
+  function isValidASIN(a) {
+    return typeof a === "string" && a.length >= 8;
+  }
+
+  function isValidURL(u) {
+    return typeof u === "string" && u.startsWith("https://");
+  }
+
+  /**
+   * 🔥 SEND CLICK (NON-BLOCKING)
+   */
+  function trackClick() {
+    if (!isValidASIN(asin)) return;
+
+    fetch("https://YOUR-BACKEND-URL/click", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ asin })
+    }).catch(() => {});
+  }
+
+  /**
+   * 🚀 SAFE REDIRECT
+   */
+  function redirect() {
+
+    trackClick();
+
+    if (isValidURL(url)) {
+      window.location.href = decodeURIComponent(url);
+    } else {
+      document.body.innerHTML = "<h2>Invalid redirect link</h2>";
+    }
+  }
+
+  // small delay for tracking reliability
+  setTimeout(redirect, 600);
+</script>
+
+</body>
+</html>
