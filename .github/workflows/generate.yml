@@ -1,4 +1,4 @@
-name: Generate Pages
+name: Generate Pages (DEBUG MODE)
 
 on:
   push:
@@ -16,13 +16,14 @@ jobs:
         with:
           node-version: 18
 
-      - name: Run generator
+      - name: Show repo files (DEBUG)
+        run: ls -R
+
+      - name: Check JSON exists
+        run: cat products-data.json
+
+      - name: Run generator (DEBUG)
         run: node generate.js
 
-      - name: Commit changes
-        run: |
-          git config --global user.name "auto-bot"
-          git config --global user.email "auto-bot@users.noreply.github.com"
-          git add .
-          git commit -m "auto generate" || echo "no changes"
-          git push
+      - name: Done
+        run: echo "BUILD COMPLETE"
