@@ -1,14 +1,17 @@
 // config.js
 
-// Your Amazon Associates ID
 const AFFILIATE_TAG = "brightside20-20";
 
-/**
- * Build a safe Amazon product link
- * Always attaches your affiliate tag correctly
- */
-function amazonLink(asin) {
-  if (!asin) return "#";
+function amazonLink(urlOrAsin) {
+  if (!urlOrAsin) return "#";
 
-  return `https://www.amazon.com/dp/${asin}?tag=${AFFILIATE_TAG}`;
+  // If it's already a full URL
+  if (urlOrAsin.includes("amazon.com")) {
+    return urlOrAsin.includes("?")
+      ? urlOrAsin + "&tag=" + AFFILIATE_TAG
+      : urlOrAsin + "?tag=" + AFFILIATE_TAG;
+  }
+
+  // If it's just an ASIN
+  return `https://www.amazon.com/dp/${urlOrAsin}?tag=${AFFILIATE_TAG}`;
 }
