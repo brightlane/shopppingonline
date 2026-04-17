@@ -1,126 +1,78 @@
-(function () {
-  "use strict";
 
-  // ==============================
-  // 🔗 INTERNAL SEO LINK ENGINE
-  // ==============================
+// ================================
+// 🔗 INTERNAL SEO LINK GRAPH SYSTEM
+// ================================
 
-  const CONFIG = {
-    categories: [
-      "vacuum-cleaners",
-      "coffee-makers",
-      "stanley-quencher-tumblers",
-      "acne-patches",
-      "ring-lights-for-phone"
-    ],
+const LINK_GRAPH = {
+  vacuum: ["coffee", "ring_light", "stanley", "acne_patch"],
+  coffee: ["vacuum", "stanley", "ring_light"],
+  stanley: ["vacuum", "coffee", "ring_light"],
+  acne_patch: ["coffee", "skincare"],
+  ring_light: ["coffee", "content_creation", "vacuum"]
+};
 
-    pageTypes: [
-      "best",
-      "top",
-      "ultimate",
-      "guide",
-      "review",
-      "vs",
-      "buying",
-      "ranking"
-    ]
+// ================================
+// 🧠 SAFE LINK GENERATOR
+// ================================
+
+function buildInternalLink(category) {
+  if (!category) return "";
+
+  const urlMap = {
+    vacuum: "best-vacuum-cleaners-en.html",
+    coffee: "best-coffee-makers-en.html",
+    stanley: "best-stanley-quencher-tumblers-en.html",
+    acne_patch: "best-acne-patches-en.html",
+    ring_light: "best-ring-lights-for-phone-en.html"
   };
 
-  // ------------------------------
-  // GET ALL INTERNAL LINKS
-  // ------------------------------
-  function generateLinks() {
-    const links = [];
+  const url = urlMap[category];
+  if (!url) return "";
 
-    CONFIG.categories.forEach(cat => {
-      CONFIG.pageTypes.forEach(type => {
-        links.push(`/${type}-${cat}-en.html`);
-      });
-    });
+  return `<a href="${url}" style="
+    display:inline-block;
+    margin:4px 6px 4px 0;
+    padding:6px 10px;
+    background:#f3f4f6;
+    border-radius:8px;
+    font-size:12px;
+    text-decoration:none;
+    color:#111;
+  ">Related: ${category.replace("_", " ")}</a>`;
+}
 
-    return links;
-  }
+// ================================
+// 🔥 AUTO-INJECT INTERNAL LINKS INTO PAGE
+// ================================
 
-  const allLinks = generateLinks();
+function injectInternalLinks(currentCategory) {
+  const container = document.getElementById("internal-links");
+  if (!container) return;
 
-  // ------------------------------
-  // SMART LINK PICKER
-  // ------------------------------
-  function pickLinks(count = 6) {
-    const shuffled = [...allLinks].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, count);
-  }
+  const related = LINK_GRAPH[currentCategory] || [];
 
-  // ------------------------------
-  // INJECT INTO PAGE
-  // ------------------------------
-  function injectLinks() {
-    const container = document.createElement("div");
+  container.innerHTML = `
+    <div style="margin:20px 0;padding:15px;background:#fff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.05);">
+      <h3 style="margin:0 0 10px;font-size:14px;">🔗 Explore Related Categories</h3>
+      ${related.map(buildInternalLink).join("")}
+    </div>
+  `;
+}
 
-    container.style.cssText = `
-      margin-top:40px;
-      padding:20px;
-      background:#ffffff;
-      border-radius:14px;
-      box-shadow:0 10px 25px rgba(0,0,0,0.08);
-      font-family:system-ui;
-    `;
+// ================================
+// 📊 CONTEXTUAL LINK INSERTION (FOR PRODUCT PAGES)
+// ================================
 
-    const links = pickLinks(8);
+function insertContextualLinks(productCategory) {
+  const box = document.getElementById("context-links");
+  if (!box) return;
 
-    container.innerHTML = `
-      <h3 style="margin-bottom:10px;">🔗 Explore More Guides</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;">
-        ${links.map(l => `
-          <a href="${l}" style="
-            padding:8px 12px;
-            background:#f3f4f6;
-            border-radius:8px;
-            text-decoration:none;
-            font-size:13px;
-            color:#111;
-          ">${l.replace("/", "")}</a>
-        `).join("")}
-      </div>
-    `;
+  const related = LINK_GRAPH[productCategory] || [];
 
-    document.body.appendChild(container);
-  }
-
-  // ------------------------------
-  // CONTEXTUAL BOOST LINKS
-  // ------------------------------
-  function injectContextLinks() {
-    const h1 = document.querySelector("h1");
-    if (!h1) return;
-
-    const cat = location.pathname;
-
-    const related = CONFIG.categories
-      .filter(c => cat.includes(c))
-      .map(c => `/best-${c}-en.html`);
-
-    if (!related.length) return;
-
-    const box = document.createElement("div");
-    box.style.cssText = "margin:20px 0;font-size:14px;color:#333;";
-
-    box.innerHTML = `
-      <b>🔥 Related Category Hub:</b>
-      ${related
-        .map(r => `<a href="${r}" style="margin-left:10px;">View</a>`)
-        .join("")}
-    `;
-
-    h1.insertAdjacentElement("afterend", box);
-  }
-
-  // ------------------------------
-  // AUTO RUN
-  // ------------------------------
-  document.addEventListener("DOMContentLoaded", () => {
-    injectLinks();
-    injectContextLinks();
-  });
-
-})();
+  box.innerHTML = `
+    <div style="margin-top:20px;font-size:13px;color:#444;">
+      <strong>More categories:</strong><br/>
+      ${related.map(buildInternalLink).join("")}
+    </div>
+  `;
+}
