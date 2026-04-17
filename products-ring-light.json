@@ -1,0 +1,56 @@
+[
+  {
+    "title": "UBeesize 10-inch Ring Light for Phone",
+    "asin": "B07PZHGFLW",
+    "image": "https://m.media-amazon.com/images/I/ubeesize-ring.jpg",
+    "price": "38",
+    "rating": "4.6",
+    "reviews": "85000",
+    "description": "Portable USB ring light with tripod, 10\" size, for TikTok, Instagram, and YouTube.",
+    "feature1": "3 light modes (warm/cool/daylight)",
+    "feature2": "10 dimmable levels",
+    "feature3": "Phone holder + 60\" tripod",
+    "best_for": "TikTok creators, live streaming, Zoom, makeup",
+    "youtube": "https://www.youtube.com/embed/ubeesize-ring-light-review"
+  },
+  {
+    "title": "Neewer 18-inch Ring Light Kit",
+    "asin": "B01MZEO3X5",
+    "image": "https://m.media-amazon.com/images/I/neewer-ring.jpg",
+    "price": "99",
+    "rating": "4.5",
+    "reviews": "42000",
+    "description": "18\" professional-grade ring light with 3 color modes and 10 brightness levels.",
+    "best_for": "YouTube vlogging, studio-style setup"
+  },
+  {
+    "title": "Lumecube Cordless Ring Light Pro",
+    "asin": "B07C8X2YZZ",
+    "image": "https://m.media-amazon.com/images/I/lumecube-ring.jpg",
+    "price": "279",
+    "rating": "4.7",
+    "reviews": "12000",
+    "description": "High-end cordless ring light with remote control and color temperature adjustment.",
+    "best_for": "Content creators serious about quality lighting"
+  },
+  {
+    "title": "Westcott Mini Ring Light",
+    "asin": "B07QYQJZQJ",
+    "image": "https://m.media-amazon.com/images/I/westcott-mini.jpg",
+    "price": "16",
+    "rating": "4.5",
+    "reviews": "25000",
+    "description": "Clip-on mini ring light for phones and laptops, very budget-friendly.",
+    "best_for": "Students, beginners, low-budget creators"
+  },
+  {
+    "title": "Joby Beamo Ring Light",
+    "asin": "B08XYZ7890",
+    "image": "https://m.media-amazon.com/images/I/beamo-ring.jpg",
+    "price": "71",
+    "rating": "4.6",
+    "reviews": "38000",
+    "description": "Magnetic ring light that attaches to magnetic phone mounts.",
+    "best_for": "On-the-go creators, travel vlogs"
+  }
+]
