@@ -1,0 +1,29 @@
+[
+  {
+    "title": "Moccamaster KBGV Coffee Maker",
+    "asin": "B01N6N2ARX",
+    "price": "$359.00",
+    "rating": 4.8,
+    "reviews": 12000,
+    "description": "Premium drip coffee maker with precise temperature control and long-lasting build quality.",
+    "image": "https://m.media-amazon.com/images/I/moccamaster.jpg"
+  },
+  {
+    "title": "Breville Bambino Plus Espresso Machine",
+    "asin": "B07GQVY4FR",
+    "price": "$499.00",
+    "rating": 4.7,
+    "reviews": 8900,
+    "description": "Compact espresso machine with fast heat-up and café-quality extraction.",
+    "image": "https://m.media-amazon.com/images/I/breville.jpg"
+  },
+  {
+    "title": "Nespresso Vertuo Plus",
+    "asin": "B01N6N3A2K",
+    "price": "$179.00",
+    "rating": 4.6,
+    "reviews": 54000,
+    "description": "One-touch capsule coffee system with consistent crema and flavor profiles.",
+    "image": "https://m.media-amazon.com/images/I/nespresso.jpg"
+  }
+]
