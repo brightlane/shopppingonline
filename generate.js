@@ -183,78 +183,78 @@ const DUMMY_PRODUCTS = {
 // 5. PRODUCT CARD
 function productCard(p, i) {
   return `
-<div class="product-card" style="
-  background: #ffffff;
-  padding: 25px;
-  margin: 20px 0;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  border-left: 5px solid #4299e1;
-">
-  <h3 style="margin: 0 0 10px 0; font-size: 1.25rem; color: #1a202c;">
-    #${i + 1} ${escapeHTML(p.title)}
-  </h3>
+  <div class="product-card" style="
+    background: #ffffff;
+    padding: 25px;
+    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-left: 5px solid #4299e1;
+  ">
+    <h3 style="margin: 0 0 10px 0; font-size: 1.25rem; color: #1a202c;">
+      #${i + 1} ${escapeHTML(p.title)}
+    </h3>
 
-  <img src="${escapeHTML(p.image || "")}"
-       alt="${escapeHTML(p.title)}"
-       width="220" height="220"
-       style="border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); margin-bottom:15px;"
-       loading="lazy">
+    <img src="${escapeHTML(p.image || "")}"
+         alt="${escapeHTML(p.title)}"
+         width="220" height="220"
+         style="border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); margin-bottom:15px;"
+         loading="lazy">
 
-  <p style="color: #4a5568; margin:10px 0;">${escapeHTML(p.description)}</p>
+    <p style="color: #4a5568; margin:10px 0;">${escapeHTML(p.description)}</p>
 
-  <p style="font-weight:600; color: #2d3748; margin:10px 0;">
-    <span style="color: #22c55e;">$${p.price || "TBD"}</span> •
-    <span style="color: #f59e0b;">${p.rating || "4.5"}⭐ (${p.reviews || "1000+"} reviews)</span>
-  </p>
+    <p style="font-weight:600; color: #2d3748; margin:10px 0;">
+      <span style="color: #22c55e;">$${p.price || "TBD"}</span> •
+      <span style="color: #f59e0b;">${p.rating || "4.5"}⭐ (${p.reviews || "1000+"} reviews)</span>
+    </p>
 
-  <a href="https://amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}"
-     style="display:inline-block; padding:12px 24px; background:linear-gradient(135deg,#ef4444,#dc2626); color:white; border-radius:8px; text-decoration:none; font-weight:600; text-align:center; box-shadow:0 6px 20px rgba(239,68,68,0.4); transition:transform 0.2s ease;"
-     onmouseover="this.style.transform='scale(1.05)'"
-     onmouseout="this.style.transform='scale(1)'"
-     target="_blank">
-    🛒 Buy on Amazon
-  </a>
-</div>`;
+    <a href="https://amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}"
+       style="display:inline-block; padding:12px 24px; background:linear-gradient(135deg,#ef4444,#dc2626); color:white; border-radius:8px; text-decoration:none; font-weight:600; text-align:center; box-shadow:0 6px 20px rgba(239,68,68,0.4); transition:transform 0.2s ease;"
+       onmouseover="this.style.transform='scale(1.05)'"
+       onmouseout="this.style.transform='scale(1)'"
+       target="_blank">
+      🛒 Buy on Amazon
+    </a>
+  </div>`;
 }
 
 // 6. COMPARISON TABLE
 function comparisonTable(products) {
   const top3 = products.slice(0, 3);
   return `
-<div style="
-  background: #f0f8ff;
-  padding: 25px;
-  border-radius: 12px;
-  margin: 30px 0;
-  border: 1px solid #bee3f8;
-">
-  <h3>Top 3 Models Compared</h3>
+  <div style="
+    background: #f0f8ff;
+    padding: 25px;
+    border-radius: 12px;
+    margin: 30px 0;
+    border: 1px solid #bee3f8;
+  ">
+    <h3>Top 3 Models Compared</h3>
 
-  <table style="width:100%; border-collapse:collapse; font-size:14px;">
-    <thead style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); color: white;">
-      <tr>
-        <th style="padding:12px; text-align:left;">Model</th>
-        <th style="padding:12px;">Price</th>
-        <th style="padding:12px;">Rating</th>
-        <th style="padding:12px;">Best For</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${top3
-        .map(
-          (p) => `
-      <tr style="border-bottom:1px solid #e2e8f0;">
-        <td style="padding:12px; font-weight:500; color:#1a202c;">${escapeHTML(p.title)}</td>
-        <td style="padding:12px;">$${p.price || "TBD"}</td>
-        <td style="padding:12px;">${p.rating || "4.5"}⭐</td>
-        <td style="padding:12px;">${escapeHTML(p.best_for || "General use")}</td>
-      </tr>`
-        )
-        .join("\n")}
-    </tbody>
-  </table>
-</div>`;
+    <table style="width:100%; border-collapse:collapse; font-size:14px;">
+      <thead style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); color: white;">
+        <tr>
+          <th style="padding:12px; text-align:left;">Model</th>
+          <th style="padding:12px;">Price</th>
+          <th style="padding:12px;">Rating</th>
+          <th style="padding:12px;">Best For</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${top3
+          .map(
+            (p) => `
+        <tr style="border-bottom:1px solid #e2e8f0;">
+          <td style="padding:12px; font-weight:500; color:#1a202c;">${escapeHTML(p.title)}</td>
+          <td style="padding:12px;">$${p.price || "TBD"}</td>
+          <td style="padding:12px;">${p.rating || "4.5"}⭐</td>
+          <td style="padding:12px;">${escapeHTML(p.best_for || "General use")}</td>
+        </tr>`
+          )
+          .join("\n")}
+      </tbody>
+    </table>
+  </div>`;
 }
 
 // 7. BUILD PAGE (entire HTML string in one template literal)
@@ -275,42 +275,42 @@ function buildPage(type, category, products, lang = "en") {
     }[type] || catName;
 
   return `<!DOCTYPE html>
-<html lang="${lang}">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <html lang="${lang}">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <title>${title} | Best ${catName.toLowerCase()} 2026</title>
-  <meta name="description" content="Best ${catName.toLowerCase()} 2026 – ${products.length} models reviewed. ${category.keywords.slice(0,5).join(", ")}." />
+    <title>${title} | Best ${catName.toLowerCase()} 2026</title>
+    <meta name="description" content="Best ${catName.toLowerCase()} 2026 – ${products.length} models reviewed. ${category.keywords.slice(0,5).join(", ")}." />
 
-  <link rel="alternate" hreflang="x-default" href="./best-${catSlug}-${lang}.html" />
-  <link rel="canonical" href="./${type}-${catSlug}-${lang}.html" />
-</head>
-<body style="font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:1000px;margin:auto;padding:20px;background:#f8fafc;">
+    <link rel="alternate" hreflang="x-default" href="./best-${catSlug}-${lang}.html" />
+    <link rel="canonical" href="./${type}-${catSlug}-${lang}.html" />
+  </head>
+  <body style="font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:1000px;margin:auto;padding:20px;background:#f8fafc;">
 
-<header style="text-align:center;padding:40px;background:#ffffff;border-radius:16px;margin-bottom:40px;box-shadow:0 10px 40px rgba(0,0,0,0.1);">
-  <h1 style="margin:0;font-size:2.5rem;color:#1a202c;">${title}</h1>
-  <p style="color:#718096;font-size:1.15rem;margin:15px 0 0 0;">Tested & Ranked | ${products.length} Models Compared</p>
-</header>
+  <header style="text-align:center;padding:40px;background:#ffffff;border-radius:16px;margin-bottom:40px;box-shadow:0 10px 40px rgba(0,0,0,0.1);">
+    <h1 style="margin:0;font-size:2.5rem;color:#1a202c;">${title}</h1>
+    <p style="color:#718096;font-size:1.15rem;margin:15px 0 0 0;">Tested & Ranked | ${products.length} Models Compared</p>
+  </header>
 
-<main style="background:#ffffff;padding:40px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.1);">
+  <main style="background:#ffffff;padding:40px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.1);">
 
-  ${comparisonTable(products)}
+    ${comparisonTable(products)}
 
-  <div style="display:grid;gap:30px;">
-    ${products.map((p, i) => productCard(p, i + 1)).join("\n")}
-  </div>
+    <div style="display:grid;gap:30px;">
+      ${products.map((p, i) => productCard(p, i + 1)).join("\n")}
+    </div>
 
-  <div style="text-align:center;margin-top:50px;padding-top:30px;border-top:2px solid #e2e8f0;color:#718096;">
-    <p style="margin:0;">
-      <strong>As an Amazon Associate we earn from qualifying purchases.</strong><br>
-      <a href="index.html" style="color:#4299e1;">← All Categories</a>
-    </p>
-  </div>
-</main>
+    <div style="text-align:center;margin-top:50px;padding-top:30px;border-top:2px solid #e2e8f0;color:#718096;">
+      <p style="margin:0;">
+        <strong>As an Amazon Associate we earn from qualifying purchases.</strong><br>
+        <a href="index.html" style="color:#4299e1;">← All Categories</a>
+      </p>
+    </div>
+  </main>
 
-</body>
-</html>`;
+  </body>
+  </html>`;
 }
 
 // 8. GENERATE PAGES
@@ -339,28 +339,28 @@ Object.entries(CATEGORIES).forEach(([slug, category]) => {
 fs.writeFileSync(
   "index.html",
   `<!DOCTYPE html>
-<html><head>
-  <title>🏆 Best Products 2026 – Expert Reviews</title>
-  <meta name="viewport" content="width=device-width">
-  <style>body{font-family:system-ui,sans-serif;background:#f7fafc;padding:40px;}</style>
-</head>
-<body>
-  <h1 style="text-align:center;font-size:3rem;color:#2d3748;">Best Products 2026</h1>
-  <p style="text-align:center;color:#718096;">${pageCount} SEO Pages | Updated ${new Date().toISOString().split("T")[0]}</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;max-width:1200px;margin:60px auto;">
-    ${Object.entries(CATEGORIES)
-      .map(
-        ([slug, cat]) => `
-    <div style="background:#ffffff;padding:40px;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.1);">
-      <h2 style="color:#2d3748;font-size:1.8rem;margin-bottom:20px;">${cat.name}</h2>
-      <a href="best-${slugify(cat.name)}-en.html" style="display:block;padding:15px 30px;background:#4299e1;color:white;border-radius:12px;font-weight:600;margin-bottom:10px;">🇺🇸 English</a>
-      <a href="best-${slugify(cat.name)}-es.html" style="display:block;padding:15px 30px;background:#f56565;color:white;border-radius:12px;font-weight:600;margin-bottom:10px;">🇪🇸 Español</a>
-      <a href="best-${slugify(cat.name)}-de.html" style="display:block;padding:15px 30px;background:#48bb78;color:white;border-radius:12px;font-weight:600;">🇩🇪 Deutsch</a>
-    </div>`
-      )
-      .join("\n")}
-  </div>
-</body></html>`
+  <html><head>
+    <title>🏆 Best Products 2026 – Expert Reviews</title>
+    <meta name="viewport" content="width=device-width">
+    <style>body{font-family:system-ui,sans-serif;background:#f7fafc;padding:40px;}</style>
+  </head>
+  <body>
+    <h1 style="text-align:center;font-size:3rem;color:#2d3748;">Best Products 2026</h1>
+    <p style="text-align:center;color:#718096;">${pageCount} SEO Pages | Updated ${new Date().toISOString().split("T")[0]}</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;max-width:1200px;margin:60px auto;">
+      ${Object.entries(CATEGORIES)
+        .map(
+          ([slug, cat]) => `
+      <div style="background:#ffffff;padding:40px;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.1);">
+        <h2 style="color:#2d3748;font-size:1.8rem;margin-bottom:20px;">${cat.name}</h2>
+        <a href="best-${slugify(cat.name)}-en.html" style="display:block;padding:15px 30px;background:#4299e1;color:white;border-radius:12px;font-weight:600;margin-bottom:10px;">🇺🇸 English</a>
+        <a href="best-${slugify(cat.name)}-es.html" style="display:block;padding:15px 30px;background:#f56565;color:white;border-radius:12px;font-weight:600;margin-bottom:10px;">🇪🇸 Español</a>
+        <a href="best-${slugify(cat.name)}-de.html" style="display:block;padding:15px 30px;background:#48bb78;color:white;border-radius:12px;font-weight:600;">🇩🇪 Deutsch</a>
+      </div>`
+        )
+        .join("\n")}
+    </div>
+  </body></html>`
 );
 
 // 10. SITEMAP
@@ -377,39 +377,4 @@ const urls = files
     <priority>0.7</priority>
   </url>`
   )
-  .join("\n");
-
-const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.s
-// 10. SITEMAP
-const siteUrl = "https://brightlane.github.io/shopppingonline"; // update if needed
-const files = fs.readdirSync(".");
-const urls = files
-  .filter((f) => f.endsWith(".html"))
-  .map(
-    (f) => `
-  <url>
-    <loc>${siteUrl}/${f}</loc>
-    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>`
-  )
-  .join("\n");
-
-const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${siteUrl}/</loc>
-    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>${urls}
-</urlset>
-`;
-
-fs.writeFileSync("sitemap.xml", sitemapContent, "utf8");
-console.log("✅ sitemap.xml generated");
-
-console.log(`\n💥 GENERATION COMPLETE!`);
-console.log(`📂 ${pageCount} pages created for ${Object.keys(CATEGORIES).length} categories`);
+  .join("\
