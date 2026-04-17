@@ -1,134 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Page</title>
 
-<title>Amazon Product Review Template</title>
-
-<meta name="description" content="Top Amazon product deal with affiliate link.">
+<script src="config.js"></script>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #f4f6f8;
-}
-
-.header {
-  background: #111;
-  color: white;
-  text-align: center;
-  padding: 40px 20px;
-}
-
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
-}
-
-.card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.card img {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-}
-
-.content {
-  padding: 20px;
-}
-
-.title {
-  font-size: 22px;
-  margin-bottom: 10px;
-}
-
-.desc {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 15px;
-}
-
-.badge {
-  display: inline-block;
-  background: #ff3b30;
-  color: white;
-  font-size: 12px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  margin-bottom: 10px;
-}
-
-.btn {
-  display: inline-block;
-  background: #ff9900;
-  color: white;
-  padding: 12px 16px;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: bold;
-}
-
-.btn:hover {
-  background: #e68a00;
-}
-
-.footer {
-  text-align: center;
-  padding: 20px;
-  font-size: 12px;
-  color: #777;
-}
+body {font-family: Arial; margin:0; background:#f4f6f8;}
+.container {max-width:900px;margin:auto;padding:20px;}
+.card {background:white;padding:20px;border-radius:12px;}
+img {width:100%;border-radius:10px;}
+a {display:inline-block;margin-top:10px;padding:12px 14px;background:#ff9900;color:white;text-decoration:none;border-radius:8px;}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h1>🔥 Amazon Deal Page</h1>
-</div>
-
 <div class="container">
 
   <div class="card">
 
-    <!-- IMAGE (replace this) -->
-    <img src="https://m.media-amazon.com/images/I/71placeholder.jpg" alt="Product Image">
+    <img src="https://m.media-amazon.com/images/I/EXAMPLE.jpg">
 
-    <div class="content">
+    <h2>Product Name</h2>
 
-      <div class="badge">HOT DEAL</div>
+    <p>Product description goes here.</p>
 
-      <!-- PRODUCT TITLE -->
-      <div class="title">Your Product Name Here</div>
+    <a id="buyLink" target="_blank">View on Amazon</a>
 
-      <!-- DESCRIPTION -->
-      <div class="desc">
-        Add your product description here. Keep it short, clear, and benefit-focused.
-      </div>
-
-      <!-- AFFILIATE LINK -->
-      <a class="btn"
-         href="https://www.amazon.com/dp/PASTE_PRODUCT_ID_HERE/?tag=brightlane201-20"
-         target="_blank">
-        Check Price on Amazon 🔥
-      </a>
-
-    </div>
   </div>
 
 </div>
 
-<div class="footer">
-  As an Amazon Associate I earn from qualifying purchases.
-</div>
+<script>
+  // LOCKED AFFILIATE LINK SYSTEM
+  document.getElementById("buyLink").href =
+    window.amazonLink("B07PXGQC1Q");
+</script>
 
 </body>
 </html>
