@@ -1,18 +1,26 @@
 (function () {
 
   const headerHTML = `
-    <header class="site-header">
-      <h1>🔥 BrightLane Deals Hub</h1>
-      <p>Best reviewed products • Trusted comparisons • Updated 2026</p>
-    </header>
+    <div class="site-header">
 
-    <nav class="nav">
+      <div style="font-weight:bold; font-size:18px;">
+        🔥 BrightLane Deals
+      </div>
+
+      <div class="search-bar">
+        <input type="text" placeholder="Search products, reviews, deals...">
+        <button>Search</button>
+      </div>
+
+    </div>
+
+    <div class="nav">
       <a href="/index.html">Home</a>
       <a href="/best-vacuum-cleaners-en.html">Vacuum Cleaners</a>
       <a href="/best-coffee-makers-en.html">Coffee Makers</a>
       <a href="/power-survival-hub.html">Survival Gear</a>
       <a href="/categories.html">Categories</a>
-    </nav>
+    </div>
   `;
 
   document.addEventListener("DOMContentLoaded", function () {
