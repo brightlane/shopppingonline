@@ -424,6 +424,337 @@ function comparisonTable(products) {
     font-size: 14px;
   ">
     <thead style="
-      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(90deg, #667eea 0
+      // ——————————————————— 7. COMPARISON TABLE ———————————————————
+function comparisonTable(products) {
+  const top3 = products.slice(0, 3);
+  return `
+  <div style="
+    background: #f0f8ff;
+    padding: 25px;
+    border-radius: 12px;
+    margin: 30px 0;
+    border: 1px solid #bee3f8;
+  ">
+    <h3 style="margin: 0 0 15px 0;">Top 3 Models Compared</h3>
+
+    <table style="
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    ">
+      <thead style="
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      ">
+        <tr>
+          <th style="padding: 12px; text-align: left;">Model</th>
+          <th style="padding: 12px;">Price</th>
+          <th style="padding: 12px;">Rating</th>
+          <th style="padding: 12px;">Best For</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${top3
+          .map((p) => {
+            return `
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px; font-weight: 500; color: #1a202c;">
+              ${escapeHTML(p.title)}
+            </td>
+            <td style="padding: 12px;">$${p.price || "TBD"}</td>
+            <td style="padding: 12px;">${p.rating || "4.5"}⭐</td>
+            <td style="padding: 12px;">
+              ${escapeHTML(p.best_for || "General use")}
+            </td>
+          </tr>
+        `;
+          })
+          .join("")}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ——————————————————— 8. PAGE BUILDER ———————————————————
+function buildPage(type, category, products, lang = "en") {
+  const catName = category.name;
+  const catSlug = slugify(catName);
+
+  const typeTitleMap = {
+    best: `Best ${catName} 2026`,
+    top: `Top ${catName} 2026`,
+    ultimate: `Ultimate ${catName} Buying Guide 2026`,
+    vs: `${products[0]?.title || "Product"} vs ${products[1]?.title || "Product"}`,
+    guide: `Ultimate ${catName} Guide`,
+    review: `In-Depth ${products[0]?.title || "Review"} Review`,
+    "2026": `Top ${catName} for 2026`,
+    buying: `Best ${catName} To Buy 2026`,
+    compared: `${catName} Compared`,
+  };
+
+  const baseTitle =
+    typeTitleMap[type] || `Best ${catName.toLowerCase()} 2026 - ${lang.toUpperCase()}`;
+  const catSlugLower = catSlug.toLowerCase();
+  const seoKeywords = category.keywords.join(", ");
+
+  return `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>${baseTitle} | Best ${catName.toLowerCase()} 2026</title>
+  <meta name="description" content="Best ${catName.toLowerCase()} 2026 – ${products.length} tested models. ${seoKeywords} reviewed and compared.">
+
+  <link rel="alternate" hreflang="x-default" href="./best-${catSlugLower}-${lang}.html" />
+  <link rel="canonical" href="./${type}-${catSlugLower}-${lang}.html" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "${baseTitle}",
+    "itemListElement": ${JSON.stringify(
+      products.slice(0, 10).map((p, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "item": {
+          "@type": "Product",
+          "name": escapeHTML(p.title),
+          "sku": "${p.asin}",
+          "url": "https://amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}"
+        }
+      }))
+    )}
+  }
+  </script>
+</head>
+
+<body style="
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+  background: #f9fafb;
+">
+
+<!-- HEADER -->
+<header style="
+  text-align: center;
+  background: #ffffff;
+  padding: 40px 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  margin-bottom: 40px;
+">
+  <h1 style="
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    margin: 0;
+    color: #1e293b;
+  ">${baseTitle}</h1>
+
+  <p style="
+    color: #64748b;
+    font-size: 1.15rem;
+    margin: 15px 0 0 0;
+  ">
+    Tested & Ranked by Experts | ${products.length} Models Compared
+  </p>
+
+  <div style="
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  ">
+    <span style="
+      background: #10b981;
       color: white;
-   
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    ">🏆 Expert Tested</span>
+    <span style="
+      background: #3b82f6;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    ">⭐ Above 4.5 Avg</span>
+    <span style="
+      background: #f59e0b;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    ">💰 Prime Eligible</span>
+  </div>
+</header>
+
+<main style="
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+">
+
+  <!-- COMPARISON TABLE -->
+  ${comparisonTable(products)}
+
+  <!-- PRODUCT LIST -->
+  <div style="
+    display: grid;
+    gap: 30px;
+  ">
+    ${products
+      .map((p, i) => productCard(p, i))
+      .join("\n")}
+  </div>
+
+  <div style="
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 2px solid #e2e8f0;
+    color: #718096;
+  ">
+    <p style="margin: 0 0 10px 0;">
+      <strong>As an Amazon Associate we earn from qualifying purchases.</strong><br>
+      <a href="index.html" style="color: #4299e1;">← All Categories</a>
+    </p>
+  </div>
+</main>
+</body>
+</html>`;
+}
+
+// ——————————————————— 9. GENERATION RUNNER ———————————————————
+let pageCount = 0;
+
+Object.entries(CATEGORIES).forEach(([slug, category]) => {
+  const products = loadProducts(slug);
+  if (!products.length) {
+    console.log(`⚠️  No products for "${slug}" – skipping...`);
+    return;
+  }
+
+  LANGUAGES.forEach((lang) => {
+    PAGE_TYPES.forEach((type) => {
+      const pageProducts = [...products].sort(() => Math.random() - 0.5).slice(0, 8);
+
+      const filename = `${type}-${slugify(category.name)}-${lang}.html`;
+      const pageContent = buildPage(type, category, pageProducts, lang);
+
+      fs.writeFileSync(filename, pageContent, "utf8");
+
+      pageCount++;
+      console.log(`📄 ${pageCount}: ${filename} created`);
+    });
+  });
+});
+
+// ——————————————————— 10. INDEX + SITEMAP ———————————————————
+const indexLinksHtml = Object.entries(CATEGORIES)
+  .map(
+    ([slug, category]) => `
+  <div style="
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    text-align: center;
+  ">
+    <h2 style="color: #2d3748; font-size: 1.8rem; margin-bottom: 20px;">${category.name}</h2>
+    <a href="best-${slugify(category.name)}-en.html"
+       style="
+         display: inline-block;
+         padding: 15px 30px;
+         background: #4299e1;
+         color: white;
+         border-radius: 12px;
+         font-weight: 600;
+         margin-bottom: 10px;
+       ">🇺🇸 English</a>
+    <a href="best-${slugify(category.name)}-es.html"
+       style="
+         display: inline-block;
+         padding: 15px 30px;
+         background: #f56565;
+         color: white;
+         border-radius: 12px;
+         font-weight: 600;
+         margin-bottom: 10px;
+       ">🇪🇸 Español</a>
+    <a href="best-${slugify(category.name)}-de.html"
+       style="
+         display: inline-block;
+         padding: 15px 30px;
+         background: #48bb78;
+         color: white;
+         border-radius: 12px;
+         font-weight: 600;
+       ">🇩🇪 Deutsch</a>
+  </div>`
+  )
+  .join("\n");
+
+fs.writeFileSync(
+  "index.html",
+  `<!DOCTYPE html>
+<html><head>
+  <title>🏆 Best Products 2026 – Expert Reviews</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f7fafc; padding: 40px; }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center; font-size: 3rem; color: #2d3748;">Best Products 2026</h1>
+  <p style="text-align: center; color: #718096; font-size: 1.3rem;">
+    ${pageCount} Expert Review Pages | Generated on ${new Date().toISOString().split("T")[0]}
+  </p>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 60px auto;">
+    ${indexLinksHtml}
+  </div>
+</body></html>`
+);
+
+// ——————————————————— 11. SITEMAP.XML ———————————————————
+const siteUrl = "https://shopppingonline.pages.dev"; // or your GitHub Pages URL
+const allFiles = fs.readdirSync(".");
+const htmlFiles = allFiles.filter((f) => f.endsWith(".html"));
+
+const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${siteUrl}/</loc>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  ${htmlFiles
+    .map(
+      (file) => `
+  <url>
+    <loc>${siteUrl}/${file}</loc>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`
+    )
+    .join("\n")}
+</urlset>
+`;
+
+fs.writeFileSync("sitemap.xml", sitemapContent, "utf8");
+console.log("✅ Sitemap generated: sitemap.xml");
+
+// ——————————————————— 12. DONE ———————————————————
+console.log(`\n💥 GENERATION COMPLETE!`);
+console.log(`📂 ${pageCount} pages created for ${Object.keys(CATEGORIES).length} categories`);
