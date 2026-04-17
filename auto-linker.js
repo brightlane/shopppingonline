@@ -1,143 +1,90 @@
-/**
- * =========================================
- * 🔗 AUTO INTERNAL LINKING SYSTEM (2026)
- * =========================================
- * Fixes:
- * - orphan pages
- * - weak SEO structure
- * - missing cross-links
- * - category isolation
- * - low crawl depth
- * =========================================
- */
+// =====================================
+// 🔗 AUTO SEO INTERNAL LINKER SYSTEM
+// Builds authority + fixes orphan pages
+// =====================================
 
-import fs from "fs";
+(function () {
+  const CONFIG = {
+    baseUrl: "https://brightlane.github.io/shopppingonline/",
+    categories: [
+      "vacuum-cleaners",
+      "coffee-makers",
+      "stanley-quencher-tumblers",
+      "acne-patches",
+      "ring-lights-for-phone"
+    ]
+  };
 
-/* =========================
-   SITE STRUCTURE MAP
-========================= */
+  // -----------------------------
+  // SAFE LINK GENERATOR
+  // -----------------------------
+  function buildLink(path) {
+    return `${CONFIG.baseUrl}${path}`;
+  }
 
-const SITE_GRAPH = {
-  "vacuum": [
-    "best-vacuum-cleaners-en.html",
-    "review-vacuum-cleaners-en.html",
-    "compare-vacuum-cleaners-en.html",
-    "guide-vacuum-cleaners-en.html",
-    "ranking-vacuum-cleaners-en.html"
-  ],
-  "coffee": [
-    "best-coffee-makers-en.html",
-    "review-coffee-makers-en.html",
-    "compare-coffee-makers-en.html",
-    "guide-coffee-makers-en.html",
-    "ranking-coffee-makers-en.html"
-  ],
-  "acne": [
-    "best-acne-patches-en.html",
-    "review-acne-patches-en.html",
-    "compare-acne-patches-en.html",
-    "guide-acne-patches-en.html",
-    "ranking-acne-patches-en.html"
-  ],
-  "stanley": [
-    "best-stanley-quencher-tumblers-en.html",
-    "review-stanley-quencher-tumblers-en.html",
-    "compare-stanley-quencher-tumblers-en.html",
-    "guide-stanley-quencher-tumblers-en.html",
-    "ranking-stanley-quencher-tumblers-en.html"
-  ],
-  "ring-light": [
-    "best-ring-lights-for-phone-en.html",
-    "review-ring-lights-for-phone-en.html",
-    "compare-ring-lights-for-phone-en.html",
-    "guide-ring-lights-for-phone-en.html",
-    "ranking-ring-lights-for-phone-en.html"
-  ]
-};
+  // -----------------------------
+  // AUTO DETECT PAGE CATEGORY
+  // -----------------------------
+  function detectCategory() {
+    const path = window.location.pathname;
 
-/* =========================
-   HUB BOOST (AUTHORITY PAGES)
-========================= */
+    for (const cat of CONFIG.categories) {
+      if (path.includes(cat)) return cat;
+    }
+    return null;
+  }
 
-function buildHubLinks(categoryKey) {
-  const pages = SITE_GRAPH[categoryKey];
+  // -----------------------------
+  // CREATE INTERNAL LINK BLOCK
+  // -----------------------------
+  function createLinkBlock(category) {
+    const links = CONFIG.categories
+      .filter(c => c !== category)
+      .map(c => {
+        return `
+          <a href="${buildLink(c + ".html")}"
+             style="
+               display:inline-block;
+               margin:6px;
+               padding:8px 12px;
+               background:#f3f4f6;
+               border-radius:6px;
+               text-decoration:none;
+               color:#111;
+               font-size:14px;
+             ">
+             ${c.replace(/-/g, " ")}
+          </a>
+        `;
+      })
+      .join("");
 
-  if (!pages) return "";
+    return `
+      <section style="max-width:1000px;margin:50px auto;text-align:center;">
+        <h2 style="margin-bottom:15px;">Explore More Categories</h2>
+        <div>${links}</div>
+      </section>
+    `;
+  }
 
-  return `
-    <div class="seo-hub">
-      <h3>🔥 Explore Full ${categoryKey.toUpperCase()} Hub</h3>
-      <div class="hub-links">
-        ${pages.map(p => `<a href="/${p}">${p.replace(".html","")}</a>`).join("")}
-      </div>
-    </div>
-  `;
-}
+  // -----------------------------
+  // INSERT INTO PAGE
+  // -----------------------------
+  function injectLinks() {
+    const category = detectCategory();
+    if (!category) return;
 
-/* =========================
-   CROSS CATEGORY LINKING
-========================= */
+    const block = createLinkBlock(category);
 
-function crossLinkBlock(currentCategory) {
-  const all = Object.keys(SITE_GRAPH);
+    const container = document.querySelector("body");
 
-  return `
-    <div class="cross-links">
-      <h3>Explore Other Categories</h3>
-      ${all
-        .filter(c => c !== currentCategory)
-        .map(c => `<a href="/${SITE_GRAPH[c][0]}">${c}</a>`)
-        .join(" | ")}
-    </div>
-  `;
-}
+    if (container) {
+      container.insertAdjacentHTML("beforeend", block);
+    }
+  }
 
-/* =========================
-   PAGE ENHANCER (INJECT SEO LINKS)
-========================= */
-
-export function injectAutoLinks(html, categoryKey) {
-  const hub = buildHubLinks(categoryKey);
-  const cross = crossLinkBlock(categoryKey);
-
-  return html.replace(
-    "</body>",
-    `
-      ${hub}
-      ${cross}
-      </body>
-    `
-  );
-}
-
-/* =========================
-   FILE PROCESSOR (BULK SEO FIX)
-========================= */
-
-export function processFile(filePath, categoryKey) {
-  const html = fs.readFileSync(filePath, "utf-8");
-
-  const updated = injectAutoLinks(html, categoryKey);
-
-  fs.writeFileSync(filePath, updated);
-
-  console.log("✅ SEO LINKS FIXED:", filePath);
-}
-
-/* =========================
-   BULK RUNNER (ALL CATEGORIES)
-========================= */
-
-export function runAutoLinker() {
-  Object.keys(SITE_GRAPH).forEach(category => {
-    SITE_GRAPH[category].forEach(file => {
-      try {
-        processFile(`./${file}`, category);
-      } catch (e) {
-        console.log("❌ Error:", file, e.message);
-      }
-    });
-  });
-
-  console.log("🚀 AUTO LINKING COMPLETE");
-}
+  // -----------------------------
+  // AUTO EXECUTE
+  // -----------------------------
+  document.addEventListener("DOMContentLoaded", injectLinks);
+})();
