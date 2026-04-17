@@ -37,6 +37,11 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
   </style>
 </head>
 
@@ -45,6 +50,7 @@
 <div class="box">
   <div class="spinner"></div>
   <p>Redirecting to product...</p>
+  <p id="error" class="error"></p>
 </div>
 
 <script>
@@ -53,46 +59,60 @@
   const asin = params.get("asin");
   const url = params.get("url");
 
-  /**
-   * 🧠 VALIDATION (CRITICAL SAFETY LAYER)
-   */
-  function isValidASIN(a) {
-    return typeof a === "string" && a.length >= 8;
+  const FALLBACK = "https://www.amazon.com";
+
+/**
+ * 🧠 STRICT VALIDATION
+ */
+function isValidASIN(a) {
+  return typeof a === "string" && /^[A-Z0-9]{10}$/.test(a);
+}
+
+function isValidURL(u) {
+  return typeof u === "string" && u.startsWith("https://www.amazon.com/");
+}
+
+/**
+ * 🔥 TRACK CLICK (SAFE)
+ */
+function trackClick() {
+  if (!isValidASIN(asin)) return;
+
+  fetch("https://YOUR-BACKEND-URL/click", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ asin })
+  }).catch(() => {});
+}
+
+/**
+ * 🚀 SAFE REDIRECT WITH FALLBACK
+ */
+function redirect() {
+
+  trackClick();
+
+  if (!isValidASIN(asin)) {
+    document.getElementById("error").innerText = "Invalid product.";
+    setTimeout(() => {
+      window.location.href = FALLBACK;
+    }, 1500);
+    return;
   }
 
-  function isValidURL(u) {
-    return typeof u === "string" && u.startsWith("https://");
+  if (!isValidURL(url)) {
+    document.getElementById("error").innerText = "Broken link. Redirecting...";
+    setTimeout(() => {
+      window.location.href = FALLBACK;
+    }, 1500);
+    return;
   }
 
-  /**
-   * 🔥 SEND CLICK (NON-BLOCKING)
-   */
-  function trackClick() {
-    if (!isValidASIN(asin)) return;
+  // redirect to Amazon
+  window.location.href = decodeURIComponent(url);
+}
 
-    fetch("https://YOUR-BACKEND-URL/click", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ asin })
-    }).catch(() => {});
-  }
-
-  /**
-   * 🚀 SAFE REDIRECT
-   */
-  function redirect() {
-
-    trackClick();
-
-    if (isValidURL(url)) {
-      window.location.href = decodeURIComponent(url);
-    } else {
-      document.body.innerHTML = "<h2>Invalid redirect link</h2>";
-    }
-  }
-
-  // small delay for tracking reliability
-  setTimeout(redirect, 600);
+setTimeout(redirect, 500);
 </script>
 
 </body>
