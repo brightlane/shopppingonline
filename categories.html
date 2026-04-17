@@ -4,151 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Amazon Deals Categories | Top Trending Product Hub</title>
-
-<meta name="description" content="Browse top Amazon product categories including electronics, survival gear, solar power, home gadgets, and more trending deals.">
+<title>Category</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6f8;
+body{margin:0;font-family:Arial;background:#f4f6f8}
+.header{background:#111;color:#fff;text-align:center;padding:40px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  padding:20px;
+  max-width:1100px;
+  margin:auto;
 }
-
-.header {
-  background: linear-gradient(135deg, #111, #333);
-  color: white;
-  text-align: center;
-  padding: 60px 20px;
+.card{
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  text-align:center;
+  padding:15px;
 }
-
-.header h1 {
-  margin: 0;
-  font-size: 34px;
-}
-
-.header p {
-  opacity: 0.8;
-  margin-top: 10px;
-}
-
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 30px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.card h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.card p {
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 15px;
-}
-
-.card a {
-  display: inline-block;
-  background: #ff9900;
-  color: white;
-  padding: 10px 14px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 13px;
-}
-
-.footer {
-  text-align: center;
-  padding: 25px;
-  font-size: 12px;
-  color: #777;
-  background: white;
-  margin-top: 40px;
+.card img{width:100%;height:180px;object-fit:cover}
+.btn{
+  display:inline-block;
+  margin-top:10px;
+  background:#ff9900;
+  color:#fff;
+  padding:10px 12px;
+  text-decoration:none;
+  border-radius:8px;
 }
 </style>
+
+<script src="config.js"></script>
+<script src="products.js"></script>
+
 </head>
 
 <body>
 
 <div class="header">
-  <h1>🛒 Amazon Deals Categories</h1>
-  <p>Browse trending products across high-converting niches</p>
+  <h1 id="category-title">Loading...</h1>
 </div>
 
-<div class="container">
+<div class="grid" id="grid"></div>
 
-  <div class="grid">
+<script>
+const params = new URLSearchParams(window.location.search);
+const category = params.get("cat");
 
-    <div class="card">
-      <h2>⚡ Electronics</h2>
-      <p>Earbuds, chargers, Fire TV, and smart devices</p>
-      <a href="index.html">Browse</a>
-    </div>
+// set title
+document.getElementById("category-title").innerText =
+  category ? category.toUpperCase() : "Products";
 
-    <div class="card">
-      <h2>🧭 Survival Gear</h2>
-      <p>Kits, water filters, lanterns, emergency tools</p>
-      <a href="survival-kit.html">Browse</a>
-    </div>
+// filter products
+const filtered = PRODUCTS.filter(p => p.category === category);
 
-    <div class="card">
-      <h2>☀️ Solar Power</h2>
-      <p>Solar panels, generators, off-grid systems</p>
-      <a href="solar-generator-kit.html">Browse</a>
-    </div>
+// render grid
+const grid = document.getElementById("grid");
 
-    <div class="card">
-      <h2>🔋 Power Banks</h2>
-      <p>Fast charging portable battery packs</p>
-      <a href="portable-power-banks.html">Browse</a>
-    </div>
+filtered.forEach(product => {
+  const card = document.createElement("div");
+  card.className = "card";
 
-    <div class="card">
-      <h2>🔥 Viral Home Gadgets</h2>
-      <p>Trending kitchen & cleaning gadgets</p>
-      <a href="home-viral.html">Browse</a>
-    </div>
+  card.innerHTML = `
+    <img src="${product.image}" />
+    <h3>${product.title}</h3>
+    <a class="btn" href="product-template.html?id=${product.id}">
+      View Product
+    </a>
+  `;
 
-    <div class="card">
-      <h2>📚 Kindle Books</h2>
-      <p>Business, self-improvement, and money books</p>
-      <a href="kindle-books.html">Browse</a>
-    </div>
-
-    <div class="card">
-      <h2>🚲 Electric Bikes</h2>
-      <p>Eco-friendly commuting and travel</p>
-      <a href="electric-bike.html">Browse</a>
-    </div>
-
-  </div>
-
-</div>
-
-<div class="footer">
-  As an Amazon Associate I earn from qualifying purchases.
-</div>
+  grid.appendChild(card);
+});
+</script>
 
 </body>
 </html>
