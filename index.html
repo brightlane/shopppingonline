@@ -1,165 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔥 Top Amazon Finds</title>
+
+<!-- SEO -->
+<title>Top Amazon Finds 2026 | Trending Deals & Viral Products</title>
+
+<meta name="description" content="Discover top trending Amazon products in Tech, Home, and Viral categories. Updated affiliate deals and best-selling items.">
+<meta name="keywords" content="Amazon finds, best Amazon products, trending Amazon deals, viral products, tech gadgets, home gadgets">
+<meta name="author" content="Affiliate Site">
+
+<meta property="og:title" content="Top Amazon Finds 2026">
+<meta property="og:description" content="Best trending Amazon products in one place.">
+<meta property="og:type" content="website">
+
+<link rel="canonical" href="https://your-github-username.github.io/">
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-  }
 
-  .header {
-    background: linear-gradient(135deg, #111, #333);
-    color: white;
-    text-align: center;
-    padding: 50px 20px;
-  }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+}
 
-  .header h1 {
-    margin: 0;
-    font-size: 32px;
-  }
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #111, #333);
+  color: white;
+  text-align: center;
+  padding: 50px 20px;
+}
 
-  .header p {
-    color: #ccc;
-    margin-top: 10px;
-  }
+.header h1 {
+  margin: 0;
+  font-size: 30px;
+}
 
-  .disclosure-top {
-    text-align: center;
-    font-size: 12px;
-    color: #666;
-    padding: 10px;
-    background: #fff;
-  }
+/* DISCLOSURE */
+.disclosure {
+  text-align: center;
+  font-size: 12px;
+  padding: 10px;
+  background: white;
+  color: #666;
+}
 
-  /* CATEGORY BUTTONS */
-  .categories {
-    text-align: center;
-    padding: 20px;
-  }
+/* CATEGORIES */
+.categories {
+  text-align: center;
+  padding: 15px;
+}
 
-  .categories button {
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 8px 14px;
-    margin: 5px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
-  }
+.categories button {
+  margin: 5px;
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-  .categories button:hover {
-    background: #ff9900;
-    color: white;
-    border-color: #ff9900;
-  }
+.categories button:hover {
+  background: #ff9900;
+  color: white;
+}
 
-  /* GRID */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-    padding: 30px;
-    max-width: 1100px;
-    margin: auto;
-  }
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  padding: 25px;
+  max-width: 1100px;
+  margin: auto;
+}
 
-  .card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s;
-  }
+.card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
 
-  .card:hover {
-    transform: translateY(-5px);
-  }
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
 
-  .card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-  }
+.content {
+  padding: 12px;
+}
 
-  .content {
-    padding: 15px;
-    text-align: left;
-  }
+.badge {
+  background: #ff3b30;
+  color: white;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  display: inline-block;
+}
 
-  .badge {
-    display: inline-block;
-    background: #ff3b30;
-    color: white;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-bottom: 8px;
-  }
+.title {
+  font-size: 15px;
+  margin: 6px 0;
+}
 
-  .title {
-    font-size: 16px;
-    margin: 5px 0;
-  }
+.desc {
+  font-size: 13px;
+  color: #666;
+}
 
-  .desc {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 10px;
-  }
+.btn {
+  display: inline-block;
+  margin-top: 10px;
+  background: #ff9900;
+  color: white;
+  padding: 8px 12px;
+  text-decoration: none;
+  border-radius: 8px;
+}
 
-  .btn {
-    display: inline-block;
-    background: #ff9900;
-    color: white;
-    text-decoration: none;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 13px;
-  }
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 25px;
+  font-size: 12px;
+  color: #777;
+  background: white;
+  margin-top: 40px;
+}
 
-  .btn:hover {
-    background: #e68a00;
-  }
-
-  /* FOOTER */
-  .site-footer {
-    text-align: center;
-    padding: 30px 20px;
-    font-size: 12px;
-    color: #777;
-    background: #fff;
-    margin-top: 40px;
-    border-top: 1px solid #eee;
-  }
-
-  .site-footer a {
-    color: #ff9900;
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  .site-footer a:hover {
-    text-decoration: underline;
-  }
-
-  .disclaimer {
-    margin-top: 10px;
-    color: #888;
-  }
-
-  .affiliate {
-    margin-top: 5px;
-    font-weight: bold;
-    color: #444;
-  }
+.footer a {
+  color: #ff9900;
+  text-decoration: none;
+  font-weight: bold;
+}
 
 </style>
 </head>
@@ -168,80 +148,70 @@
 
 <!-- HEADER -->
 <div class="header">
-  <h1>🔥 Hot Amazon Finds</h1>
-  <p>Trending products people are buying right now</p>
+  <h1>Top Amazon Finds 2026</h1>
+  <p>Trending Tech, Home & Viral Products</p>
 </div>
 
 <!-- DISCLOSURE -->
-<div class="disclosure-top">
-  <strong>Disclosure:</strong> As an Amazon Associate I earn from qualifying purchases.
+<div class="disclosure">
+  As an Amazon Associate I earn from qualifying purchases.
 </div>
 
-<!-- CATEGORY FILTERS -->
+<!-- CATEGORIES -->
 <div class="categories">
   <button onclick="filterProducts('All')">All</button>
   <button onclick="filterProducts('Tech')">Tech</button>
   <button onclick="filterProducts('Home')">Home</button>
 </div>
 
-<!-- PRODUCT GRID -->
+<!-- PRODUCTS -->
 <div class="grid" id="productGrid"></div>
 
 <!-- FOOTER -->
-<div class="site-footer">
+<div class="footer">
 
   <div>
     <a href="privacy.html">Privacy Policy</a> |
-    <a href="terms.html">Terms & Conditions</a> |
+    <a href="terms.html">Terms</a> |
     <a href="contact.html">Contact</a>
   </div>
 
-  <p class="disclaimer">
-    This website is independently operated and is not affiliated with Amazon.com, Inc. or any of its subsidiaries.
-  </p>
-
-  <p class="affiliate">
-    As an Amazon Associate I earn from qualifying purchases.
+  <p>
+    This site is not affiliated with Amazon.com.
   </p>
 
 </div>
 
-<!-- SCRIPTS -->
+<!-- LOAD PRODUCTS -->
 <script src="products.js"></script>
 
 <script>
-  const grid = document.getElementById("productGrid");
+const grid = document.getElementById("productGrid");
 
-  function renderProducts(list) {
-    grid.innerHTML = "";
+function renderProducts(list) {
+  grid.innerHTML = "";
 
-    list.forEach(p => {
-      grid.innerHTML += `
-        <div class="card">
-          <img src="${p.image}" alt="${p.title}">
-          <div class="content">
-            <div class="badge">${p.badge}</div>
-            <div class="title">${p.title}</div>
-            <div class="desc">${p.desc}</div>
-            <a class="btn" href="${p.link}" target="_blank">
-              View on Amazon
-            </a>
-          </div>
+  list.forEach(p => {
+    grid.innerHTML += `
+      <div class="card">
+        <img src="${p.image}" alt="${p.title}">
+        <div class="content">
+          <div class="badge">${p.badge}</div>
+          <div class="title">${p.title}</div>
+          <div class="desc">${p.desc}</div>
+          <a class="btn" href="${p.link}" target="_blank">View on Amazon</a>
         </div>
-      `;
-    });
-  }
+      </div>
+    `;
+  });
+}
 
-  function filterProducts(category) {
-    if (category === "All") {
-      renderProducts(products);
-    } else {
-      renderProducts(products.filter(p => p.category === category));
-    }
-  }
+function filterProducts(cat) {
+  if (cat === "All") renderProducts(products);
+  else renderProducts(products.filter(p => p.category === cat));
+}
 
-  // initial load
-  renderProducts(products);
+renderProducts(products);
 </script>
 
 </body>
