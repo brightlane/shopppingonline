@@ -1,59 +1,42 @@
-const fs = require("fs");
-const path = require("path");
+const CLICK_SYSTEM = {
+  storageKey: "brightlane_click_data",
 
-const FILE = path.join(__dirname, "data/clicks.json");
+  // Load stored click data
+  getData: function () {
+    const data = localStorage.getItem(this.storageKey);
+    return data ? JSON.parse(data) : {};
+  },
 
-/**
- * 📦 LOAD CLICK DATA
- */
-function load() {
-  if (!fs.existsSync(FILE)) return {};
-  return JSON.parse(fs.readFileSync(FILE, "utf-8"));
-}
+  // Save click data
+  saveData: function (data) {
+    localStorage.setItem(this.storageKey, JSON.stringify(data));
+  },
 
-/**
- * 💾 SAVE CLICK DATA
- */
-function save(data) {
-  fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
-}
+  // Track a product click
+  trackClick: function (asin) {
+    const data = this.getData();
 
-/**
- * 🔥 TRACK CLICK (ASIN-BASED)
- */
-function trackClick(asin) {
+    if (!data[asin]) {
+      data[asin] = 0;
+    }
 
-  if (!asin) return;
+    data[asin] += 1;
 
-  const data = load();
+    this.saveData(data);
+  },
 
-  data[asin] = (data[asin] || 0) + 1;
+  // Get trending products sorted by clicks
+  getTopProducts: function (products, limit = 10) {
+    const data = this.getData();
 
-  save(data);
-
-  console.log("📊 Click tracked:", asin, data[asin]);
-}
-
-/**
- * 🧠 GET SCORE (FOR RANKING)
- */
-function getScore(asin) {
-  const data = load();
-  return data[asin] || 0;
-}
-
-/**
- * 🚀 SORT PRODUCTS BY PERFORMANCE
- */
-function rankProducts(products) {
-
-  return products.sort((a, b) => {
-    return getScore(b.asin) - getScore(a.asin);
-  });
-}
-
-module.exports = {
-  trackClick,
-  getScore,
-  rankProducts
+    return products
+      .map(p => {
+        return {
+          ...p,
+          clicks: data[p.asin] || 0
+        };
+      })
+      .sort((a, b) => b.clicks - a.clicks)
+      .slice(0, limit);
+  }
 };
