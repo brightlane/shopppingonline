@@ -1,151 +1,161 @@
-const fs = require("fs");
-const path = require("path");
-
-// ===================== CONFIG =====================
-const CONFIG = {
-  affiliateTag: "brightlane201-20",
-  siteName: "Best Products 2026",
-  baseUrl: "https://brightlane.github.io/shopppingonline/",
-  categories: [
-    "vacuum-cleaners",
-    "coffee-makers",
-    "stanley-quencher-tumblers",
-    "acne-patches",
-    "ring-lights-for-phone"
-  ]
-};
-
-// ===================== HELPERS =====================
-function amazonLink(asin) {
-  if (!asin || asin.length < 8) return null;
-  return `https://www.amazon.com/dp/${asin}?tag=${CONFIG.affiliateTag}`;
-}
-
-function safeFileName(name) {
-  return name.toLowerCase().replace(/\s+/g, "-");
-}
-
-// Prevent duplicate ASINs
-function dedupeProducts(products) {
-  const seen = new Set();
-  return products.filter(p => {
-    if (!p.asin || seen.has(p.asin)) return false;
-    seen.add(p.asin);
-    return true;
-  });
-}
-
-// ===================== SEO BLOCKS =====================
-function generateSchema(product) {
-  return `
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "${product.title}",
-  "description": "${product.description || ""}",
-  "sku": "${product.asin}",
-  "brand": {
-    "@type": "Brand",
-    "name": "${product.brand || "Amazon"}"
-  },
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock",
-    "url": "${amazonLink(product.asin)}"
-  }
-}
-</script>`;
-}
-
-function generateFAQ(category) {
-  return `
-<section style="max-width:900px;margin:40px auto;">
-  <h2>FAQ - ${category}</h2>
-  <details><summary>Are these the best ${category}?</summary>
-  Yes, these are AI-ranked and updated for 2026.</details>
-
-  <details><summary>Do Amazon links include affiliate tracking?</summary>
-  Yes, all links include tracking ID ${CONFIG.affiliateTag}.</details>
-
-  <details><summary>Do prices change?</summary>
-  Yes, Amazon prices update frequently.</details>
-</section>`;
-}
-
-// ===================== PAGE GENERATOR =====================
-function generateProductPage(product, category) {
-  const link = amazonLink(product.asin);
-
-  return `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>${product.title}</title>
-<meta name="description" content="${product.description}">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<!-- GOOGLE VERIFY (LOCKED - DO NOT REMOVE) -->
+<title>Best Products 2026 | Top Deals & Reviews</title>
+
+<meta name="description" content="Discover the best products in 2026. Vacuum cleaners, coffee makers, Stanley tumblers, acne patches, and ring lights. Updated rankings and reviews." />
+
 <meta name="google-site-verification" content="eWVDN3vbam9nnaZQu7wAQKyfmJJdM7zjI80l4DGeUrQ" />
-
-<!-- BING VERIFY (LOCKED - DO NOT REMOVE) -->
 <meta name="msvalidate.01" content="574044E39556B8B8DAAF1D1F233C87B0" />
 
-<link rel="canonical" href="${CONFIG.baseUrl}${category}/${product.asin}.html">
+<link rel="canonical" href="https://brightlane.github.io/shopppingonline/" />
 
 <style>
-body {font-family:system-ui;background:#f6f7fb;margin:0;padding:20px;}
-.container {max-width:900px;margin:auto;background:white;padding:20px;border-radius:12px;}
-a.button {display:inline-block;background:#111;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;}
-a.button:hover {opacity:0.8;}
+body {
+  margin:0;
+  font-family:system-ui, Arial;
+  background:#f6f7fb;
+  color:#111;
+}
+
+header {
+  background:linear-gradient(135deg,#111,#333);
+  color:white;
+  padding:60px 20px;
+  text-align:center;
+}
+
+header h1 {
+  margin:0;
+  font-size:42px;
+}
+
+header p {
+  margin-top:10px;
+  opacity:0.8;
+}
+
+.container {
+  max-width:1100px;
+  margin:auto;
+  padding:40px 20px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+}
+
+.card {
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  transition:0.2s;
+}
+
+.card:hover {
+  transform:translateY(-5px);
+}
+
+.card h2 {
+  margin-top:0;
+}
+
+.card a {
+  display:inline-block;
+  margin-top:10px;
+  color:white;
+  background:#111;
+  padding:10px 14px;
+  border-radius:8px;
+  text-decoration:none;
+}
+
+.section-title {
+  margin:50px 0 20px;
+  font-size:24px;
+}
+
+.footer {
+  text-align:center;
+  padding:40px;
+  font-size:14px;
+  color:#666;
+}
 </style>
 
 </head>
+
 <body>
+
+<header>
+  <h1>Best Products 2026</h1>
+  <p>Top ranked Amazon deals, reviews & comparisons</p>
+</header>
 
 <div class="container">
 
-<h1>${product.title}</h1>
+  <h2 class="section-title">🔥 Top Categories</h2>
 
-<p>${product.description}</p>
+  <div class="grid">
 
-<a class="button" href="${link}" target="_blank" rel="nofollow sponsored">
-👉 View on Amazon
-</a>
+    <div class="card">
+      <h2>Vacuum Cleaners</h2>
+      <p>Best home cleaning robots & vacuums</p>
+      <a href="best-vacuum-cleaners-en.html">Explore</a>
+    </div>
 
-${generateSchema(product)}
+    <div class="card">
+      <h2>Coffee Makers</h2>
+      <p>Top-rated coffee machines & brewers</p>
+      <a href="best-coffee-makers-en.html">Explore</a>
+    </div>
+
+    <div class="card">
+      <h2>Stanley Tumblers</h2>
+      <p>Trending hydration products</p>
+      <a href="best-stanley-quencher-tumblers-en.html">Explore</a>
+    </div>
+
+    <div class="card">
+      <h2>Acne Patches</h2>
+      <p>Skincare best sellers</p>
+      <a href="best-acne-patches-en.html">Explore</a>
+    </div>
+
+    <div class="card">
+      <h2>Ring Lights</h2>
+      <p>Creator & influencer gear</p>
+      <a href="best-ring-lights-for-phone-en.html">Explore</a>
+    </div>
+
+  </div>
+
+  <h2 class="section-title">⚡ Why This Site?</h2>
+
+  <p>
+    We analyze thousands of Amazon products and generate AI-ranked comparison pages,
+    buying guides, and deal breakdowns updated for 2026.
+  </p>
+
+  <p>
+    All links include affiliate tracking and direct Amazon product routing.
+  </p>
 
 </div>
 
-${generateFAQ(category)}
+<div class="footer">
+  © 2026 Best Products Hub — Affiliate disclosure applies
+</div>
+
+<!-- INTERNAL SEO LINK GRAPH -->
+<script src="auto-linker.js"></script>
 
 </body>
 </html>
-`;
-}
-
-// ===================== MAIN =====================
-function build() {
-  const data = JSON.parse(fs.readFileSync("products-data.json", "utf8"));
-
-  const cleanProducts = dedupeProducts(data.products || []);
-
-  for (const category of CONFIG.categories) {
-    const categoryDir = path.join(__dirname, "dist", category);
-    fs.mkdirSync(categoryDir, { recursive: true });
-
-    const products = cleanProducts.filter(p => p.category === category);
-
-    for (const product of products) {
-      const filePath = path.join(categoryDir, `${product.asin}.html`);
-      fs.writeFileSync(filePath, generateProductPage(product, category));
-    }
-  }
-
-  console.log("✅ Build complete - no duplicate ASINs, SEO locked, links fixed");
-}
-
-build();
