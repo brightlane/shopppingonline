@@ -1,14 +1,66 @@
-<script>
-const params = new URLSearchParams(window.location.search);
-let url = params.get("url");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-try {
-  url = decodeURIComponent(url);
-} catch (e) {}
+<title>Redirecting...</title>
+<meta name="robots" content="noindex, nofollow">
 
-if (url && url.startsWith("https://www.amazon.com/")) {
-  window.location.replace(url);
-} else {
-  window.location.replace("https://www.amazon.com");
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  color: #111;
 }
+.box {
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <p>🔄 Redirecting to product...</p>
+</div>
+
+<script>
+(function () {
+
+  const TAG = "brightlane201-20";
+
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  let url = getParam("url");
+
+  // If full URL provided → use it
+  if (url && url.includes("amazon.")) {
+    window.location.replace(url);
+    return;
+  }
+
+  // If ASIN provided → build clean link
+  let asin = getParam("asin");
+
+  if (asin && /^[A-Z0-9]{10}$/.test(asin)) {
+    const clean = `https://www.amazon.com/dp/${asin}/?tag=${TAG}`;
+    window.location.replace(clean);
+    return;
+  }
+
+  // fallback (safe homepage instead of broken redirect)
+  window.location.replace("https://www.amazon.com/");
+
+})();
 </script>
+
+</body>
+</html>
