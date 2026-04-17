@@ -1,12 +1,11 @@
 const fs = require("fs");
-const path = require("path");
 
 // ——————————————————— 1. SETUP & LOGGING ———————————————————
-console.log("🚀 STANLEY + VACUUM + COFFEE NUCLEAR GENERATOR");
+console.log("🚀 NUCLEAR GENERATOR: 3K-PAGE AFFILIATE STORE");
 console.log("📂 Current directory:", __dirname);
 
 // ——————————————————— 2. CONFIG ———————————————————
-const AFFILIATE_TAG = "brightlane201-20";
+const AFFILIATE_TAG = "brightlane201-20"; // ← YOUR AMAZON ID
 
 const LANGUAGES = ["en", "es", "de"];
 const PAGE_TYPES = [
@@ -26,7 +25,7 @@ const PAGE_TYPES = [
   "choices",
 ];
 
-// CATEGORIES — 1 spot for Stanley + 2 spot for vacuums + 2 for coffee
+// ——————————————————— 3. CATEGORIES (add acne_patch here) ———————————————————
 const CATEGORIES = {
   vacuum: {
     name: "Vacuum Cleaners",
@@ -34,21 +33,26 @@ const CATEGORIES = {
   },
   coffee: {
     name: "Coffee Makers",
-    keywords: ["single serve", "espresso machine", "drip coffee", "pod coffee"],
+    keywords: ["espresso", "drip coffee", "single serve", "pod coffee"],
   },
   stanley: {
     name: "Stanley Quencher Tumblers",
+    keywords: ["stanley cup", "tumbler", "viral stanley", "insulated tumbler"],
+  },
+  acne_patch: {
+    name: "Acne Patches",
     keywords: [
-      "stanley cup",
-      "stanley tumbler",
-      "viral stanley",
-      "insulated tumbler",
-      "quencher cup",
+      "acne patch",
+      "pimple patch",
+      "spot patch",
+      "hydrocolloid patch",
+      "mightypatch style",
+      "acne solution patches",
     ],
   },
 };
 
-// ——————————————————— 3. HELPERS ———————————————————
+// ——————————————————— 4. HELPERS ———————————————————
 function escapeHTML(str = "") {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -65,7 +69,7 @@ function slugify(str) {
     .replace(/^-+|-+$/g, "");
 }
 
-// ——————————————————— 4. LOADING PRODUCTS ———————————————————
+// ——————————————————— 5. LOADING PRODUCTS ———————————————————
 function loadProducts(cat) {
   const filename = `products-${cat}.json`;
   try {
@@ -88,8 +92,9 @@ const DUMMY_PRODUCTS = {
       reviews: "12500",
       description: "Premium cordless vacuum, 230AW suction, laser dust view.",
       feature1: "60 min battery",
-      feature2: "Auto‑suction adjust",
+      feature2: "Auto-suction adjust",
       feature3: "Smart LCD display",
+      best_for: "Carpet, hardwood, pet hair",
     },
     {
       title: "Shark PowerDetect Cordless",
@@ -99,6 +104,7 @@ const DUMMY_PRODUCTS = {
       rating: "4.6",
       reviews: "8500",
       description: "Top cordless stick vacuum, 2026 review favorite.",
+      best_for: "Everyday cleaning, apartments",
     },
     {
       title: "iRobot Roomba j9+",
@@ -107,9 +113,11 @@ const DUMMY_PRODUCTS = {
       price: "899",
       rating: "4.7",
       reviews: "4500",
-      description: "Robot vacuum with self‑emptying base.",
+      description: "Robot vacuum with self-emptying base.",
+      best_for: "Hands-free cleaning",
     },
   ],
+
   coffee: [
     {
       title: "Technivorm Moccamaster KBGV",
@@ -119,6 +127,7 @@ const DUMMY_PRODUCTS = {
       rating: "4.8",
       reviews: "12000",
       description: "Top drip coffee maker 2026, great for large batches.",
+      best_for: "Home office, big family",
     },
     {
       title: "Nespresso Vertuo Next",
@@ -127,7 +136,8 @@ const DUMMY_PRODUCTS = {
       price: "169",
       rating: "4.6",
       reviews: "21000",
-      description: "Single‑serve espresso and coffee maker.",
+      description: "Single-serve espresso and coffee maker.",
+      best_for: "Coffee lover, small kitchen",
     },
     {
       title: "Breville Barista Express",
@@ -136,9 +146,11 @@ const DUMMY_PRODUCTS = {
       price: "699",
       rating: "4.7",
       reviews: "4200",
-      description: "Semi‑automatic espresso machine for home baristas.",
+      description: "Semi-automatic espresso machine for home baristas.",
+      best_for: "Latte art, cappuccino",
     },
   ],
+
   stanley: [
     {
       title: "Stanley Quencher H2.0 FlowState 40oz",
@@ -148,10 +160,10 @@ const DUMMY_PRODUCTS = {
       rating: "4.8",
       reviews: "125000",
       description: "Viral 40oz Stanley tumbler, 48+ hours ice, leakproof.",
-      feature1: "Keeps drinks ice‑cold 48+ hours",
+      feature1: "Keeps drinks ice-cold 48+ hours",
       feature2: "Leakproof lid, no sweat on desk",
       feature3: "Fits in car cup holders",
-      best_for: "All‑day hydration, gym, office, travel",
+      best_for: "All-day hydration, gym, office, travel",
     },
     {
       title: "Stanley Quencher 30oz",
@@ -161,7 +173,7 @@ const DUMMY_PRODUCTS = {
       rating: "4.9",
       reviews: "85000",
       description: "Perfect everyday size, massively popular colors.",
-      best_for: "Daily carry, school, work.",
+      best_for: "Daily carry, school, work",
     },
     {
       title: "Stanley AeroLight 20oz",
@@ -171,7 +183,7 @@ const DUMMY_PRODUCTS = {
       rating: "4.7",
       reviews: "12000",
       description: "Lighter, smaller option for shorter trips.",
-      best_for: "Short commute, kids, hikes.",
+      best_for: "Short commute, kids, light hikes",
     },
     {
       title: "Stanley IceFLow 24oz",
@@ -180,8 +192,8 @@ const DUMMY_PRODUCTS = {
       price: "29",
       rating: "4.6",
       reviews: "45000",
-      description: "Sport‑style lid with flip straw.",
-      best_for: "Gym, sports, outdoor activities.",
+      description: "Sport-style lid with flip straw.",
+      best_for: "Gym, sports, outdoor activities",
     },
     {
       title: "Stanley Adventure Stackable",
@@ -191,12 +203,68 @@ const DUMMY_PRODUCTS = {
       rating: "4.7",
       reviews: "28000",
       description: "Stackable cups for camping and group trips.",
-      best_for: "Camping, family trips, picnics.",
+      best_for: "Camping, family trips, picnics",
+    },
+  ],
+
+  acne_patch: [
+    {
+      title: "Hero Cosmetics Mighty Patch Original",
+      asin: "B07QYQJZQJ",
+      image: "https://m.media-amazon.com/images/I/hero-mighty.jpg",
+      price: "12",
+      rating: "4.5",
+      reviews: "120000",
+      description: "Original hydrocolloid acne patch — overnight spot healing for face and body.",
+      feature1: "Overnight spot reduction",
+      feature2: "Waterproof & breathable",
+      feature3: "Safe for sensitive skin",
+      best_for: "Pimple overnight, travelers, on-the-go",
+    },
+    {
+      title: "Aztec Secret Clay Patch (Extra Strength)",
+      asin: "B0B2WQZ12H",
+      image: "https://m.media-amazon.com/images/I/aztec-clay.jpg",
+      price: "15",
+      rating: "4.6",
+      reviews: "85000",
+      description: "Natural clay-based spot patch for deep extraction.",
+      best_for: "Blackheads, clogged pores, nose patches",
+    },
+    {
+      title: "Kiehl’s White Clay Spot Healing",
+      asin: "B07C8K4XKH",
+      image: "https://m.media-amazon.com/images/I/kiehls.jpg",
+      price: "28",
+      rating: "4.7",
+      reviews: "42000",
+      description: "Premium acne patch with anti-blemish benefits.",
+      best_for: "Sensitive, acne-prone skin",
+    },
+    {
+      title: "Generic Hydrocolloid Acne Patches 100‑pcs",
+      asin: "B0D3H8YR5S",
+      image: "https://m.media-amazon.com/images/I/sticker-patch.jpg",
+      price: "8",
+      rating: "4.6",
+      reviews: "25000",
+      description: "Budget multi-size patch set.",
+      best_for: "Testing different sizes, travel size",
+    },
+    {
+      title: "Korean Pimple Patch + Charcoal Variant",
+      asin: "B0D4H9ZR6T",
+      image: "https://m.media-amazon.com/images/I/korean-patch.jpg",
+      price: "13",
+      rating: "4.7",
+      reviews: "38000",
+      description: "Imported K‑Beauty style patch with charcoal.",
+      best_for: "Blackhead and comedone control",
     },
   ],
 };
 
-// ——————————————————— 5. HTML CARD / BLOCK ———————————————————
+// ——————————————————— 6. PRODUCT CARD ———————————————————
 function productCard(p, i) {
   const price = p.price || "TBD";
   const rating = p.rating || "4.5";
@@ -271,7 +339,7 @@ function productCard(p, i) {
 `;
 }
 
-// ——————————————————— 6. COMPARISON TABLE ———————————————————
+// ——————————————————— 7. COMPARISON TABLE ———————————————————
 function comparisonTable(products) {
   const top3 = products.slice(0, 3);
   return `
@@ -303,7 +371,6 @@ function comparisonTable(products) {
     <tbody>
       ${top3
         .map((p) => {
-          const cat = path.basename(p.asin).slice(0, 1).toUpperCase();
           return `
         <tr style="border-bottom: 1px solid #e2e8f0;">
           <td style="padding: 12px; font-weight: 500; color: #1a202c;">
@@ -324,14 +391,25 @@ function comparisonTable(products) {
   `;
 }
 
-// ——————————————————— 7. PAGE BUILDER ———————————————————
+// ——————————————————— 8. PAGE BUILDER ———————————————————
 function buildPage(type, category, products, lang = "en") {
   const catName = category.name;
   const catSlug = slugify(catName);
-  const baseTitle =
-    type === "vs"
-      ? `${products[0]?.title || ""} vs ${products[1]?.title || ""}`
-      : `${type.charAt(0).toUpperCase() + type.slice(1)} ${catName} 2026`;
+
+  const titleMap = {
+    best: `Best ${catName} 2026`,
+    top: `Top ${catName} 2026`,
+    ultimate: `Ultimate ${catName} Buying Guide 2026`,
+    vs: `${products[0]?.title || "Product"} vs ${products[1]?.title || "Product"}`,
+    guide: `Ultimate ${catName.replace("Patches", "Sheet")} Guide`,
+    review: `In-Depth ${products[0]?.title || "Review"} Review`,
+    "2026": `Top ${catName} for 2026`,
+    "buying": `Best ${catName} To Buy 2026`,
+    compared: `${catName} Compared`,
+  };
+
+  const baseTitle = titleMap[type] || `Best ${catName} ${lang === "es" ? "2026" : "2026"}`;
+  const seoKeywordsPart = category.keywords.slice(0, 4).join(", ");
 
   return `<!DOCTYPE html>
 <html lang="${lang}">
@@ -340,116 +418,7 @@ function buildPage(type, category, products, lang = "en") {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>${baseTitle} | Best ${catName.toLowerCase()} 2026</title>
-  <meta name="description" content="Best ${catName.toLowerCase()} 2026 – ${products.length} tested models. ${category.keywords.join(
-    ", "
-  )} reviewed and compared.">
+  <meta name="description" content="Best ${catName.toLowerCase()} 2026 – ${products.length} tested models. ${seoKeywordsPart} reviewed and compared.">
 
   <link rel="alternate" hreflang="x-default" href="./best-${catSlug}-${lang}.html" />
   <link rel="canonical" href="./${type}-${catSlug}-${lang}.html" />
-
-  <!-- Schema: Product List -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Top ${catName} 2026",
-    "itemListElement": ${JSON.stringify(
-      products.slice(0, 10).map((p, i) => ({
-        "@type": "ListItem",
-        "position": i + 1,
-        "item": {
-          "@type": "Product",
-          "name": escapeHTML(p.title),
-          "sku": "${p.asin}",
-          "url": "https://amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}"
-        }
-      }))
-    )}
-  }
-  </script>
-</head>
-
-<body style="
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.6;
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
-  background: #f9fafb;
-">
-
-<!-- HEADER -->
-<header style="
-  text-align: center;
-  background: #ffffff;
-  padding: 40px 20px;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-  margin-bottom: 40px;
-">
-  <h1 style="
-    font-size: clamp(2.2rem, 5vw, 3.5rem);
-    margin: 0;
-    color: #1e293b;
-  ">${baseTitle}</h1>
-
-  <p style="
-    color: #64748b;
-    font-size: 1.15rem;
-    margin: 15px 0 0 0;
-  ">
-    Tested & Ranked by Experts | ${products.length} Models Compared
-  </p>
-
-  <div style="
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 16px;
-  ">
-    <span style="
-      background: #10b981;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-    ">🏆 Expert Tested</span>
-    <span style="
-      background: #3b82f6;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-    ">⭐ Above 4.5 Avg</span>
-    <span style="
-      background: #f59e0b;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-    ">💰 Prime Eligible</span>
-  </div>
-</header>
-
-<main style="
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-">
-
-  <!-- COMPARISON TABLE -->
-  ${comparisonTable(products)}
-
-  <!-- PRODUCT LIST -->
-  <div style="
-    display: grid;
-    gap: 30px;
-  ">
-    ${products
-      .map((p, i) => {
-       
