@@ -31,11 +31,19 @@ const CATEGORIES = {
 };
 
 function escapeHTML(str = "") {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function slugify(str) {
-  return str.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "");
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function loadProducts(cat) {
@@ -44,7 +52,8 @@ function loadProducts(cat) {
     const raw = fs.readFileSync(fn, "utf8");
     return JSON.parse(raw);
   } catch (err) {
-    console.log(`⚠️ ${fn} missing (dummy)`); return [];
+    console.log(`⚠️ ${fn} missing (dummy)`); 
+    return DUMMY[cat] || [];
   }
 }
 
@@ -82,7 +91,7 @@ function productCard(p, i) {
     </p>
     <a href="https://amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}"
        style="display:inline-block;padding:10px 20px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border-radius:8px;font-weight:600;text-align:center;text-decoration:none;"
-       target="_blank">Buy on Amazon</a>
+       target="_blank">🛒 Buy on Amazon</a>
   </div>`;
 }
 
@@ -107,11 +116,11 @@ function buildPage(type, cat, products, lang = "en") {
 </body></html>`;
 }
 
-// GENERATE
+// GENERATE PAGES
 let pageCount = 0;
 
 Object.entries(CATEGORIES).forEach(([slug, cat]) => {
-  const ps = loadProducts(slug).slice(0, 10) || DUMMY[slug] || [];
+  const ps = loadProducts(slug) || DUMMY[slug] || [];
   if (!ps.length) return console.log(`⚠️ no products for ${slug}`); 
   const base = slugify(cat.name);
 
@@ -127,7 +136,7 @@ Object.entries(CATEGORIES).forEach(([slug, cat]) => {
   });
 });
 
-// INDEX
+// INDEX PAGE
 fs.writeFileSync("index.html", `<!DOCTYPE html><html><head>
   <title>Best Products 2026</title>
 </head><body style="padding:40px;background:#f7fafc;font-family:system-ui;">
@@ -158,20 +167,6 @@ const urls = fns
     <priority>0.7</priority>
   </url>`).join("\n");
 
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${siteUrl}/</loc>
-    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>${urls}
-</urlset>`,
-
-fs.writeFileSync("sitemap.xml", sitemap, "utf8");
-console.log("✅ sitemap.xml generated");
-console.log(`\n💥 GENERATION COMPLETE!`);
-console.log(`📂 ${pageCount} pages created`);
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
