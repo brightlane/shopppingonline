@@ -1,65 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Redirecting...</title>
-</head>
-
-<body>
-
 <script>
-(function () {
+const params = new URLSearchParams(window.location.search);
+let url = params.get("url");
 
-  const params = new URLSearchParams(window.location.search);
+try {
+  url = decodeURIComponent(url);
+} catch (e) {}
 
-  const asin = params.get("asin");
-  let url = params.get("url");
-
-  /**
-   * 🧠 FIX DOUBLE URL BUG
-   */
-  function cleanUrl(u) {
-    if (!u) return null;
-
-    // decode if needed
-    try {
-      u = decodeURIComponent(u);
-    } catch {}
-
-    // REMOVE DUPLICATED AMAZON URLS
-    const parts = u.split("https://www.amazon.com/dp/");
-    if (parts.length > 2) {
-      u = "https://www.amazon.com/dp/" + parts[1];
-    }
-
-    // safety trim if concatenated twice
-    u = u.replace(/(https:\/\/www\.amazon\.com\/dp\/[A-Z0-9]+(\?tag=[^&]+)?)\1/g, "$1");
-
-    return u;
-  }
-
-  /**
-   * 🔥 VALIDATION
-   */
-  function isValid(u) {
-    return typeof u === "string" && u.startsWith("https://www.amazon.com/");
-  }
-
-  url = cleanUrl(url);
-
-  /**
-   * 🚀 FINAL REDIRECT
-   */
-  if (isValid(url)) {
-    window.location.replace(url);
-  } else {
-    // fallback: go to Amazon homepage
-    window.location.replace("https://www.amazon.com");
-  }
-
-})();
+if (url && url.startsWith("https://www.amazon.com/")) {
+  window.location.replace(url);
+} else {
+  window.location.replace("https://www.amazon.com");
+}
 </script>
-
-</body>
-</html>
