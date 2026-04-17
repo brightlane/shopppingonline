@@ -37,6 +37,30 @@
     background: #fff;
   }
 
+  /* CATEGORY BUTTONS */
+  .categories {
+    text-align: center;
+    padding: 20px;
+  }
+
+  .categories button {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 8px 14px;
+    margin: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+  }
+
+  .categories button:hover {
+    background: #ff9900;
+    color: white;
+    border-color: #ff9900;
+  }
+
+  /* GRID */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -142,67 +166,26 @@
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
   <h1>🔥 Hot Amazon Finds</h1>
   <p>Trending products people are buying right now</p>
 </div>
 
-<!-- AMAZON DISCLOSURE -->
+<!-- DISCLOSURE -->
 <div class="disclosure-top">
   <strong>Disclosure:</strong> As an Amazon Associate I earn from qualifying purchases.
 </div>
 
-<div class="grid">
-
-  <div class="card">
-    <img src="https://m.media-amazon.com/images/I/71Bh0Yt0m7L._AC_SL1500_.jpg" alt="Wireless Earbuds">
-    <div class="content">
-      <div class="badge">BEST SELLER</div>
-      <div class="title">🎧 Wireless Earbuds</div>
-      <div class="desc">High-quality sound, long battery life, and super popular for daily use.</div>
-      <a class="btn" href="https://www.amazon.com/dp/B0B1LVC5VZ/?tag=brightlane201-20" target="_blank">
-        View on Amazon
-      </a>
-    </div>
-  </div>
-
-  <div class="card">
-    <img src="https://m.media-amazon.com/images/I/61LtuGzXeaL._AC_SL1500_.jpg" alt="LED Lights">
-    <div class="content">
-      <div class="badge">TRENDING</div>
-      <div class="title">💡 LED Strip Lights</div>
-      <div class="desc">Transform any room with colorful lighting effects.</div>
-      <a class="btn" href="https://www.amazon.com/dp/B07XHLGSXN/?tag=brightlane201-20" target="_blank">
-        View on Amazon
-      </a>
-    </div>
-  </div>
-
-  <div class="card">
-    <img src="https://m.media-amazon.com/images/I/61Qe0euJJZL._AC_SL1500_.jpg" alt="Phone Stand">
-    <div class="content">
-      <div class="badge">HOT ITEM</div>
-      <div class="title">📱 Adjustable Phone Stand</div>
-      <div class="desc">Perfect for watching videos, Zoom calls, and desk setup.</div>
-      <a class="btn" href="https://www.amazon.com/dp/B08J41S1GM/?tag=brightlane201-20" target="_blank">
-        View on Amazon
-      </a>
-    </div>
-  </div>
-
-  <div class="card">
-    <img src="https://m.media-amazon.com/images/I/71R4hZzXxXL._AC_SL1500_.jpg" alt="Cleaning Brush">
-    <div class="content">
-      <div class="badge">VIRAL</div>
-      <div class="title">🧼 Electric Cleaning Brush</div>
-      <div class="desc">Makes cleaning fast, easy, and effortless.</div>
-      <a class="btn" href="https://www.amazon.com/dp/B09G9FPHY6/?tag=brightlane201-20" target="_blank">
-        View on Amazon
-      </a>
-    </div>
-  </div>
-
+<!-- CATEGORY FILTERS -->
+<div class="categories">
+  <button onclick="filterProducts('All')">All</button>
+  <button onclick="filterProducts('Tech')">Tech</button>
+  <button onclick="filterProducts('Home')">Home</button>
 </div>
+
+<!-- PRODUCT GRID -->
+<div class="grid" id="productGrid"></div>
 
 <!-- FOOTER -->
 <div class="site-footer">
@@ -223,26 +206,43 @@
 
 </div>
 
-</body>
-</html>
+<!-- SCRIPTS -->
 <script src="products.js"></script>
 
 <script>
   const grid = document.getElementById("productGrid");
 
-  products.forEach(p => {
-    grid.innerHTML += `
-      <div class="card">
-        <img src="${p.image}" alt="${p.title}">
-        <div class="content">
-          <div class="badge">${p.badge}</div>
-          <div class="title">${p.title}</div>
-          <div class="desc">${p.desc}</div>
-          <a class="btn" href="${p.link}" target="_blank">
-            View on Amazon
-          </a>
+  function renderProducts(list) {
+    grid.innerHTML = "";
+
+    list.forEach(p => {
+      grid.innerHTML += `
+        <div class="card">
+          <img src="${p.image}" alt="${p.title}">
+          <div class="content">
+            <div class="badge">${p.badge}</div>
+            <div class="title">${p.title}</div>
+            <div class="desc">${p.desc}</div>
+            <a class="btn" href="${p.link}" target="_blank">
+              View on Amazon
+            </a>
+          </div>
         </div>
-      </div>
-    `;
-  });
+      `;
+    });
+  }
+
+  function filterProducts(category) {
+    if (category === "All") {
+      renderProducts(products);
+    } else {
+      renderProducts(products.filter(p => p.category === category));
+    }
+  }
+
+  // initial load
+  renderProducts(products);
 </script>
+
+</body>
+</html>
