@@ -1,94 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+// 10. SITEMAP.XML
+const siteUrl = "https://brightlane.github.io/shopppingonline"; // update if you use Netlify/GitHub Pages
+const files = fs.readdirSync(".");
+const urls = files
+  .filter((f) => f.endsWith(".html"))
+  .map(
+    (f) => `
+  <url>
+    <loc>${siteUrl}/${f}</loc>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`
+  )
+  .join("\n");
+
+const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>best-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>top-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ultimate-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>vs-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>guide-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>review-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>2026-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>buying-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>compared-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>showdown-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>battle-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranking-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>picks-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>choices-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranked-vacuum-cleaners-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>best-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>top-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ultimate-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>vs-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>guide-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>review-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>2026-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>buying-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>compared-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>showdown-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>battle-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranking-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>picks-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>choices-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranked-vacuum-cleaners-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>best-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>top-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ultimate-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>vs-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>guide-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>review-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>2026-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>buying-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>compared-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>showdown-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>battle-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranking-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>picks-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>choices-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranked-vacuum-cleaners-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>best-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>top-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ultimate-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>vs-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>guide-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>review-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>2026-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>buying-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>compared-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>showdown-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>battle-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranking-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>picks-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>choices-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranked-coffee-makers-en.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>best-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>top-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ultimate-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>vs-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>guide-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>review-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>2026-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>buying-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>compared-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>showdown-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>battle-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranking-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>picks-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>choices-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranked-coffee-makers-es.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>best-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>top-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ultimate-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>vs-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>guide-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>review-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>2026-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>buying-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>compared-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>showdown-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>battle-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranking-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>picks-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>choices-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>ranked-coffee-makers-de.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-<url><loc>index.html</loc><priority>1.0</priority></url>
+  <url>
+    <loc>${siteUrl}/</loc>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>${urls}
 </urlset>
+`;
+
+fs.writeFileSync("sitemap.xml", sitemapContent, "utf8");
+console.log("✅ sitemap.xml generated");
