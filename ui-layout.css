@@ -1,0 +1,37 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f6f7fb;
+  color: #111;
+}
+
+/* SAFE CLICK SYSTEM */
+* {
+  box-sizing: border-box;
+}
+
+/* prevent invisible overlays from blocking clicks */
+.overlay,
+.modal,
+.backdrop,
+.loading,
+.popup {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* product cards safe spacing */
+.product-card {
+  background: white;
+  padding: 16px;
+  margin: 12px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+/* amazon buttons always clickable */
+a, button {
+  position: relative;
+  z-index: 1;
+}
