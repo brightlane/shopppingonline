@@ -1,0 +1,57 @@
+[
+  {
+    "title": "Hero Cosmetics Mighty Patch Original",
+    "asin": "B07QYQJZQJ",
+    "image": "https://m.media-amazon.com/images/I/hero-mighty.jpg",
+    "price": "12",
+    "rating": "4.5",
+    "reviews": "120000",
+    "description": "Original hydrocolloid acne patch — overnight spot healing for face and body.",
+    "feature1": "Overnight spot reduction",
+    "feature2": "Waterproof & breathable",
+    "feature3": "Safe for sensitive skin",
+    "best_for": "Nighttime spot treatment, blind pimples, travelers",
+    "pros": "No active ingredients, very low irritation risk.",
+    "cons": "Small size, not for big cysts"
+  },
+  {
+    "title": "Aztec Secret Clay Patch (Extra Strength)",
+    "asin": "B0B2WQZ12H",
+    "image": "https://m.media-amazon.com/images/I/aztec-clay.jpg",
+    "price": "15",
+    "rating": "4.6",
+    "reviews": "85000",
+    "description": "Natural clay‑based spot patch for deep extraction.",
+    "best_for": "Clogged pores, blackheads, nose patches"
+  },
+  {
+    "title": "Kiehl’s White Clay Spot Healing",
+    "asin": "B07C8K4XKH",
+    "image": "https://m.media-amazon.com/images/I/kiehls.jpg",
+    "price": "28",
+    "rating": "4.7",
+    "reviews": "42000",
+    "description": "Premium acne patch with anti‑blemish benefits.",
+    "best_for": "Sensitive, acne‑prone skin"
+  },
+  {
+    "title": "Generic Hydrocolloid Acne Patches 100‑pcs",
+    "asin": "B0D3H8YR5S",
+    "image": "https://m.media-amazon.com/images/I/sticker-patch.jpg",
+    "price": "8",
+    "rating": "4.6",
+    "reviews": "25000",
+    "description": "Budget multi‑size patch set.",
+    "best_for": "Testing different sizes, travel size"
+  },
+  {
+    "title": "Korean Pimple Patch + Charcoal Variant",
+    "asin": "B0D4H9ZR6T",
+    "image": "https://m.media-amazon.com/images/I/korean-patch.jpg",
+    "price": "13",
+    "rating": "4.7",
+    "reviews": "38000",
+    "description": "Imported K‑Beauty style patch with charcoal.",
+    "best_for": "Blackhead and comedone control"
+  }
+]
