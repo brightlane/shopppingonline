@@ -1,13 +1,17 @@
-name: Generate Site
+name: Generate Product Pages
 
 on:
-  workflow_dispatch:  # Manual "Run" button
+  workflow_dispatch:  # ✅ Manual "Run workflow" button
   push:
     branches: [ main ]
+    paths:
+      - 'products-data.json'
+      - 'generate.js'
 
 jobs:
   generate:
     runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v4
     
@@ -15,14 +19,19 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
     
-    - name: Run generator
-      run: node generate.js  # ← Use YOUR filename here!
+    - name: Generate HTML pages
+      run: node generate.js
     
-    - name: Commit & Push HTML files
+    - name: Commit & Push generated files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        
+        # Pull latest changes first
+        git pull --rebase origin main
+        
         git add *.html index.html
-        git commit -m "Regenerate product pages [skip ci]" || exit 0
-        git push
+        git commit -m "🤖 Regenerate product pages [skip ci]" || exit 0
+        git push origin HEAD:main
