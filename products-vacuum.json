@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Dyson V15 Detect",
+    "asin": "B08N5LN61C",
+    "image": "https://m.media-amazon.com/images/I/81bA5hK5gZL.jpg",
+    "price": "749",
+    "rating": "4.7",
+    "reviews": "12500",
+    "description": "Best overall vacuum 2026. 230AW suction + laser dust detection.",
+    "feature1": "60 min battery",
+    "feature2": "Auto-adjusts suction", 
+    "feature3": "LCD screen"
+  },
+  {
+    "title": "Shark PowerDetect Cordless", 
+    "asin": "B0D2H8YR4R",
+    "image": "https://m.media-amazon.com/images/I/shark-powerdetect.jpg",
+    "price": "450",
+    "rating": "4.6",
+    "reviews": "8500",
+    "description": "Top cordless stick vacuum per TechGearLab 2026"
+  },
+  {
+    "title": "iRobot Roomba j9+",
+    "asin": "B0B1WP6Q4Z", 
+    "image": "https://m.media-amazon.com/images/I/roomba-j9.jpg",
+    "price": "899",
+    "rating": "4.7",
+    "reviews": "4500",
+    "description": "Best robot vacuum with self-emptying"
+  }
+]
