@@ -3,51 +3,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Amazon Picks</title>
+  <title>Top Amazon Finds | My Store</title>
+
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: #f4f6f8;
       text-align: center;
-      padding: 60px;
     }
+
+    .header {
+      background: #111;
+      color: white;
+      padding: 40px 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      color: #ccc;
+      margin-top: 10px;
+    }
+
     .container {
+      padding: 40px 20px;
+    }
+
+    .card {
       background: white;
-      padding: 40px;
+      padding: 25px;
+      margin: 15px auto;
       border-radius: 12px;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .button {
       display: inline-block;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #111;
-    }
-    p {
-      color: #555;
-    }
-    a.button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 15px 25px;
+      margin-top: 15px;
+      padding: 12px 20px;
       background: #ff9900;
       color: white;
       text-decoration: none;
       border-radius: 8px;
       font-weight: bold;
     }
-    a.button:hover {
+
+    .button:hover {
       background: #e68a00;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #888;
+      padding: 20px;
     }
   </style>
 </head>
+
 <body>
 
-  <div class="container">
-    <h1>My Amazon Store</h1>
-    <p>Check out my favorite picks and trending products</p>
+  <div class="header">
+    <h1>🔥 My Amazon Finds</h1>
+    <p>Trending products, must-haves, and hidden gems</p>
+  </div>
 
-    <a class="button" href="https://www.amazon.com/stores/page/026F3C5E-1F0A-4D1B-A142-23C5E353BF82?&linkCode=ll2&tag=brightlane201-20&linkId=cfce9dd1841093dede0217e6a5b06466&language=en_US&ref_=as_li_ss_tl" target="_blank">
-      Shop My Amazon Picks
-    </a>
+  <div class="container">
+
+    <div class="card">
+      <h2>🔥 Trending Products</h2>
+      <p>Viral and best-selling items people are loving right now</p>
+      <a class="button" href="YOUR_AMAZON_LINK" target="_blank" rel="noopener noreferrer">
+        Shop Now
+      </a>
+    </div>
+
+    <div class="card">
+      <h2>🏠 Home Essentials</h2>
+      <p>Everyday items that make life easier</p>
+      <a class="button" href="YOUR_AMAZON_LINK" target="_blank" rel="noopener noreferrer">
+        View Picks
+      </a>
+    </div>
+
+    <div class="card">
+      <h2>📱 Tech & Gadgets</h2>
+      <p>Cool gadgets and useful tech finds</p>
+      <a class="button" href="YOUR_AMAZON_LINK" target="_blank" rel="noopener noreferrer">
+        Explore Tech
+      </a>
+    </div>
+
+    <div class="card">
+      <h2>💡 Best Deals</h2>
+      <p>Top discounts and limited-time offers</p>
+      <a class="button" href="YOUR_AMAZON_LINK" target="_blank" rel="noopener noreferrer">
+        See Deals
+      </a>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>As an Amazon Associate, I earn from qualifying purchases.</p>
   </div>
 
 </body>
