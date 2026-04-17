@@ -1,208 +1,155 @@
 const fs = require("fs");
 
 const AFFILIATE_TAG = "brightlane201-20";
-const SITE_URL = "https://brightlane.github.io/shopppingonline";
 
-// ========================
-// CORE CONFIG
-// ========================
 const LANGUAGES = ["en", "es", "de"];
 
 const PAGE_TYPES = [
-  "best", "top", "ultimate", "vs", "guide",
-  "review", "2026", "buying", "compared",
-  "showdown", "battle", "ranking", "picks", "choices"
+  "best", "top", "ultimate", "vs", "guide", "review",
+  "buying", "compared", "showdown", "battle", "ranking", "picks"
 ];
 
 const CATEGORIES = {
-  vacuum: {
-    name: "Vacuum Cleaners",
-    keywords: ["cordless vacuum", "robot vacuum"]
-  },
-  coffee: {
-    name: "Coffee Makers",
-    keywords: ["espresso", "drip coffee"]
-  },
-  stanley: {
-    name: "Stanley Quencher Tumblers",
-    keywords: ["stanley cup", "tumbler"]
-  },
-  acne_patch: {
-    name: "Acne Patches",
-    keywords: ["acne patch", "pimple patch"]
-  },
-  ring_light: {
-    name: "Ring Lights for Phone",
-    keywords: ["ring light", "portable led light"]
-  }
+  vacuum: { name: "Vacuum Cleaners" },
+  coffee: { name: "Coffee Makers" },
+  stanley: { name: "Stanley Quencher Tumblers" },
+  acne_patch: { name: "Acne Patches" },
+  ring_light: { name: "Ring Lights for Phone" }
 };
 
-// ========================
-// AMAZON LINK BUILDER (FIXED)
-// ========================
+// -----------------------------
+// SAFE AMAZON LINK BUILDER
+// -----------------------------
 function amazonUrl(asin) {
   if (!asin || typeof asin !== "string") return "#";
-  return `https://www.amazon.com/dp/${asin.trim()}?tag=${AFFILIATE_TAG}`;
+  const clean = asin.trim().toUpperCase();
+
+  // FIX: prevent broken 404 links
+  if (!/^B[A-Z0-9]{9,10}$/.test(clean)) return "#";
+
+  return `https://www.amazon.com/dp/${clean}?tag=${AFFILIATE_TAG}`;
 }
 
-// ========================
-// HELPERS
-// ========================
+// -----------------------------
 function escapeHTML(str = "") {
-  return str.replace(/&/g,"&amp;")
-            .replace(/</g,"&lt;")
-            .replace(/>/g,"&gt;")
-            .replace(/"/g,"&quot;");
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 function slugify(str) {
-  return str.toLowerCase()
-    .replace(/[^a-z0-9\s-]/g,"")
-    .replace(/[\s_-]+/g,"-")
-    .replace(/^-+|-+$/g,"");
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-// ========================
-// LOAD PRODUCTS
-// ========================
+// -----------------------------
+// LOAD PRODUCTS (SAFE)
+// -----------------------------
 function loadProducts(cat) {
   try {
     return JSON.parse(fs.readFileSync(`products-${cat}.json`, "utf8"));
   } catch {
+    console.log(`⚠️ Missing products-${cat}.json`);
     return [];
   }
 }
 
-// ========================
-// CLEAN + DEDUPE PRODUCTS
-// ========================
-function cleanProducts(products) {
+// -----------------------------
+// DEDUPE BY ASIN (IMPORTANT FIX)
+// -----------------------------
+function dedupe(products) {
   const seen = new Set();
-  return products
-    .filter(p => p && p.asin)
-    .filter(p => {
-      if (seen.has(p.asin)) return false;
-      seen.add(p.asin);
-      return true;
-    })
-    .map(p => ({
-      ...p,
-      title: p.title || "Product",
-      price: p.price || "—",
-      rating: p.rating || "4.5",
-      reviews: p.reviews || "1000+",
-      image: p.image || "",
-      best_for: p.best_for || ""
-    }));
+  return products.filter(p => {
+    if (!p.asin || seen.has(p.asin)) return false;
+    seen.add(p.asin);
+    return true;
+  });
 }
 
-// ========================
-// CTR TRACKING
-// ========================
-function trackClick(asin, category) {
-  return `onclick="fetch('${SITE_URL}/tracker.js?asin=${asin}&cat=${category}')"
-  `;
+// -----------------------------
+// SMART DESCRIPTION (NO AI DEPENDENCY)
+// -----------------------------
+function smartDesc(cat, p) {
+  const map = {
+    vacuum: "High-performance vacuum designed for deep cleaning, pet hair, and modern homes.",
+    coffee: "Premium coffee system built for consistent brewing and rich flavor extraction.",
+    stanley: "Durable insulated tumbler engineered for long-lasting temperature control.",
+    acne_patch: "Fast-acting acne treatment patch designed to reduce blemishes overnight.",
+    ring_light: "Professional lighting tool for creators, streaming, and photography."
+  };
+  return map[cat] || "Top-rated product selected for performance, value, and reliability.";
 }
 
-// ========================
-// PRODUCT CARD (UPGRADED UI)
-// ========================
-function productCard(p, i, categorySlug) {
+// -----------------------------
+// PRODUCT CARD (FIXED + CLEAN UI)
+// -----------------------------
+function productCard(cat, p, i) {
   const link = amazonUrl(p.asin);
 
-  return `
-  <div style="
-    background:#fff;
-    padding:22px;
-    margin:18px 0;
-    border-radius:16px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    display:flex;
-    gap:20px;
-    flex-wrap:wrap;
-    align-items:center;
-  ">
+  const faq = [
+    `Is ${p.title} worth it? Yes, it is one of the most reliable options in its category.`,
+    `What is it best for? ${p.best_for || "general everyday use"}.`
+  ];
 
-    <a href="${link}" target="_blank" ${trackClick(p.asin, categorySlug)}>
-      <img src="${escapeHTML(p.image)}"
-        style="width:180px;height:180px;object-fit:cover;border-radius:12px;"
-      />
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.title,
+    image: p.image,
+    description: smartDesc(cat, p),
+    offers: {
+      "@type": "Offer",
+      price: p.price || "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: link
+    }
+  };
+
+  return `
+  <div style="background:#fff;padding:20px;margin:20px 0;border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);display:flex;gap:20px;">
+
+    <a href="${link}" target="_blank">
+      <img src="${escapeHTML(p.image || "")}"
+        style="width:180px;height:180px;object-fit:cover;border-radius:12px;" />
     </a>
 
-    <div style="flex:1;min-width:250px;">
-      <h3 style="margin:0 0 8px 0;">${i}. ${escapeHTML(p.title)}</h3>
+    <div style="flex:1">
 
-      <p style="color:#555;margin:0 0 8px;">
-        ${p.best_for ? "Best for: " + p.best_for : "Top rated product"}
-      </p>
+      <h3>#${i} ${escapeHTML(p.title)}</h3>
 
-      <p style="margin:0 0 10px;font-size:13px;color:#666;">
-        High-performance product selected for value and reliability.
-      </p>
+      <p style="color:#555">${smartDesc(cat, p)}</p>
 
-      <p style="font-weight:600;">
-        <span style="color:#22c55e;">$${p.price}</span> •
-        ⭐ ${p.rating} (${p.reviews})
-      </p>
+      <p><b>$${p.price || "—"}</b> • ⭐ ${p.rating || "4.5"} (${p.reviews || "—"})</p>
 
       <a href="${link}" target="_blank"
-        style="display:inline-block;margin-top:10px;
-        padding:10px 16px;background:#ff3d00;color:#fff;
-        border-radius:10px;text-decoration:none;font-weight:700;">
+        style="display:inline-block;padding:10px 16px;background:#ff5a3c;color:#fff;
+        border-radius:8px;text-decoration:none;font-weight:bold;">
         View on Amazon
       </a>
+
+      <script type="application/ld+json">
+        ${JSON.stringify(schema)}
+      </script>
+
+      <div style="margin-top:10px;font-size:13px;color:#444">
+        <b>FAQ:</b>
+        <p>${faq[0]}</p>
+        <p>${faq[1]}</p>
+      </div>
+
     </div>
   </div>`;
 }
 
-// ========================
-// FAQ GENERATOR
-// ========================
-function faqSection(catName) {
-  return `
-  <h2>FAQ</h2>
-  <details><summary>Are these ${catName} worth it?</summary>
-  <p>Yes, these are top-rated and selected based on performance and reviews.</p></details>
-
-  <details><summary>Do these products ship via Amazon?</summary>
-  <p>Yes, all links redirect to Amazon with verified affiliate tracking.</p></details>
-
-  <details><summary>How do we choose products?</summary>
-  <p>We analyze ratings, reviews, and real user performance data.</p></details>
-  `;
-}
-
-// ========================
-// SEO SCHEMA
-// ========================
-function productSchema(p) {
-  return {
-    "@context":"https://schema.org",
-    "@type":"Product",
-    "name":p.title,
-    "image":p.image,
-    "offers":{
-      "@type":"Offer",
-      "price":p.price,
-      "priceCurrency":"USD",
-      "availability":"https://schema.org/InStock"
-    },
-    "aggregateRating":{
-      "@type":"AggregateRating",
-      "ratingValue":p.rating,
-      "reviewCount":p.reviews
-    }
-  };
-}
-
-// ========================
-// PAGE BUILDER
-// ========================
-function buildPage(type, cat, products, lang="en") {
-
+// -----------------------------
+function buildPage(type, catKey, cat, products, lang) {
   const title = `${type.toUpperCase()} ${cat.name} 2026`;
 
-  const schema = products.map(productSchema);
+  const internalLinks = PAGE_TYPES.map(t =>
+    `<a href="${t}-${slugify(cat.name)}-${lang}.html">${t}</a>`
+  ).join(" | ");
 
   return `
 <!DOCTYPE html>
@@ -210,83 +157,79 @@ function buildPage(type, cat, products, lang="en") {
 <head>
 <meta charset="UTF-8">
 <title>${title}</title>
-<meta name="description" content="Best ${cat.name} products reviewed and ranked for 2026">
-<script type="application/ld+json">
-${JSON.stringify(schema)}
-</script>
+<meta name="description" content="Best ${cat.name} products ranked 2026" />
 </head>
 
-<body style="font-family:system-ui;background:#f5f7fb;max-width:1000px;margin:auto;padding:20px;">
+<body style="font-family:system-ui;background:#f6f7fb;padding:30px;max-width:1100px;margin:auto;">
 
 <h1>${title}</h1>
-<p>Trusted rankings • Updated 2026</p>
 
-${products.map((p,i)=>productCard(p,i+1,slugify(cat.name))).join("")}
+<p style="color:#555">${internalLinks}</p>
 
-${faqSection(cat.name)}
+${products.map((p, i) => productCard(catKey, p, i + 1)).join("")}
 
-<p style="margin-top:40px;text-align:center;">
-<a href="/index.html">← Back to categories</a>
-</p>
+<footer style="margin-top:50px;text-align:center;color:#666">
+  <p>Amazon Affiliate Disclosure: We earn from qualifying purchases.</p>
+  <a href="index.html">Back Home</a>
+</footer>
 
 </body>
-</html>
-`;
+</html>`;
 }
 
-// ========================
-// GENERATE ALL PAGES
-// ========================
-let pageCount = 0;
+// -----------------------------
+// GENERATE SITE
+// -----------------------------
+let count = 0;
 
 Object.entries(CATEGORIES).forEach(([slug, cat]) => {
-
-  const products = cleanProducts(loadProducts(slug));
+  let products = dedupe(loadProducts(slug));
 
   if (!products.length) return;
+
+  const base = slugify(cat.name);
 
   LANGUAGES.forEach(lang => {
     PAGE_TYPES.forEach(type => {
 
-      const file = `${type}-${slugify(cat.name)}-${lang}.html`;
+      const picked = [...products]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 6);
 
-      const shuffled = [...products]
-        .sort(()=>Math.random()-0.5)
-        .slice(0,6);
+      const file = `${type}-${base}-${lang}.html`;
 
-      fs.writeFileSync(file, buildPage(type, cat, shuffled, lang));
-      pageCount++;
+      fs.writeFileSync(
+        file,
+        buildPage(type, slug, cat, picked, lang)
+      );
+
+      count++;
+      console.log("Created:", file);
     });
   });
 });
 
-// ========================
-// INDEX (SEO HUB + INTERNAL LINK GRAPH)
-// ========================
-const index = `
+// -----------------------------
+// INDEX (IMPROVED)
+// -----------------------------
+fs.writeFileSync("index.html", `
 <!DOCTYPE html>
 <html>
 <head>
 <title>Best Products 2026</title>
-
-<meta name="google-site-verification" content="eWVDN3vbam9nnaZQu7wAQKyfmJJdM7zjI80l4DGeUrQ" />
-<meta name="msvalidate.01" content="574044E39556B8B8DAAF1D1F233C87B0" />
-
 </head>
 
-<body style="font-family:system-ui;background:#f7fafc;padding:40px;">
+<body style="font-family:system-ui;padding:40px;background:#f7fafc;">
 
-<h1 style="text-align:center;">Best Products 2026</h1>
-<p style="text-align:center;">${pageCount} pages generated</p>
+<h1>Best Products Hub</h1>
+<p>${count} pages generated</p>
 
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;max-width:1000px;margin:auto;">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
 
-${Object.entries(CATEGORIES).map(([slug,cat])=>`
+${Object.entries(CATEGORIES).map(([slug, cat]) => `
 <div style="background:#fff;padding:20px;border-radius:12px;">
-  <h2>${cat.name}</h2>
-  <a href="best-${slugify(cat.name)}-en.html">Best Guide</a><br>
-  <a href="review-${slugify(cat.name)}-en.html">Reviews</a><br>
-  <a href="vs-${slugify(cat.name)}-en.html">Vs Pages</a>
+  <h3>${cat.name}</h3>
+  <a href="best-${slugify(cat.name)}-en.html">View English</a>
 </div>
 `).join("")}
 
@@ -294,27 +237,6 @@ ${Object.entries(CATEGORIES).map(([slug,cat])=>`
 
 </body>
 </html>
-`;
-
-fs.writeFileSync("index.html", index);
-
-// ========================
-// SITEMAP
-// ========================
-const urls = fs.readdirSync(".")
-  .filter(f => f.endsWith(".html"))
-  .map(f => `
-  <url>
-    <loc>${SITE_URL}/${f}</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`).join("");
-
-fs.writeFileSync("sitemap.xml", `
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls}
-</urlset>
 `);
 
-console.log("DONE:", pageCount);
+console.log("DONE:", count, "pages");
