@@ -1,10 +1,10 @@
 const fs = require("fs");
 
 // ——————————————————— 1. SETUP & LOGGING ———————————————————
-console.log("🚀 NUCLEAR GENERATOR: 3K-PAGE AFFILIATE STORE");
+console.log("🚀 NUCLEAR GENERATOR: 3K+ AFFILIATE PAGES");
 console.log("📂 Current directory:", __dirname);
 
-// ——————————————————— 2. CONFIG ———————————————————
+// ——————————————————— 2. CONFIG (Affiliate ID) ———————————————————
 const AFFILIATE_TAG = "brightlane201-20"; // ← YOUR AMAZON ID
 
 const LANGUAGES = ["en", "es", "de"];
@@ -25,7 +25,7 @@ const PAGE_TYPES = [
   "choices",
 ];
 
-// ——————————————————— 3. CATEGORIES (add acne_patch here) ———————————————————
+// ——————————————————— 3. CATEGORIES ———————————————————
 const CATEGORIES = {
   vacuum: {
     name: "Vacuum Cleaners",
@@ -48,6 +48,16 @@ const CATEGORIES = {
       "hydrocolloid patch",
       "mightypatch style",
       "acne solution patches",
+    ],
+  },
+  ring_light: {
+    name: "Ring Lights for Phone",
+    keywords: [
+      "ring light for phone",
+      "portable led ring light",
+      "tiktok ring light",
+      "selfie ring light",
+      "usb ring light with tripod",
     ],
   },
 };
@@ -262,6 +272,62 @@ const DUMMY_PRODUCTS = {
       best_for: "Blackhead and comedone control",
     },
   ],
+
+  ring_light: [
+    {
+      title: "UBeesize 10-inch Ring Light for Phone",
+      asin: "B07PZHGFLW",
+      image: "https://m.media-amazon.com/images/I/ubeesize-ring.jpg",
+      price: "38",
+      rating: "4.6",
+      reviews: "85000",
+      description: "Portable USB ring light with tripod, 10\" size, for TikTok, Instagram, and YouTube.",
+      feature1: "3 light modes (warm/cool/daylight)",
+      feature2: "10 dimmable levels",
+      feature3: "Phone holder + 60\" tripod",
+      best_for: "TikTok creators, live streaming, Zoom, makeup",
+    },
+    {
+      title: "Neewer 18-inch Ring Light Kit",
+      asin: "B01MZEO3X5",
+      image: "https://m.media-amazon.com/images/I/neewer-ring.jpg",
+      price: "99",
+      rating: "4.5",
+      reviews: "42000",
+      description: "18\" professional‑grade ring light with 3 color modes and 10 brightness levels.",
+      best_for: "YouTube vlogging, studio‑style setup",
+    },
+    {
+      title: "Lumecube Cordless Ring Light Pro",
+      asin: "B07C8X2YZZ",
+      image: "https://m.media-amazon.com/images/I/lumecube-ring.jpg",
+      price: "279",
+      rating: "4.7",
+      reviews: "12000",
+      description: "High‑end cordless ring light with remote control and color temperature adjustment.",
+      best_for: "Content creators serious about quality lighting",
+    },
+    {
+      title: "Westcott Mini Ring Light",
+      asin: "B07QYQJZQJ",
+      image: "https://m.media-amazon.com/images/I/westcott-mini.jpg",
+      price: "16",
+      rating: "4.5",
+      reviews: "25000",
+      description: "Clip‑on mini ring light for phones and laptops, very budget‑friendly.",
+      best_for: "Students, beginners, low‑budget creators",
+    },
+    {
+      title: "Joby Beamo Ring Light",
+      asin: "B08XYZ7890",
+      image: "https://m.media-amazon.com/images/I/beamo-ring.jpg",
+      price: "71",
+      rating: "4.6",
+      reviews: "38000",
+      description: "Magnetic ring light that attaches to magnetic phone mounts.",
+      best_for: "On-the-go creators, travel vlogs",
+    },
+  ],
 };
 
 // ——————————————————— 6. PRODUCT CARD ———————————————————
@@ -360,65 +426,4 @@ function comparisonTable(products) {
     <thead style="
       background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
       color: white;
-    ">
-      <tr>
-        <th style="padding: 12px; text-align: left;">Model</th>
-        <th style="padding: 12px;">Price</th>
-        <th style="padding: 12px;">Rating</th>
-        <th style="padding: 12px;">Best For</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${top3
-        .map((p) => {
-          return `
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; font-weight: 500; color: #1a202c;">
-            ${escapeHTML(p.title)}
-          </td>
-          <td style="padding: 12px;">$${p.price || "TBD"}</td>
-          <td style="padding: 12px;">${p.rating || "4.5"}⭐</td>
-          <td style="padding: 12px;">
-            ${escapeHTML(p.best_for || "General use")}
-          </td>
-        </tr>
-      `;
-        })
-        .join("")}
-    </tbody>
-  </table>
-</div>
-  `;
-}
-
-// ——————————————————— 8. PAGE BUILDER ———————————————————
-function buildPage(type, category, products, lang = "en") {
-  const catName = category.name;
-  const catSlug = slugify(catName);
-
-  const titleMap = {
-    best: `Best ${catName} 2026`,
-    top: `Top ${catName} 2026`,
-    ultimate: `Ultimate ${catName} Buying Guide 2026`,
-    vs: `${products[0]?.title || "Product"} vs ${products[1]?.title || "Product"}`,
-    guide: `Ultimate ${catName.replace("Patches", "Sheet")} Guide`,
-    review: `In-Depth ${products[0]?.title || "Review"} Review`,
-    "2026": `Top ${catName} for 2026`,
-    "buying": `Best ${catName} To Buy 2026`,
-    compared: `${catName} Compared`,
-  };
-
-  const baseTitle = titleMap[type] || `Best ${catName} ${lang === "es" ? "2026" : "2026"}`;
-  const seoKeywordsPart = category.keywords.slice(0, 4).join(", ");
-
-  return `<!DOCTYPE html>
-<html lang="${lang}">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>${baseTitle} | Best ${catName.toLowerCase()} 2026</title>
-  <meta name="description" content="Best ${catName.toLowerCase()} 2026 – ${products.length} tested models. ${seoKeywordsPart} reviewed and compared.">
-
-  <link rel="alternate" hreflang="x-default" href="./best-${catSlug}-${lang}.html" />
-  <link rel="canonical" href="./${type}-${catSlug}-${lang}.html" />
+   
