@@ -225,3 +225,24 @@
 
 </body>
 </html>
+<script src="products.js"></script>
+
+<script>
+  const grid = document.getElementById("productGrid");
+
+  products.forEach(p => {
+    grid.innerHTML += `
+      <div class="card">
+        <img src="${p.image}" alt="${p.title}">
+        <div class="content">
+          <div class="badge">${p.badge}</div>
+          <div class="title">${p.title}</div>
+          <div class="desc">${p.desc}</div>
+          <a class="btn" href="${p.link}" target="_blank">
+            View on Amazon
+          </a>
+        </div>
+      </div>
+    `;
+  });
+</script>
