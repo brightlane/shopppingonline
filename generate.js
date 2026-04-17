@@ -72,15 +72,15 @@ console.log("📂 GROUPS:", Object.keys(grouped));
 // ---------------------------
 function productBlock(p, i) {
   return `
-  <div style="background:white;padding:15px;margin-bottom:20px;border-radius:10px;">
+  <div style="background:white;padding:15px;margin-bottom:20px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1);">
     <h2>#${i + 1} - ${escapeHTML(p.title || "Untitled Product")}</h2>
-    <img src="${escapeHTML(p.image || "")}" width="200" loading="lazy"/>
+    <img src="${escapeHTML(p.image || "")}" width="200" height="200" style="border-radius:8px;" loading="lazy"/>
     <p>${escapeHTML(p.description || "No description available")}</p>
 
     <a href="https://www.amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}"
-       target="_blank"
-       style="display:inline-block;padding:10px 14px;background:#ff9900;color:#fff;border-radius:6px;">
-       View on Amazon
+       target="_blank" rel="nofollow sponsored"
+       style="display:inline-block;padding:12px 20px;background:#ff9900;color:#fff;border-radius:6px;text-decoration:none;font-weight:bold;">
+       🛒 View on Amazon
     </a>
   </div>
   `;
@@ -90,27 +90,33 @@ function productBlock(p, i) {
 // PAGE BUILDER
 // ---------------------------
 function buildPage(category, items) {
-  return `
-<!DOCTYPE html>
-<html>
+  return `<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Best ${category} Products 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best ${escapeHTML(category)} Products 2026</title>
+  <meta name="description" content="Discover the best ${category.toLowerCase()} products on Amazon. Expert recommendations for 2026.">
 </head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;max-width:900px;margin:auto;padding:20px;background:#f8f9fa;">
+  <header style="text-align:center;margin-bottom:40px;">
+    <h1 style="color:#1a1a1a;">Best ${escapeHTML(category)} Products 2026</h1>
+    <p style="color:#666;font-size:14px;">Top-rated ${category.toLowerCase()} handpicked for quality and value</p>
+  </header>
 
-<body style="font-family:Arial;max-width:900px;margin:auto;padding:20px;background:#f7f7f7;">
+  <div style="background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+    <p style="font-size:12px;color:#888;text-align:center;margin-bottom:30px;background:#f0f0f0;padding:15px;border-radius:8px;">
+      <strong>As an Amazon Associate, we earn from qualifying purchases.</strong>
+    </p>
 
-<h1>Best ${category} Products</h1>
+    ${items.map(productBlock).join("\n\n")}
 
-<p style="font-size:12px;color:gray;">
-As an Amazon Associate, we earn from qualifying purchases.
-</p>
-
-${items.map(productBlock).join("")}
-
+    <div style="text-align:center;margin-top:40px;padding-top:30px;border-top:2px solid #eee;">
+      <p style="color:#666;">© 2026 Best Products Hub | <a href="index.html">All Categories</a></p>
+    </div>
+  </div>
 </body>
-</html>
-`;
+</html>`;
 }
 
 // ---------------------------
@@ -131,19 +137,31 @@ for (const cat of Object.keys(grouped)) {
 // ---------------------------
 // INDEX PAGE
 // ---------------------------
-const index = `
-<html>
-<body>
-<h1>Best Products 2026</h1>
-<ul>
-${Object.keys(grouped)
-  .map(c => `<li><a href="best-${slugify(c)}.html">${c}</a></li>`)
-  .join("")}
-</ul>
+const index = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best Products 2026 - All Categories</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;max-width:900px;margin:auto;padding:20px;background:#f8f9fa;">
+  <header style="text-align:center;margin-bottom:50px;">
+    <h1 style="color:#1a1a1a;font-size:2.5em;">🏆 Best Products 2026</h1>
+    <p style="color:#666;font-size:18px;">Discover top Amazon picks across all categories</p>
+  </header>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+    ${Object.keys(grouped)
+      .map(c => `
+        <div style="background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);text-align:center;">
+          <h2 style="color:#333;margin-bottom:15px;">${escapeHTML(c)}</h2>
+          <a href="best-${slugify(c)}.html" style="display:inline-block;padding:15px 30px;background:#ff9900;color:#fff;border-radius:8px;text-decoration:none;font-weight:bold;font-size:16px;">View ${c} →</a>
+        </div>
+      `).join("")}
+  </div>
 </body>
-</html>
-`;
+</html>`;
 
 fs.writeFileSync("index.html", index);
 
-console.log("✅ GENERATION COMPLETE");
+console.log("✅ GENERATION COMPLETE - Check index.html and best-*.html");
