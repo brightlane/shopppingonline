@@ -2,28 +2,24 @@ name: Generate Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Show files (debug)
-        run: ls -R
-
-      - name: Run generator directly
+      - name: Run generator
         run: node generate.js
 
-      - name: Commit output
+      - name: Commit changes
         run: |
           git config --global user.name "auto-bot"
           git config --global user.email "auto-bot@users.noreply.github.com"
