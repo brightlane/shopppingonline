@@ -1,33 +1,21 @@
 const AFFILIATE_TAG = "brightlane201-20";
 
-/**
- * 🔥 SINGLE SOURCE OF TRUTH FOR AMAZON LINKS
- * Never hardcode links anywhere else again
- */
-function getAmazonLink(asin) {
+function amazonLink(asin) {
 
   if (!asin || typeof asin !== "string") {
-    console.error("❌ Invalid ASIN:", asin);
     return "#";
   }
 
+  // HARD CLEAN: strip anything that is NOT ASIN
+  asin = asin.replace(/[^A-Z0-9]/gi, "").toUpperCase();
+
+  // VALIDATE LENGTH (Amazon ASIN is usually 10 chars)
+  if (asin.length < 8 || asin.length > 12) {
+    return "#";
+  }
+
+  // BUILD EXACTLY ONE CLEAN URL
   return `https://www.amazon.com/dp/${asin}?tag=${AFFILIATE_TAG}`;
 }
 
-/**
- * 🧠 VALIDATE LINK MATCHES ASIN (DEBUG TOOL)
- */
-function validateProductLink(product) {
-  const expected = getAmazonLink(product.asin);
-
-  if (product.link && product.link !== expected) {
-    console.warn("⚠️ Link mismatch detected:", product.title);
-    console.warn("Expected:", expected);
-    console.warn("Found:", product.link);
-  }
-}
-
-module.exports = {
-  getAmazonLink,
-  validateProductLink
-};
+module.exports = { amazonLink };
