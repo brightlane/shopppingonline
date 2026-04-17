@@ -378,3 +378,35 @@ const urls = files
   </url>`
   )
   .join("\
+// 10. SITEMAP
+const siteUrl = "https://brightlane.github.io/shopppingonline"; // update if needed
+const files = fs.readdirSync(".");
+const urls = files
+  .filter((f) => f.endsWith(".html"))
+  .map(
+    (f) => `
+  <url>
+    <loc>${siteUrl}/${f}</loc>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`
+  )
+  .join("\n");
+
+const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${siteUrl}/</loc>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>${urls}
+</urlset>
+`;
+
+fs.writeFileSync("sitemap.xml", sitemapContent, "utf8");
+console.log("✅ sitemap.xml generated");
+
+console.log(`\n💥 GENERATION COMPLETE!`);
+console.log(`📂 ${pageCount} pages created for ${Object.keys(CATEGORIES).length} categories`);
