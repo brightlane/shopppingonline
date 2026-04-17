@@ -1,36 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Best Solar Panels for 2026</title>
-<script src="products.js"></script>
-</head>
 
-<body>
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Best solar Products</title>
+    <meta name="description" content="Top solar products for 2026">
+  </head>
 
-<h1>Best Solar Panels (2026)</h1>
-<p>Top rated solar panels for camping, emergency power, and off-grid use.</p>
+  <body style="font-family:Arial;max-width:900px;margin:auto;padding:20px;">
 
-<div id="list"></div>
+    <h1>Best solar Products</h1>
 
-<script>
-const solarProducts = PRODUCTS.filter(p => p.category === "solar");
+    
+  <p>
+    Best solar products for 2026. These picks are selected for performance, value, and reliability.
+  </p>
+  
 
-const list = document.getElementById("list");
-
-solarProducts.forEach(p => {
-  list.innerHTML += `
+    
     <div style="margin-bottom:30px;">
-      <h2>${p.title}</h2>
-      <img src="${p.image}" width="200"/>
-      <p>${p.description}</p>
+      <h2>100W Solar Panel</h2>
+      <img src="https://m.media-amazon.com/images/I/solar.jpg" width="250"/>
+      <p>Portable solar panel for camping and emergency power.</p>
 
-      <a href="product-template.html?id=${p.id}">
-        View Deal →
+      <a href="https://www.amazon.com/dp/B0EXAMPLE01?tag=brightside20-20"
+         target="_blank"
+         style="display:inline-block;padding:10px 14px;background:#ff9900;color:#fff;text-decoration:none;border-radius:8px;">
+         View on Amazon
       </a>
     </div>
-  `;
-});
-</script>
+  
+    <div style="margin-bottom:30px;">
+      <h2>Solar Generator Kit</h2>
+      <img src="https://m.media-amazon.com/images/I/solar2.jpg" width="250"/>
+      <p>Complete off-grid solar generator system.</p>
 
-</body>
-</html>
+      <a href="https://www.amazon.com/dp/B0EXAMPLE02?tag=brightside20-20"
+         target="_blank"
+         style="display:inline-block;padding:10px 14px;background:#ff9900;color:#fff;text-decoration:none;border-radius:8px;">
+         View on Amazon
+      </a>
+    </div>
+  
+
+  </body>
+  </html>
+  
