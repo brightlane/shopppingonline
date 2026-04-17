@@ -4,307 +4,216 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BrightLane Deals 2026</title>
-  <meta name="description" content="Curated Amazon deals in beauty, tech, home & more.">
-
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #fefefe;
-      --glass: rgba(255,255,255,0.85);
-      --glass-border: rgba(255,255,255,0.2);
-      --shadow-lg: 0 25px 50px -12px rgba(0,0,0,0.1);
-      --shadow-xl: 0 35px 60px -12px rgba(0,0,0,0.15);
-      --gradient-1: 180deg, #f8fafc 0%, #e2e8f0 100%;
-      --gradient-2: 135deg, #3b82f6 0%, #1d4ed8 50%, #1e3a8a 100%;
-      --radius: 24px;
+      --bg: #050505;
+      --accent: #00ff41; /* Matrix Green / Cyber Lime */
+      --card-bg: #111111;
+      --border: #222222;
+      --text: #ffffff;
+      --text-dim: #888888;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(var(--gradient-1)) fixed;
-      color: #1e293b;
-      min-height: 100vh;
-      overflow-x: hidden;
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
     }
 
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-    /* Hero */
+    /* --- HERO --- */
     .hero {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px);
-      border-radius: var(--radius);
-      border: 1px solid var(--glass-border);
-      padding: 4rem 2rem;
+      padding: 120px 0 80px;
       text-align: center;
-      margin-bottom: 4rem;
-      box-shadow: var(--shadow-lg);
+      border-bottom: 1px solid var(--border);
     }
 
     .hero h1 {
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 800;
-      background: linear-gradient(var(--gradient-2));
+      font-family: 'Syncopate', sans-serif;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      margin-bottom: 15px;
+      background: linear-gradient(to right, #fff, #444);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 1rem;
-      letter-spacing: -0.025em;
     }
 
-    .hero p {
-      font-size: 1.25rem;
-      color: #64748b;
-      max-width: 600px;
-      margin: 0 auto;
-      font-weight: 400;
+    .hero p { color: var(--text-dim); font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; }
+
+    /* --- SYMMETRIC GRIDS --- */
+    .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+    
+    .section-label {
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 40px;
+      display: block;
+      text-align: center;
     }
 
-    /* Section */
-    .section {
-      margin-bottom: 4rem;
-    }
-
-    .section-title {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      color: #1e293b;
-    }
-
-    /* Trending Grid */
-    .product-grid {
+    /* 3-Column Grid for both 6 and 9 items */
+    .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
     }
 
+    /* --- PRODUCT CARDS (Set of 6) --- */
     .product-card {
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      border-radius: var(--radius);
-      border: 1px solid var(--glass-border);
-      padding: 2rem;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      overflow: hidden;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 40px 30px;
+      transition: all 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .product-card:hover {
-      transform: translateY(-1rem) scale(1.02);
-      box-shadow: var(--shadow-xl);
+      border-color: var(--accent);
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
     }
 
-    .product-card h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      line-height: 1.4;
-    }
+    .product-card h3 { font-size: 1.25rem; margin-bottom: 10px; font-weight: 500; }
 
-    .price {
-      font-size: 1.75rem;
-      font-weight: 800;
-      color: #dc2626;
-      margin-bottom: 1.5rem;
-    }
+    .price { font-size: 2rem; font-weight: 700; margin-bottom: 30px; color: var(--accent); }
 
     .cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1rem 2rem;
-      background: linear-gradient(var(--gradient-2));
-      color: white;
-      text-decoration: none;
-      border-radius: 16px;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 25px rgba(59,130,246,0.3);
-    }
-
-    .cta:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 40px rgba(59,130,246,0.4);
-    }
-
-    /* Category Hubs */
-    .hub-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .hub-card {
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      border-radius: var(--radius);
-      border: 1px solid var(--glass-border);
-      padding: 2.5rem 1.5rem;
+      display: block;
       text-align: center;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: var(--shadow-lg);
-      cursor: pointer;
-    }
-
-    .hub-card:hover {
-      transform: translateY(-0.75rem) scale(1.02);
-      box-shadow: var(--shadow-xl);
-    }
-
-    .hub-card h3 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      background: linear-gradient(var(--gradient-2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hub-card p {
-      color: #64748b;
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .hub-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.875rem 1.75rem;
-      background: rgba(59,130,246,0.1);
-      color: #1d4ed8;
+      padding: 15px;
+      border: 1px solid var(--text);
+      color: var(--text);
       text-decoration: none;
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(59,130,246,0.2);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      transition: 0.3s;
     }
 
-    .hub-link:hover {
-      background: rgba(59,130,246,0.2);
-      transform: translateY(-2px);
+    .cta:hover { background: var(--text); color: var(--bg); }
+
+    /* --- HUB CARDS (Set of 9) --- */
+    .hub-card {
+      border: 1px solid var(--border);
+      padding: 30px;
+      text-align: center;
+      transition: 0.3s;
     }
+
+    .hub-card:hover { background: var(--accent); border-color: var(--accent); }
+    .hub-card:hover * { color: #000 !important; }
+
+    .hub-card h3 { font-size: 1rem; text-transform: uppercase; margin-bottom: 5px; }
+    .hub-card p { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 20px; }
+    .hub-link { font-weight: 700; text-decoration: none; color: var(--text); font-size: 0.8rem; }
 
     /* Responsive */
-    @media (max-width: 768px) {
-      .container { padding: 1rem; }
-      .product-grid, .hub-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-      .hero { padding: 2.5rem 1.5rem; margin-bottom: 2.5rem; }
-    }
+    @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .grid-3 { grid-template-columns: 1fr; } }
   </style>
 </head>
 
 <body>
+
   <div class="container">
-    
-    <!-- Hero -->
     <section class="hero">
-      <h1>🔥 BrightLane Deals</h1>
-      <p>Premium Amazon products across 9 curated categories</p>
+      <h1>BrightLane</h1>
+      <p>The 2026 Digital Curation</p>
     </section>
 
-    <!-- Trending -->
     <section class="section">
-      <h2 class="section-title">⭐ Trending Now</h2>
-      <div id="trending" class="product-grid"></div>
+      <span class="section-label">Trending Highlights</span>
+      <div id="trending-grid" class="grid-3"></div>
     </section>
 
-    <!-- Categories -->
     <section class="section">
-      <h2 class="section-title">🧭 Explore Categories</h2>
-      <div class="hub-grid">
+      <span class="section-label">Category Index</span>
+      <div class="grid-3">
         <div class="hub-card">
-          <h3>☕ Coffee Makers</h3>
-          <p>Espresso & drip perfection</p>
-          <a href="category.html?type=coffee" class="hub-link">Shop Now →</a>
+          <h3>Coffee</h3><p>Espresso & Drip</p>
+          <a href="category.html?type=coffee" class="hub-link">ENTER →</a>
         </div>
         <div class="hub-card">
-          <h3>⚡ Survival Gear</h3>
-          <p>Emergency essentials</p>
-          <a href="category.html?type=survival" class="hub-link">Shop Now →</a>
+          <h3>Survival</h3><p>Emergency Gear</p>
+          <a href="category.html?type=survival" class="hub-link">ENTER →</a>
         </div>
         <div class="hub-card">
-          <h3>💡 Ring Lights</h3>
-          <p>Creator lighting</p>
-          <a href="category.html?type=ringlight" class="hub-link">Shop Now →</a>
+          <h3>Lighting</h3><p>Creator Tools</p>
+          <a href="category.html?type=ringlight" class="hub-link">ENTER →</a>
         </div>
         <div class="hub-card">
-          <h3>🧴 Acne Patches</h3>
-          <p>Skincare heroes</p>
-          <a href="category.html?type=acne" class="hub-link">Shop Now →</a>
+          <h3>Skincare</h3><p>Treatment</p>
+          <a href="category.html?type=acne" class="hub-link">ENTER →</a>
         </div>
         <div class="hub-card">
-          <h3>🥤 Stanley Tumblers</h3>
-          <p>Viral drinkware</p>
-          <a href="category.html?type=tumblers" class="hub-link">Shop Now →</a>
+          <h3>Drinkware</h3><p>Viral Tumblers</p>
+          <a href="category.html?type=tumblers" class="hub-link">ENTER →</a>
         </div>
         <div class="hub-card">
-          <h3>🏠 Smart Home</h3>
-          <p>Roborock & Alexa</p>
-          <a href="category.html?type=smarthome" class="hub-link">Shop Now →</a>
+          <h3>Smart</h3><p>Automation</p>
+          <a href="category.html?type=smarthome" class="hub-link">ENTER →</a>
         </div>
         <div class="hub-card">
-          <h3>🎃 Seasonal Deals</h3>
-          <p>Costumes & events</p>
-          <a href="category.html?type=seasonal" class="hub-link">Shop Now →</a>
+          <h3>Seasonal</h3><p>Event Prep</p>
+          <a href="category.html?type=seasonal" class="hub-link">ENTER →</a>
         </div>
         <div class="hub-card">
-          <h3>🔋 Phone Chargers</h3>
-          <p>Fast charge essentials</p>
-          <a href="category.html?type=chargers" class="hub-link">Shop Now →</a>
+          <h3>Power</h3><p>Fast Charging</p>
+          <a href="category.html?type=chargers" class="hub-link">ENTER →</a>
         </div>
         <div class="hub-card">
-          <h3>👕 Athleisure</h3>
-          <p>Comfortable style</p>
-          <a href="category.html?type=athleisure" class="hub-link">Shop Now →</a>
+          <h3>Style</h3><p>Athleisure</p>
+          <a href="category.html?type=athleisure" class="hub-link">ENTER →</a>
         </div>
       </div>
     </section>
-
   </div>
 
-  <!-- YOUR AFFILIATE CONFIG (EMBEDDED FOREVER) -->
   <script src="affiliate-config.js"></script>
-  
   <script>
+    // Expanded to 6 products for perfect symmetry (2 rows of 3)
     const products = [
       { title: "Moccamaster KBGV Coffee Maker", asin: "B01N6N2ARX", price: "$359" },
       { title: "Breville Bambino Plus", asin: "B07GQVY4FR", price: "$499" },
-      { title: "Nespresso Vertuo Plus", asin: "B01N6N3A2K", price: "$179" }
+      { title: "Nespresso Vertuo Plus", asin: "B01N6N3A2K", price: "$179" },
+      { title: "Roborock S8 Pro Ultra", asin: "B0BVB6S9CC", price: "$1,599" },
+      { title: "Anker 737 Power Bank", asin: "B09VPHVT2Z", price: "$149" },
+      { title: "Stanley Quencher H2.0", asin: "B0B61M6Y8C", price: "$45" }
     ];
 
     function renderProducts() {
-      const container = document.getElementById('trending');
+      const container = document.getElementById('trending-grid');
       products.forEach(p => {
-        const affiliateUrl = AFFILIATE_CONFIG.buildUrl(p.asin); // YOUR TAG EMBEDDED
+        const affiliateUrl = typeof AFFILIATE_CONFIG !== 'undefined' 
+          ? AFFILIATE_CONFIG.buildUrl(p.asin) 
+          : `#`; 
+
         container.innerHTML += `
           <div class="product-card">
-            <h3>${p.title}</h3>
-            <div class="price">${p.price}</div>
+            <div>
+              <h3>${p.title}</h3>
+              <div class="price">${p.price}</div>
+            </div>
             <a href="${affiliateUrl}" class="cta" target="_blank" rel="noopener sponsored">
-              🛒 Shop Amazon
+              Shop on Amazon
             </a>
           </div>
         `;
       });
     }
-
     renderProducts();
   </script>
 </body>
