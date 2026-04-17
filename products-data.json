@@ -1,0 +1,16 @@
+[
+  {
+    "title": "100W Solar Panel",
+    "asin": "B0XXXX001",
+    "category": "solar",
+    "image": "https://m.media-amazon.com/images/I/solar.jpg",
+    "description": "Portable solar panel for camping and backup power."
+  },
+  {
+    "title": "30000mAh Power Bank",
+    "asin": "B0XXXX002",
+    "category": "power",
+    "image": "https://m.media-amazon.com/images/I/power.jpg",
+    "description": "High capacity fast charging power bank."
+  }
+]
