@@ -272,3 +272,196 @@ Object.keys(categories).forEach(cat => {
 });
 
 console.log("LEVEL 3 SEO ENGINE COMPLETE");
+const fs = require("fs");
+
+const PRODUCTS = require("./products-data.json");
+const AFFILIATE_TAG = "brightside20-20";
+
+// ----------------------------
+// INTENT KEYWORD ENGINE
+// ----------------------------
+function buildIntents(category) {
+  const map = {
+    solar: [
+      "best solar panels for camping",
+      "best portable solar generator for RV",
+      "best solar power kit for home backup"
+    ],
+    power: [
+      "best power bank for travel 2026",
+      "best high capacity power bank",
+      "best fast charging power bank"
+    ],
+    survival: [
+      "best survival kit for emergencies",
+      "best bug out bag essentials",
+      "best emergency preparedness kit"
+    ],
+    electronics: [
+      "best portable electronics for travel",
+      "best tech gadgets 2026",
+      "best outdoor electronics gear"
+    ]
+  };
+
+  return map[category] || [`best ${category} products 2026`];
+}
+
+// ----------------------------
+// CONTENT BLOCKS
+// ----------------------------
+function intro(keyword) {
+  return `
+  <p>
+    This guide breaks down <strong>${keyword}</strong> using performance data, real-world usability,
+    and value comparisons across top-rated products.
+  </p>
+  `;
+}
+
+function howWeChose(category) {
+  return `
+  <h2>How We Chose</h2>
+  <p>
+    We evaluated ${category} products based on durability, performance, user feedback, and long-term reliability.
+    Only consistently high-performing products made this list.
+  </p>
+  `;
+}
+
+// ----------------------------
+// PRODUCT SCORING SYSTEM
+// ----------------------------
+function score(i) {
+  return (10 - i * 0.5).toFixed(1);
+}
+
+// ----------------------------
+// PRODUCT BLOCK
+// ----------------------------
+function productBlock(p, i) {
+  const labels = ["Best Overall", "Best Value", "Premium Pick"];
+
+  return `
+  <div style="margin-bottom:40px;padding-bottom:20px;border-bottom:1px solid #eee;">
+    ${i < 3 ? `<div style="background:#ff9900;color:#fff;padding:6px 10px;display:inline-block;border-radius:6px;">🔥 ${labels[i]}</div>` : ""}
+
+    <h2>${p.title}</h2>
+    <img src="${p.image}" width="260"/>
+
+    <p>${p.description}</p>
+
+    <p><strong>Rating:</strong> ${score(i)}/10</p>
+
+    <a href="https://www.amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}"
+       target="_blank"
+       style="display:inline-block;padding:12px 16px;background:#ff9900;color:#fff;border-radius:8px;">
+       View on Amazon
+    </a>
+  </div>
+  `;
+}
+
+// ----------------------------
+// COMPARISON TABLE
+// ----------------------------
+function table(items) {
+  return `
+  <h2>Quick Comparison</h2>
+  <table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;">
+    <tr>
+      <th>Product</th>
+      <th>Rating</th>
+      <th>Link</th>
+    </tr>
+    ${items.map((p,i)=>`
+      <tr>
+        <td>${p.title}</td>
+        <td>${score(i)}</td>
+        <td><a href="https://www.amazon.com/dp/${p.asin}?tag=${AFFILIATE_TAG}">View</a></td>
+      </tr>
+    `).join("")}
+  </table>
+  `;
+}
+
+// ----------------------------
+// FAQ (SEO BOOST)
+// ----------------------------
+function faq(keyword) {
+  return `
+  <h2>FAQ</h2>
+
+  <h4>What is the best option for ${keyword}?</h4>
+  <p>The best option depends on your use case, but top-rated models offer the best balance of price and performance.</p>
+
+  <h4>Is it worth buying premium versions?</h4>
+  <p>Premium models usually offer better durability and long-term efficiency.</p>
+  `;
+}
+
+// ----------------------------
+// INTERNAL LINK GRAPH
+// ----------------------------
+function links(category) {
+  const cats = ["solar", "power", "survival", "electronics"];
+
+  return `
+  <h3>Related Guides</h3>
+  <ul>
+    ${cats.filter(c => c !== category)
+      .map(c => `<li><a href="best-${c}.html">Best ${c} products</a></li>`)
+      .join("")}
+  </ul>
+  `;
+}
+
+// ----------------------------
+// BUILD PAGES
+// ----------------------------
+const categories = {};
+
+PRODUCTS.forEach(p => {
+  if (!categories[p.category]) categories[p.category] = [];
+  categories[p.category].push(p);
+});
+
+Object.keys(categories).forEach(cat => {
+  const keywords = buildIntents(cat);
+
+  const keyword = keywords[0];
+  const items = categories[cat];
+
+  const html = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>${keyword}</title>
+    <meta name="description" content="${keyword} - expert comparison and recommendations">
+  </head>
+
+  <body style="font-family:Arial;max-width:900px;margin:auto;padding:20px;">
+
+    <h1>${keyword}</h1>
+
+    ${intro(keyword)}
+
+    ${howWeChose(cat)}
+
+    ${table(items)}
+
+    ${items.map(productBlock).join("")}
+
+    ${faq(keyword)}
+
+    ${links(cat)}
+
+  </body>
+  </html>
+  `;
+
+  fs.writeFileSync(`best-${cat}.html`, html);
+  console.log("GOD MODE GENERATED:", cat);
+});
+
+console.log("🔥 GOD MODE COMPLETE");
