@@ -1,125 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Best Coffee Makers 2026</title>
 
-<title>Best Coffee Makers 2026</title>
-<meta name="description" content="Best coffee makers 2026 reviews and comparisons">
+  <!-- UI SYSTEM -->
+  <link rel="stylesheet" href="ui-core.css">
 
-<link rel="canonical" href="https://brightlane.github.io/shoppingonline/best-coffee-makers-en.html">
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
 
-<style>
-body {
-  font-family: system-ui, sans-serif;
-  max-width: 1000px;
-  margin: auto;
-  background: #f8fafc;
-  padding: 20px;
-}
-
-nav {
-  margin-bottom: 20px;
-}
-
-.product-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.product-card img {
-  max-width: 100%;
-  border-radius: 10px;
-}
-
-.btn {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px 16px;
-  background: #111827;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 8px;
-}
-</style>
-
-<script type="application/ld+json">
-{
- "@context":"https://schema.org",
- "@type":"FAQPage",
- "mainEntity":[{
-   "@type":"Question",
-   "name":"What is the best coffee maker?",
-   "acceptedAnswer":{
-     "@type":"Answer",
-     "text":"The best coffee maker depends on your budget and needs, but we compare the top-performing options available."
-   }
- },{
-   "@type":"Question",
-   "name":"Are these coffee makers worth it?",
-   "acceptedAnswer":{
-     "@type":"Answer",
-     "text":"Yes, these products are selected based on performance, reviews, and overall value."
-   }
- }]
-}
-</script>
-
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>Best Coffee Makers 2026</h1>
+<div class="container">
 
-<nav>
-  <a href="https://brightlane.github.io/shoppingonline/best-vacuum-cleaners-en.html">Vacuum Cleaners</a> |
-  <a href="https://brightlane.github.io/shoppingonline/best-coffee-makers-en.html">Coffee Makers</a> |
-  <a href="https://brightlane.github.io/shoppingonline/best-stanley-quencher-tumblers-en.html">Stanley Tumblers</a> |
-  <a href="https://brightlane.github.io/shoppingonline/best-acne-patches-en.html">Acne Patches</a> |
-  <a href="https://brightlane.github.io/shoppingonline/best-ring-lights-for-phone-en.html">Ring Lights</a>
-</nav>
+  <h1>☕ Best Coffee Makers 2026</h1>
+  <p>Top-rated coffee machines tested for performance, value, and durability.</p>
 
-<main>
-
-<div class="product-card">
-
-  <a href="https://www.amazon.com/dp/B01N6N2ARX?tag=brightlane201-20" target="_blank" rel="noopener noreferrer">
-    <img src="https://m.media-amazon.com/images/I/71KJ+0rFzUL._AC_SL1500_.jpg" alt="Moccamaster KBGV coffee maker" loading="lazy">
-  </a>
-
-  <h2>#1 Moccamaster KBGV</h2>
-
-  <p><strong>Best for:</strong> Home & office use</p>
-
-  <p class="desc">
-    A high-performance coffee maker designed for consistent, high-quality brewing.
-  </p>
-
-  <ul>
-    <li>Top rated in category</li>
-    <li>Best seller</li>
-    <li>Trusted by thousands of users</li>
-  </ul>
-
-  <p>
-    ⭐ 4.8 (12,000 reviews) • 💲 359
-  </p>
-
-  <a class="btn" href="https://www.amazon.com/dp/B01N6N2ARX?tag=brightlane201-20" target="_blank" rel="noopener noreferrer">
-    Buy on Amazon
-  </a>
+  <div id="product-grid" class="grid"></div>
 
 </div>
 
-</main>
+<!-- SYSTEM FILES -->
+<script src="affiliate-config.js"></script>
+<script src="product-renderer.js"></script>
 
-<footer style="margin-top:40px;text-align:center;">
-  <strong>Amazon Affiliate Disclosure</strong><br>
-  We earn from qualifying purchases.<br><br>
-  <a href="https://brightlane.github.io/shoppingonline/index.html">Home</a>
-</footer>
+<script>
+async function loadProducts() {
+  try {
+    const res = await fetch("products-coffee.json");
+    const products = await res.json();
+
+    renderProducts("product-grid", products);
+
+  } catch (err) {
+    console.error("Failed to load products:", err);
+  }
+}
+
+loadProducts();
+</script>
 
 </body>
 </html>
