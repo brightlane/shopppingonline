@@ -1,0 +1,29 @@
+[
+  {
+    "id": "vacuum-1",
+    "name": "Dyson V11 Cordless Vacuum",
+    "asin": "B08K2S1S2R",
+    "image": "https://via.placeholder.com/600x400?text=Dyson+V11",
+    "price": "$399",
+    "category": "vacuum",
+    "slug": "dyson-v11-vacuum"
+  },
+  {
+    "id": "coffee-1",
+    "name": "Breville Espresso Machine",
+    "asin": "B07FNKNFJ9",
+    "image": "https://via.placeholder.com/600x400?text=Breville+Espresso",
+    "price": "$599",
+    "category": "coffee",
+    "slug": "breville-espresso-machine"
+  },
+  {
+    "id": "survival-1",
+    "name": "Jackery Portable Power Station",
+    "asin": "B083KB8HMR",
+    "image": "https://via.placeholder.com/600x400?text=Jackery+Power",
+    "price": "$299",
+    "category": "survival",
+    "slug": "jackery-power-station"
+  }
+]
