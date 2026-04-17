@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BrightLane Category</title>
+
+  <link rel="stylesheet" href="ui-core.css">
+
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .page-title {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .page-title h1 {
+      margin-bottom: 6px;
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="page-title">
+    <h1 id="category-title">Loading...</h1>
+    <p id="category-desc">Please wait...</p>
+  </div>
+
+  <div id="product-grid" class="grid"></div>
+
+</div>
+
+<!-- CORE SYSTEM -->
+<script src="affiliate-config.js"></script>
+<script src="product-renderer.js"></script>
+
+<script>
+/**
+ * Get category from URL:
+ * category.html?type=coffee
+ */
+function getCategory() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("type") || "coffee";
+}
+
+async function loadCategory() {
+  const type = getCategory();
+
+  document.getElementById("category-title").innerText =
+    "Best " + type.charAt(0).toUpperCase() + type.slice(1) + " Products";
+
+  document.getElementById("category-desc").innerText =
+    "Top-rated " + type + " products selected for performance and value.";
+
+  try {
+    const res = await fetch(`products-${type}.json`);
+    const products = await res.json();
+
+    renderProducts("product-grid", products);
+
+  } catch (err) {
+    document.getElementById("product-grid").innerHTML =
+      "<p>Failed to load products.</p>";
+
+    console.error(err);
+  }
+}
+
+loadCategory();
+</script>
+
+</body>
+</html>
