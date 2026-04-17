@@ -1,0 +1,23 @@
+{
+  "updated": "2026-01-01",
+  "products": {
+    "B01N6N2ARX": {
+      "title": "Moccamaster KBGV Coffee Maker",
+      "clicks": 0,
+      "rating": 4.8,
+      "price": "$359.00"
+    },
+    "B07GQVY4FR": {
+      "title": "Breville Bambino Plus Espresso Machine",
+      "clicks": 0,
+      "rating": 4.7,
+      "price": "$499.00"
+    },
+    "B01N6N3A2K": {
+      "title": "Nespresso Vertuo Plus",
+      "clicks": 0,
+      "rating": 4.6,
+      "price": "$179.00"
+    }
+  }
+}
