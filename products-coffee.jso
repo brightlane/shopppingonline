@@ -1,0 +1,29 @@
+[
+  {
+    "title": "Technivorm Moccamaster KBGV",
+    "asin": "B01N6N2ARX",
+    "image": "https://m.media-amazon.com/images/I/moccamaster.jpg", 
+    "price": "359",
+    "rating": "4.8",
+    "reviews": "12000",
+    "description": "Best drip coffee maker 2026 - CNN Underscored"
+  },
+  {
+    "title": "Nespresso Vertuo Next",
+    "asin": "B08G9K1234",
+    "image": "https://m.media-amazon.com/images/I/nespresso.jpg",
+    "price": "169",
+    "rating": "4.6",
+    "reviews": "21000",
+    "description": "Perfect espresso + coffee pods"
+  },
+  {
+    "title": "Breville Barista Express",
+    "asin": "B07C9R78QH",
+    "image": "https://m.media-amazon.com/images/I/breville.jpg",
+    "price": "699",
+    "rating": "4.7",
+    "reviews": "4200",
+    "description": "Pro espresso machine for home"
+  }
+]
