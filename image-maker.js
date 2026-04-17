@@ -1,72 +1,61 @@
 const fs = require("fs");
 const path = require("path");
 
-/**
- * 📦 SOURCE DATA
- */
-const SOURCE_FILE = path.join(__dirname, "products-source.json");
-const OUTPUT_FILE = path.join(__dirname, "products-clean.json");
+const INPUT = path.join(__dirname, "products-source.json");
+const OUTPUT = path.join(__dirname, "products-final.json");
 
 /**
- * 🧠 FALLBACK IMAGE (only used if missing)
+ * 🔥 GUARANTEED FALLBACK IMAGE
  */
 const FALLBACK_IMAGE =
   "https://via.placeholder.com/600x400?text=No+Image+Available";
 
 /**
- * 🔍 VALIDATION
+ * 🧠 VALID IMAGE CHECK
  */
 function isValidImage(img) {
   return typeof img === "string" && img.startsWith("http");
 }
 
 /**
- * 📦 LOAD PRODUCTS
+ * 📦 LOAD SOURCE
  */
-function loadProducts() {
-  if (!fs.existsSync(SOURCE_FILE)) {
-    console.error("❌ Missing products-source.json");
-    process.exit(1);
-  }
-
-  return JSON.parse(fs.readFileSync(SOURCE_FILE, "utf-8"));
+function load() {
+  return JSON.parse(fs.readFileSync(INPUT, "utf-8"));
 }
 
 /**
- * 🧼 FIX IMAGES (CORE FIX)
+ * 🔧 GUARANTEE IMAGE EXISTS (CORE FIX)
  */
-function fixImages(products) {
-  return products.map(p => {
+function enforceImages(products) {
+  return products.map(p => ({
+    ...p,
 
-    return {
-      ...p,
-
-      // 🔥 GUARANTEE IMAGE ALWAYS EXISTS
-      image: isValidImage(p.image) ? p.image : FALLBACK_IMAGE
-    };
-  });
+    // 🔥 GUARANTEE RULE
+    image: isValidImage(p.image) ? p.image : FALLBACK_IMAGE
+  }));
 }
 
 /**
- * 💾 SAVE CLEAN DATA
+ * 💾 SAVE FINAL OUTPUT
  */
-function saveClean(data) {
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(data, null, 2));
-  console.log("✅ Image-fixed dataset created:", OUTPUT_FILE);
+function save(data) {
+  fs.writeFileSync(OUTPUT, JSON.stringify(data, null, 2));
+  console.log("✅ products-final.json now GUARANTEED with images");
 }
 
 /**
  * 🚀 RUN
  */
 function run() {
-  console.log("🔧 Running image maker fix...");
+  console.log("🔧 enforcing image guarantees...");
 
-  const products = loadProducts();
-  const fixed = fixImages(products);
+  const products = load();
+  const fixed = enforceImages(products);
 
-  saveClean(fixed);
+  save(fixed);
 
-  console.log("🏁 IMAGE FIX COMPLETE");
+  console.log("🏁 DONE - every product now has image");
 }
 
 run();
