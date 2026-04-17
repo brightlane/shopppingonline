@@ -1,23 +1,9 @@
 [
   {
-    "title": "100W Solar Panel",
-    "asin": "B0EXAMPLE01",
-    "category": "solar",
-    "image": "https://m.media-amazon.com/images/I/solar.jpg",
-    "description": "Portable solar panel for camping and emergency power."
-  },
-  {
-    "title": "Solar Generator Kit",
-    "asin": "B0EXAMPLE02",
-    "category": "solar",
-    "image": "https://m.media-amazon.com/images/I/solar2.jpg",
-    "description": "Complete off-grid solar generator system."
-  },
-  {
-    "title": "30000mAh Power Bank",
-    "asin": "B0EXAMPLE03",
-    "category": "power",
-    "image": "https://m.media-amazon.com/images/I/power.jpg",
-    "description": "High-capacity fast charging power bank."
+    "title": "EcoFlow Solar Panel",
+    "description": "High efficiency portable solar panel",
+    "image": "https://example.com/image.jpg",
+    "asin": "B0XXXXXXX",
+    "category": "solar"
   }
 ]
