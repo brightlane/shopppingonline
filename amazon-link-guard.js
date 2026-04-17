@@ -1,92 +1,48 @@
-const fs = require("fs");
-const path = require("path");
+const AMAZON_LINK_GUARD = {
+  tag: "brightlane201-20",
+  domain: "https://www.amazon.com",
 
-/**
- * 📦 INPUT / OUTPUT
- */
-const INPUT_FILE = path.join(__dirname, "products-clean.json");
-const OUTPUT_FILE = path.join(__dirname, "products-final.json");
+  /**
+   * Strict ASIN validation
+   */
+  isValidASIN: function (asin) {
+    return typeof asin === "string" && /^[A-Z0-9]{10}$/.test(asin);
+  },
 
-/**
- * 🔥 AFFILIATE TAG (your tracking ID)
- */
-const AFFILIATE_TAG = "brightlane201-20";
+  /**
+   * Build SAFE Amazon URL (no 404 risk)
+   */
+  buildUrl: function (asin) {
+    if (!this.isValidASIN(asin)) {
+      console.error("❌ BLOCKED INVALID ASIN:", asin);
+      return null;
+    }
 
-/**
- * 🧠 VALID ASIN CHECK
- */
-function isValidASIN(asin) {
-  return typeof asin === "string" && /^[A-Z0-9]{10}$/.test(asin);
-}
+    return `${this.domain}/dp/${asin}?tag=${this.tag}`;
+  },
 
-/**
- * 🔗 BUILD SAFE AMAZON LINK
- */
-function buildAmazonLink(asin) {
-  return `https://www.amazon.com/dp/${asin}?tag=${AFFILIATE_TAG}`;
-}
+  /**
+   * Safe navigation handler (use this everywhere)
+   */
+  openProduct: function (asin) {
+    const url = this.buildUrl(asin);
 
-/**
- * 📦 LOAD PRODUCTS
- */
-function loadProducts() {
-  if (!fs.existsSync(INPUT_FILE)) {
-    console.error("❌ Missing products-clean.json");
-    process.exit(1);
+    if (!url) {
+      alert("This product link is not valid.");
+      return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  },
+
+  /**
+   * Safe anchor generator (optional use in renderers)
+   */
+  createLinkHTML: function (asin, label = "View on Amazon") {
+    const url = this.buildUrl(asin);
+
+    if (!url) return "";
+
+    return `<a href="${url}" target="_blank" rel="noopener sponsored">${label}</a>`;
   }
-
-  return JSON.parse(fs.readFileSync(INPUT_FILE, "utf-8"));
-}
-
-/**
- * 🧹 FILTER + FIX PRODUCTS
- */
-function guardProducts(products) {
-  const clean = [];
-
-  products.forEach(p => {
-
-    // ❌ BLOCK INVALID ASIN
-    if (!isValidASIN(p.asin)) {
-      console.log("❌ Removed invalid ASIN:", p.asin);
-      return;
-    }
-
-    // ❌ BLOCK EMPTY TITLE
-    if (!p.title) {
-      console.log("❌ Removed missing title:", p.asin);
-      return;
-    }
-
-    // 🔥 FORCE CORRECT AMAZON LINK
-    p.amazonLink = buildAmazonLink(p.asin);
-
-    clean.push(p);
-  });
-
-  return clean;
-}
-
-/**
- * 💾 SAVE FINAL DATASET
- */
-function save(data) {
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(data, null, 2));
-  console.log("✅ Amazon-safe dataset created:", OUTPUT_FILE);
-}
-
-/**
- * 🚀 RUN
- */
-function run() {
-  console.log("🔐 Running Amazon link guard...");
-
-  const products = loadProducts();
-  const safe = guardProducts(products);
-
-  save(safe);
-
-  console.log("🏁 AMAZON GUARD COMPLETE");
-}
-
-run();
+};
