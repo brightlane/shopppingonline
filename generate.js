@@ -1,6 +1,6 @@
 
 // ================================
-// 🚀 PRODUCT PAGE GENERATOR (CLEAN + SEO + SAFE)
+// 🚀 SEO PRODUCT GENERATOR ENGINE v2
 // ================================
 
 function escapeHTML(str = "") {
@@ -13,82 +13,132 @@ function escapeHTML(str = "") {
 }
 
 // ================================
-// 🧠 SAFE PRODUCT CARD
+// 🧠 ASIN DEDUPLICATION SYSTEM (IMPORTANT FIX)
+// ================================
+
+function removeDuplicateASINs(products = []) {
+  const seen = new Set();
+  const clean = [];
+
+  for (const p of products) {
+    if (!p.asin) continue;
+
+    const asin = p.asin.toUpperCase();
+
+    if (seen.has(asin)) continue;
+
+    seen.add(asin);
+    clean.push({ ...p, asin });
+  }
+
+  return clean;
+}
+
+// ================================
+// 🔗 AMAZON SAFE LINK (FALLBACK PROTECTED)
+// ================================
+
+function amazonLink(asin) {
+  if (!asin || typeof asin !== "string") {
+    return "https://www.amazon.com/?tag=brightlane201-20";
+  }
+
+  const clean = asin.toUpperCase().trim();
+
+  if (clean.length !== 10) {
+    return "https://www.amazon.com/?tag=brightlane201-20";
+  }
+
+  return `https://www.amazon.com/dp/${clean}?tag=brightlane201-20`;
+}
+
+// ================================
+// 🧱 PRODUCT NORMALIZER
+// ================================
+
+function normalizeProduct(p) {
+  return {
+    title: p.title || "Best Amazon Product",
+    asin: p.asin || "",
+    price: p.price || "0.00",
+    rating: p.rating || "4.5",
+    reviews: p.reviews || "1K+",
+    image: p.image || "https://via.placeholder.com/300",
+    description: p.description || "High-quality product selected for performance and value.",
+    category: p.category || "general"
+  };
+}
+
+// ================================
+// 🧠 SEO TITLE GENERATOR
+// ================================
+
+function generateSEOTitle(category) {
+  const map = {
+    vacuum: "Best Vacuum Cleaners 2026",
+    coffee: "Best Coffee Makers 2026",
+    stanley: "Best Stanley Tumblers 2026",
+    acne_patch: "Best Acne Patches 2026",
+    ring_light: "Best Ring Lights for Phone 2026"
+  };
+
+  return map[category] || "Best Products 2026";
+}
+
+// ================================
+// 🎨 PRODUCT CARD RENDERER
 // ================================
 
 function productCard(p, index) {
-  const link = window.amazonLink(p.asin);
-
-  const title = escapeHTML(p.title || "Untitled Product");
-  const image = p.image || "https://via.placeholder.com/300";
-  const price = p.price ? `$${p.price}` : "Check Price";
-  const rating = p.rating || "4.5";
-  const reviews = p.reviews || "1K+";
-
-  const categoryLink = p.category
-    ? `<a href="/${p.category}-hub.html" style="color:#2563eb;text-decoration:none;">More ${p.category} →</a>`
-    : "";
+  const link = amazonLink(p.asin);
 
   return `
   <div style="
     background:#fff;
     border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    margin:20px 0;
+    padding:18px;
+    margin:16px 0;
     display:flex;
-    flex-wrap:wrap;
-    transition:0.2s ease;
+    gap:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
   ">
 
-    <!-- IMAGE -->
-    <a href="${link}" target="_blank" style="flex:0 0 220px;">
-      <img src="${image}"
-        alt="${title}"
-        style="width:220px;height:220px;object-fit:cover;display:block;"
-        loading="lazy"
-      />
+    <a href="${link}" target="_blank">
+      <img src="${p.image}"
+        style="width:160px;height:160px;object-fit:cover;border-radius:12px;" />
     </a>
 
-    <!-- CONTENT -->
-    <div style="flex:1;padding:18px;min-width:250px;">
+    <div style="flex:1;">
 
-      <h2 style="margin:0 0 8px 0;font-size:18px;">
-        ${index + 1}. ${title}
+      <h2 style="font-size:18px;margin:0 0 8px;">
+        ${index + 1}. ${escapeHTML(p.title)}
       </h2>
 
-      <p style="margin:0 0 10px 0;color:#555;font-size:14px;">
-        ${p.description || "High-quality product selected for performance, durability, and value."}
+      <p style="font-size:13px;color:#555;">
+        ${escapeHTML(p.description)}
       </p>
 
-      <p style="margin:8px 0;font-size:13px;color:#444;">
-        ⭐ ${rating} (${reviews} reviews)
+      <p style="font-weight:700;color:#16a34a;">
+        $${p.price}
       </p>
 
-      <p style="margin:8px 0;font-weight:700;color:#16a34a;">
-        ${price}
+      <p style="font-size:13px;color:#444;">
+        ⭐ ${p.rating} (${p.reviews})
       </p>
 
-      <!-- CTA -->
       <a href="${link}" target="_blank"
-        onclick="trackAffiliateClick('${p.asin}', '${p.id || ""}')"
         style="
           display:inline-block;
-          padding:12px 16px;
+          margin-top:10px;
+          padding:10px 14px;
           background:linear-gradient(135deg,#ff7a18,#ff3d00);
           color:#fff;
           border-radius:10px;
           text-decoration:none;
           font-weight:700;
-          margin-top:10px;
         ">
         🛒 View on Amazon
       </a>
-
-      <!-- INTERNAL SEO LINK -->
-      <div style="margin-top:10px;font-size:13px;">
-        ${categoryLink}
-      </div>
 
     </div>
   </div>
@@ -96,25 +146,29 @@ function productCard(p, index) {
 }
 
 // ================================
-// 📦 PRODUCT PAGE RENDERER
+// 🚀 MAIN RENDER FUNCTION
 // ================================
 
 function renderProducts(products = []) {
   const container = document.getElementById("products");
 
-  if (!container) {
-    console.error("Missing #products container");
-    return;
-  }
+  if (!container) return;
 
-  container.innerHTML = products.map(productCard).join("");
+  // STEP 1: CLEAN DATA
+  let clean = products.map(normalizeProduct);
+
+  // STEP 2: REMOVE DUPLICATES (IMPORTANT FIX)
+  clean = removeDuplicateASINs(clean);
+
+  // STEP 3: RENDER
+  container.innerHTML = clean.map(productCard).join("");
 }
 
 // ================================
-// 🔎 SIMPLE SEO HELPER (OPTIONAL)
+// 📊 SCHEMA INJECTION (SEO BOOST)
 // ================================
 
-function injectProductSchema(product) {
+function injectSchema(product) {
   const schema = {
     "@context": "https://schema.org/",
     "@type": "Product",
@@ -124,7 +178,7 @@ function injectProductSchema(product) {
     "offers": {
       "@type": "Offer",
       "priceCurrency": "USD",
-      "price": product.price || "0",
+      "price": product.price,
       "availability": "https://schema.org/InStock"
     }
   };
