@@ -1,8 +1,8 @@
-name: HARD DEBUG GENERATION
+name: Generate Site
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -12,46 +12,30 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Show full repo structure
-        run: |
-          echo "===== ROOT FILES ====="
-          ls -la
-          echo "===== FULL TREE ====="
-          find .
-
-      - name: Verify generator exists
-        run: |
-          if [ -f generate.js ]; then echo "generate.js FOUND"; else echo "MISSING generate.js"; exit 1; fi
-
-      - name: Verify product data exists
-        run: |
-          if [ -f products-data.json ]; then echo "products-data.json FOUND"; else echo "MISSING products-data.json"; exit 1; fi
-
-      - name: Show product data
-        run: cat products-data.json
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Run generator (FORCED LOGGING)
-        run: |
-          echo "STARTING GENERATION"
-          node generate.js
-          echo "GENERATION FINISHED"
+      - name: Install deps
+        run: npm install || true
 
-      - name: Show output files
-        run: |
-          echo "===== GENERATED FILES ====="
-          ls -la
-          echo "===== BEST FILES ====="
-          find . -name "best-*.html"
+      - name: Run generator
+        run: node generate.js
 
-      - name: Commit results
-        run: |
-          git config --global user.name "auto-bot"
-          git config --global user.email "auto-bot@users.noreply.github.com"
-          git add .
-          git commit -m "auto generate debug build" || echo "no changes"
-          git push
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy
+        uses: actions/deploy-pages@v4
