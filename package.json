@@ -1,0 +1,25 @@
+{
+  "name": "brightlane-affiliate-site",
+  "version": "1.0.0",
+  "description": "Automated Amazon affiliate site with programmatic SEO page generation",
+  "main": "generate.js",
+  "type": "commonjs",
+  "scripts": {
+    "generate": "node generate.js",
+    "build": "node generate.js",
+    "start": "node generate.js"
+  },
+  "keywords": [
+    "affiliate",
+    "amazon",
+    "seo",
+    "programmatic-seo",
+    "nodejs",
+    "automation"
+  ],
+  "author": "brightlane",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
