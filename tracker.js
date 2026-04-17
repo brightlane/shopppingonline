@@ -1,13 +1,17 @@
-function trackClick(productName, url) {
-  // Get existing stats
-  let stats = JSON.parse(localStorage.getItem("clickStats")) || {};
+// tracker.js
 
-  // Increase count
-  stats[productName] = (stats[productName] || 0) + 1;
+function trackClick(productId, asin) {
+  const data = {
+    productId,
+    asin,
+    time: new Date().toISOString()
+  };
 
-  // Save back
-  localStorage.setItem("clickStats", JSON.stringify(stats));
+  console.log("TRACK:", data);
 
-  // Redirect to Amazon
-  window.open(url, "_blank");
+  // OPTIONAL: send to backend later
+  // fetch("/track", {
+  //   method: "POST",
+  //   body: JSON.stringify(data)
+  // });
 }
