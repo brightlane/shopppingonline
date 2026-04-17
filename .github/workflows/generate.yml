@@ -1,33 +1,18 @@
-name: Generate Product Pages
-
-on:
-  workflow_dispatch:  # ← RUN BUTTON MAGIC
-  push:
-    branches: [ main ]
-    paths:
-      - 'generate.js'
-      - 'products-*.json'
-
-jobs:
-  generate:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
+- name: Commit & Push
+  run: |
+    git config --local user.email "action@github.com"
+    git config --local user.name "GitHub Action"
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+    # Pull latest (no clean - keeps existing pages!)
+    git pull origin main || true
     
-    - name: Generate SEO pages
-      run: node generate.js
+    # Generate new pages (overwrites old ones)
+    node generate.js
     
-    - name: Commit & Push
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git checkout -- .
-        git clean -fd
-        git add *.html sitemap.xml robots.txt index.html
-        git commit -m "🤖 Generate $(find . -name '*.html' | wc -l) SEO pages [skip ci]" || exit 0
-        git push origin HEAD:main
+    # Add ONLY new/modified files
+    git add *.html sitemap.xml robots.txt index.html || true
+    
+    # Commit ONLY if changes
+    git diff --staged --quiet || git commit -m "🤖 Regenerate $(ls *.html 2>/dev/null | wc -l | xargs) SEO pages"
+    
+    git push origin HEAD:main || true
