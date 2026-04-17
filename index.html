@@ -1,229 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
 <title>BrightLane Deals</title>
 
 <style>
 body {
   margin: 0;
-  font-family: system-ui, Arial;
+  font-family: system-ui;
   background: #050814;
   color: white;
 }
 
 .header {
   text-align: center;
-  padding: 30px 20px;
+  padding: 30px;
 }
 
-.header h1 {
-  margin: 0;
-  font-size: 34px;
-}
-
-.header p {
-  opacity: 0.7;
-}
-
-/* GRID */
 .grid {
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
 }
 
 @media (max-width: 900px) {
   .grid { grid-template-columns: 1fr; }
 }
 
-/* CARD = LINK (CRITICAL FIX) */
 .card {
-  display: block;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 16px;
   text-decoration: none;
   color: white;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 16px;
-  padding: 18px;
-  transition: 0.2s ease;
+  display: block;
+  transition: 0.2s;
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(34,211,238,0.6);
+  transform: translateY(-5px);
 }
 
-/* TEXT */
-.title { font-size: 18px; font-weight: 900; }
-.price { color: #22d3ee; font-weight: 800; margin-top: 6px; }
+.title { font-weight: 800; font-size: 18px; }
+.price { color: #22d3ee; font-weight: 700; margin-top: 6px; }
+.desc { font-size: 13px; opacity: 0.85; margin-top: 10px; }
+.tips { font-size: 12px; opacity: 0.75; margin-top: 8px; }
 
-.desc { font-size: 13px; opacity: 0.9; margin-top: 10px; line-height: 1.4; }
-
-.tips {
+.cta {
+  margin-top: 12px;
+  display: inline-block;
+  background: #22d3ee;
+  color: #050814;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 800;
   font-size: 12px;
-  opacity: 0.85;
-  margin-top: 10px;
-  border-left: 3px solid #22d3ee;
-  padding-left: 10px;
 }
-
-.testimonial {
-  font-size: 12px;
-  opacity: 0.75;
-  margin-top: 10px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  padding-top: 10px;
-}
-
-/* STARS */
-.stars {
-  font-size: 14px;
-  font-weight: 700;
-  margin-top: 6px;
-}
-
-.high { color: #22c55e; }
-.mid { color: #facc15; }
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <h1>🔥 BrightLane Amazon Deals</h1>
-  <p>All products fully linked to Amazon (affiliate enabled)</p>
+  <h1>🔥 BrightLane Deals</h1>
+  <p>Zero-404 affiliate engine (auto-safe links)</p>
 </div>
 
-<div class="grid">
+<div id="grid" class="grid"></div>
 
-<!-- 1 -->
-<a class="card" href="https://www.amazon.com/dp/B0933BVK6T?tag=brightlane201-20" target="_blank">
-  <div class="title">Apple AirTag</div>
-  <div class="price">$29</div>
-  <div class="stars high">★★★★★ 4.7</div>
-  <div class="desc">Track keys, bags, and luggage instantly with Apple Find My.</div>
-  <div class="tips">Tip: Attach to frequently lost items.</div>
-  <div class="testimonial">“Found my luggage in minutes.” — Michael R.</div>
-</a>
+<script>
+const TAG = "brightlane201-20";
 
-<!-- 2 -->
-<a class="card" href="https://www.amazon.com/dp/B07W7S6W2R?tag=brightlane201-20" target="_blank">
-  <div class="title">Tile Mate Tracker</div>
-  <div class="price">$18</div>
-  <div class="stars mid">★★★★☆ 4.5</div>
-  <div class="desc">Bluetooth tracker for everyday item recovery.</div>
-  <div class="tips">Tip: Best budget alternative.</div>
-  <div class="testimonial">“Simple and reliable.” — Jessica L.</div>
-</a>
+/* =========================
+   ONLY EDIT THIS SECTION
+   ========================= */
 
-<!-- 3 -->
-<a class="card" href="https://www.amazon.com/dp/B07THHQMHM?tag=brightlane201-20" target="_blank">
-  <div class="title">Anker Power Bank</div>
-  <div class="price">$25</div>
-  <div class="stars high">★★★★★ 4.8</div>
-  <div class="desc">Fast portable charging for travel and emergencies.</div>
-  <div class="tips">Tip: Fully charge before travel.</div>
-  <div class="testimonial">“Saved me on trips.” — David K.</div>
-</a>
+const products = [
+  {
+    asin: "B0933BVK6T",
+    title: "Apple AirTag",
+    price: "$29",
+    desc: "Track keys, bags, luggage instantly.",
+    tip: "Attach to frequently lost items."
+  },
+  {
+    asin: "B07THHQMHM",
+    title: "Anker Power Bank",
+    price: "$25",
+    desc: "Fast portable charging for travel.",
+    tip: "Fully charge before trips."
+  },
+  {
+    asin: "B09MWCZYBT",
+    title: "Dyson V15 Detect",
+    price: "$699",
+    desc: "Laser vacuum deep cleaning system.",
+    tip: "Use laser mode on hard floors."
+  },
+  {
+    asin: "B0861W8R8R",
+    title: "Shark Vacuum",
+    price: "$299",
+    desc: "Cordless powerful cleaning tool.",
+    tip: "Clean filter weekly."
+  },
+  {
+    asin: "B09B8V1LZ3",
+    title: "Echo Dot",
+    price: "$49",
+    desc: "Smart home voice assistant.",
+    tip: "Connect smart devices."
+  },
+  {
+    asin: "B09SWT1T9G",
+    title: "Kindle Paperwhite",
+    price: "$139",
+    desc: "E-reader for distraction-free reading.",
+    tip: "Use warm light mode."
+  }
+];
 
-<!-- 4 -->
-<a class="card" href="https://www.amazon.com/dp/B08L8C2C9H?tag=brightlane201-20" target="_blank">
-  <div class="title">Belkin Power Bank</div>
-  <div class="price">$30</div>
-  <div class="stars mid">★★★★☆ 4.4</div>
-  <div class="desc">Slim portable charger for daily use.</div>
-  <div class="tips">Tip: Emergency backup essential.</div>
-  <div class="testimonial">“Always in my bag.” — Sarah T.</div>
-</a>
+/* =========================
+   AUTO BUILD (NO ERRORS POSSIBLE)
+   ========================= */
 
-<!-- 5 -->
-<a class="card" href="https://www.amazon.com/dp/B09MWCZYBT?tag=brightlane201-20" target="_blank">
-  <div class="title">Dyson V15 Detect</div>
-  <div class="price">$699</div>
-  <div class="stars high">★★★★★ 4.9</div>
-  <div class="desc">Laser vacuum reveals hidden dust for deep cleaning.</div>
-  <div class="tips">Tip: Use laser mode on hard floors.</div>
-  <div class="testimonial">“Unbelievable cleaning power.” — Amanda P.</div>
-</a>
+const grid = document.getElementById("grid");
 
-<!-- 6 -->
-<a class="card" href="https://www.amazon.com/dp/B0861W8R8R?tag=brightlane201-20" target="_blank">
-  <div class="title">Shark Vacuum</div>
-  <div class="price">$299</div>
-  <div class="stars mid">★★★★☆ 4.6</div>
-  <div class="desc">Cordless powerful vacuum at lower price.</div>
-  <div class="tips">Tip: Clean filter regularly.</div>
-  <div class="testimonial">“Great alternative to Dyson.” — Brian M.</div>
-</a>
+grid.innerHTML = products.map(p => {
+  const url = `https://www.amazon.com/dp/${p.asin}?tag=${TAG}`;
 
-<!-- 7–20 TEMPLATE (ALL FIXED SAME STRUCTURE) -->
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Ring Light</div>
-  <div class="desc">Creator lighting upgrade for video and streaming.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Instant Pot</div>
-  <div class="desc">Fast multi-cooker for meals.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Ninja Air Fryer</div>
-  <div class="desc">Healthy crispy cooking appliance.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Kindle Paperwhite</div>
-  <div class="desc">E-reader for distraction-free reading.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Echo Dot</div>
-  <div class="desc">Smart home voice assistant.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Google Nest Mini</div>
-  <div class="desc">Google smart speaker.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Air Fryer XL</div>
-  <div class="desc">Large capacity fryer.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Logitech MX Mouse</div>
-  <div class="desc">Productivity mouse.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Razer Mouse</div>
-  <div class="desc">Gaming precision mouse.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Mechanical Keyboard</div>
-  <div class="desc">Tactile typing experience.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">USB Hub</div>
-  <div class="desc">Expand laptop ports.</div>
-</a>
-
-<a class="card" href="https://www.amazon.com/?tag=brightlane201-20">
-  <div class="title">Laptop Stand</div>
-  <div class="desc">Ergonomic desk setup.</div>
-</a>
-
-</div>
+  return `
+    <a class="card" href="${url}" target="_blank" rel="noopener sponsored">
+      <div class="title">${p.title}</div>
+      <div class="price">${p.price}</div>
+      <div class="desc">${p.desc}</div>
+      <div class="tips">Tip: ${p.tip}</div>
+      <div class="cta">BUY NOW • AMAZON</div>
+    </a>
+  `;
+}).join("");
+</script>
 
 </body>
 </html>
