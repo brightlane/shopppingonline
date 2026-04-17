@@ -5,18 +5,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- SEO -->
 <title>Top Amazon Finds 2026 | Trending Deals & Viral Products</title>
 
-<meta name="description" content="Discover top trending Amazon products in Tech, Home, and Viral categories. Updated affiliate deals and best-selling items.">
-<meta name="keywords" content="Amazon finds, best Amazon products, trending Amazon deals, viral products, tech gadgets, home gadgets">
+<meta name="description" content="Discover trending Amazon products in tech, home, and viral categories. Updated daily with affiliate deals and best-selling items.">
+<meta name="keywords" content="Amazon finds, best Amazon products, viral Amazon gadgets, tech deals 2026, home gadgets">
 <meta name="author" content="Affiliate Site">
 
 <meta property="og:title" content="Top Amazon Finds 2026">
-<meta property="og:description" content="Best trending Amazon products in one place.">
+<meta property="og:description" content="Trending Amazon products in one place.">
 <meta property="og:type" content="website">
 
-<link rel="canonical" href="https://your-github-username.github.io/">
+<link rel="canonical" href="https://your-username.github.io/your-repo/">
 
 <style>
 
@@ -48,7 +47,20 @@ body {
   color: #666;
 }
 
-/* CATEGORIES */
+/* NAV LINKS */
+.nav {
+  text-align: center;
+  padding: 10px;
+}
+
+.nav a {
+  margin: 0 8px;
+  text-decoration: none;
+  color: #ff9900;
+  font-weight: bold;
+}
+
+/* CATEGORY BUTTONS */
 .categories {
   text-align: center;
   padding: 15px;
@@ -79,6 +91,7 @@ body {
   margin: auto;
 }
 
+/* CARD */
 .card {
   background: white;
   border-radius: 12px;
@@ -142,6 +155,7 @@ body {
 }
 
 </style>
+
 </head>
 
 <body>
@@ -157,7 +171,14 @@ body {
   As an Amazon Associate I earn from qualifying purchases.
 </div>
 
-<!-- CATEGORIES -->
+<!-- NAV LINKS (multi-page SEO system) -->
+<div class="nav">
+  <a href="index.html">All</a>
+  <a href="tech.html">Tech</a>
+  <a href="home.html">Home</a>
+</div>
+
+<!-- CATEGORY FILTERS -->
 <div class="categories">
   <button onclick="filterProducts('All')">All</button>
   <button onclick="filterProducts('Tech')">Tech</button>
@@ -176,15 +197,14 @@ body {
     <a href="contact.html">Contact</a>
   </div>
 
-  <p>
-    This site is not affiliated with Amazon.com.
-  </p>
+  <p>This site is not affiliated with Amazon.com</p>
 
 </div>
 
-<!-- LOAD PRODUCTS -->
+<!-- PRODUCTS DATA -->
 <script src="products.js"></script>
 
+<!-- MAIN LOGIC -->
 <script>
 const grid = document.getElementById("productGrid");
 
@@ -199,18 +219,24 @@ function renderProducts(list) {
           <div class="badge">${p.badge}</div>
           <div class="title">${p.title}</div>
           <div class="desc">${p.desc}</div>
-          <a class="btn" href="${p.link}" target="_blank">View on Amazon</a>
+          <a class="btn" href="${p.link}" target="_blank">
+            Check Price on Amazon 🔥
+          </a>
         </div>
       </div>
     `;
   });
 }
 
-function filterProducts(cat) {
-  if (cat === "All") renderProducts(products);
-  else renderProducts(products.filter(p => p.category === cat));
+function filterProducts(category) {
+  if (category === "All") {
+    renderProducts(products);
+  } else {
+    renderProducts(products.filter(p => p.category === category));
+  }
 }
 
+// initial load
 renderProducts(products);
 </script>
 
