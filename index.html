@@ -1,220 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BrightLane Deals 2026</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    :root {
-      --bg: #050505;
-      --accent: #00ff41; /* Matrix Green / Cyber Lime */
-      --card-bg: #111111;
-      --border: #222222;
-      --text: #ffffff;
-      --text-dim: #888888;
-    }
+<title>BrightLane Deals</title>
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 
-    body {
-      font-family: 'Space Grotesk', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-    }
+<style>
+:root {
+  --bg: #0a0f1c;
+  --card: #11182b;
+  --accent: #4da3ff;
+  --accent-glow: rgba(77,163,255,0.4);
+  --text: #ffffff;
+  --muted: #9aa4b2;
+  --border: #1f2a44;
+}
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    /* --- HERO --- */
-    .hero {
-      padding: 120px 0 80px;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
+body {
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  color: var(--text);
+}
 
-    .hero h1 {
-      font-family: 'Syncopate', sans-serif;
-      font-size: clamp(2rem, 6vw, 4.5rem);
-      text-transform: uppercase;
-      letter-spacing: -2px;
-      margin-bottom: 15px;
-      background: linear-gradient(to right, #fff, #444);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
 
-    .hero p { color: var(--text-dim); font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; }
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 100px 0 60px;
+}
 
-    /* --- SYMMETRIC GRIDS --- */
-    .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
-    
-    .section-label {
-      font-size: 0.8rem;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      margin-bottom: 40px;
-      display: block;
-      text-align: center;
-    }
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -1px;
+}
 
-    /* 3-Column Grid for both 6 and 9 items */
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
+.hero p {
+  color: var(--muted);
+  margin-top: 10px;
+}
 
-    /* --- PRODUCT CARDS (Set of 6) --- */
-    .product-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 40px 30px;
-      transition: all 0.4s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+/* Section */
+.section {
+  padding: 60px 0;
+}
 
-    .product-card:hover {
-      border-color: var(--accent);
-      transform: scale(1.02);
-      box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
-    }
+.section-label {
+  text-align: center;
+  margin-bottom: 40px;
+  color: var(--accent);
+  letter-spacing: 3px;
+  font-size: 0.8rem;
+}
 
-    .product-card h3 { font-size: 1.25rem; margin-bottom: 10px; font-weight: 500; }
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
 
-    .price { font-size: 2rem; font-weight: 700; margin-bottom: 30px; color: var(--accent); }
+/* Product Card (FULL CLICKABLE) */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: linear-gradient(145deg, #0f172a, #020617);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: 0.35s ease;
+}
 
-    .cta {
-      display: block;
-      text-align: center;
-      padding: 15px;
-      border: 1px solid var(--text);
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      transition: 0.3s;
-    }
+.product-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent);
+  box-shadow: 0 0 40px var(--accent-glow);
+}
 
-    .cta:hover { background: var(--text); color: var(--bg); }
+/* Image */
+.product-img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  background: #020617;
+  border-radius: 10px;
+  padding: 10px;
+}
 
-    /* --- HUB CARDS (Set of 9) --- */
-    .hub-card {
-      border: 1px solid var(--border);
-      padding: 30px;
-      text-align: center;
-      transition: 0.3s;
-    }
+/* Badge */
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 5px 8px;
+  border-radius: 4px;
+}
 
-    .hub-card:hover { background: var(--accent); border-color: var(--accent); }
-    .hub-card:hover * { color: #000 !important; }
+/* Title */
+.product-card h3 {
+  font-size: 1rem;
+  min-height: 50px;
+}
 
-    .hub-card h3 { font-size: 1rem; text-transform: uppercase; margin-bottom: 5px; }
-    .hub-card p { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 20px; }
-    .hub-link { font-weight: 700; text-decoration: none; color: var(--text); font-size: 0.8rem; }
+/* Price */
+.price {
+  font-size: 1.5rem;
+  color: var(--accent);
+  font-weight: 700;
+}
 
-    /* Responsive */
-    @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 600px) { .grid-3 { grid-template-columns: 1fr; } }
-  </style>
+/* CTA */
+.cta {
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(77,163,255,0.1);
+  border: 1px solid var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.product-card:hover .cta {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="container">
-    <section class="hero">
-      <h1>BrightLane</h1>
-      <p>The 2026 Digital Curation</p>
-    </section>
+<div class="container">
 
-    <section class="section">
-      <span class="section-label">Trending Highlights</span>
-      <div id="trending-grid" class="grid-3"></div>
-    </section>
+  <section class="hero">
+    <h1>BrightLane</h1>
+    <p>Premium Finds • Curated Deals • 2026</p>
+  </section>
 
-    <section class="section">
-      <span class="section-label">Category Index</span>
-      <div class="grid-3">
-        <div class="hub-card">
-          <h3>Coffee</h3><p>Espresso & Drip</p>
-          <a href="category.html?type=coffee" class="hub-link">ENTER →</a>
-        </div>
-        <div class="hub-card">
-          <h3>Survival</h3><p>Emergency Gear</p>
-          <a href="category.html?type=survival" class="hub-link">ENTER →</a>
-        </div>
-        <div class="hub-card">
-          <h3>Lighting</h3><p>Creator Tools</p>
-          <a href="category.html?type=ringlight" class="hub-link">ENTER →</a>
-        </div>
-        <div class="hub-card">
-          <h3>Skincare</h3><p>Treatment</p>
-          <a href="category.html?type=acne" class="hub-link">ENTER →</a>
-        </div>
-        <div class="hub-card">
-          <h3>Drinkware</h3><p>Viral Tumblers</p>
-          <a href="category.html?type=tumblers" class="hub-link">ENTER →</a>
-        </div>
-        <div class="hub-card">
-          <h3>Smart</h3><p>Automation</p>
-          <a href="category.html?type=smarthome" class="hub-link">ENTER →</a>
-        </div>
-        <div class="hub-card">
-          <h3>Seasonal</h3><p>Event Prep</p>
-          <a href="category.html?type=seasonal" class="hub-link">ENTER →</a>
-        </div>
-        <div class="hub-card">
-          <h3>Power</h3><p>Fast Charging</p>
-          <a href="category.html?type=chargers" class="hub-link">ENTER →</a>
-        </div>
-        <div class="hub-card">
-          <h3>Style</h3><p>Athleisure</p>
-          <a href="category.html?type=athleisure" class="hub-link">ENTER →</a>
-        </div>
-      </div>
-    </section>
-  </div>
+  <section class="section">
+    <div class="section-label">TRENDING NOW</div>
+    <div id="grid" class="grid"></div>
+  </section>
 
-  <script src="affiliate-config.js"></script>
-  <script>
-    // Expanded to 6 products for perfect symmetry (2 rows of 3)
-    const products = [
-      { title: "Moccamaster KBGV Coffee Maker", asin: "B01N6N2ARX", price: "$359" },
-      { title: "Breville Bambino Plus", asin: "B07GQVY4FR", price: "$499" },
-      { title: "Nespresso Vertuo Plus", asin: "B01N6N3A2K", price: "$179" },
-      { title: "Roborock S8 Pro Ultra", asin: "B0BVB6S9CC", price: "$1,599" },
-      { title: "Anker 737 Power Bank", asin: "B09VPHVT2Z", price: "$149" },
-      { title: "Stanley Quencher H2.0", asin: "B0B61M6Y8C", price: "$45" }
-    ];
+</div>
 
-    function renderProducts() {
-      const container = document.getElementById('trending-grid');
-      products.forEach(p => {
-        const affiliateUrl = typeof AFFILIATE_CONFIG !== 'undefined' 
-          ? AFFILIATE_CONFIG.buildUrl(p.asin) 
-          : `#`; 
+<script>
+const TAG = "brightlane-20";
 
-        container.innerHTML += `
-          <div class="product-card">
-            <div>
-              <h3>${p.title}</h3>
-              <div class="price">${p.price}</div>
-            </div>
-            <a href="${affiliateUrl}" class="cta" target="_blank" rel="noopener sponsored">
-              Shop on Amazon
-            </a>
-          </div>
-        `;
-      });
-    }
-    renderProducts();
-  </script>
+/* PRODUCTS */
+const products = [
+  { title: "Moccamaster KBGV Coffee Maker", asin: "B01N6N2ARX", price: "$359", badge: "BEST SELLER" },
+  { title: "Breville Bambino Plus Espresso Machine", asin: "B07GQVY4FR", price: "$499", badge: "TRENDING" },
+  { title: "Nespresso Vertuo Plus Coffee System", asin: "B01N6N3A2K", price: "$179", badge: "HOT" },
+  { title: "Roborock S8 Pro Ultra Robot Vacuum", asin: "B0BVB6S9CC", price: "$1,599", badge: "PREMIUM" },
+  { title: "Anker 737 Power Bank", asin: "B09VPHVT2Z", price: "$149", badge: "FAST CHARGE" },
+  { title: "Stanley Quencher H2.0 Tumbler", asin: "B0B61M6Y8C", price: "$45", badge: "VIRAL" }
+];
+
+/* BUILD AMAZON LINK */
+function amazon(asin) {
+  return `https://www.amazon.com/dp/${asin}?tag=${TAG}`;
+}
+
+/* RENDER */
+function render() {
+  const grid = document.getElementById("grid");
+
+  products.forEach(p => {
+    const url = amazon(p.asin);
+
+    grid.innerHTML += `
+      <a href="${url}" target="_blank" rel="nofollow noopener sponsored" class="product-card">
+
+        <div class="badge">${p.badge}</div>
+
+        <img 
+          class="product-img"
+          src="https://images-na.ssl-images-amazon.com/images/P/${p.asin}.01.LZZZZZZZ.jpg"
+          alt="${p.title}"
+        >
+
+        <h3>${p.title}</h3>
+        <div class="price">${p.price}</div>
+
+        <div class="cta">View on Amazon →</div>
+
+      </a>
+    `;
+  });
+}
+
+render();
+</script>
+
 </body>
 </html>
