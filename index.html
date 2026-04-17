@@ -1,305 +1,311 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BrightLane Deals Store 2026</title>
-  <meta name="description" content="Best Amazon deals, top-rated products across coffee, survival, beauty, tumblers, smart home & more.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BrightLane Deals 2026</title>
+  <meta name="description" content="Curated Amazon deals in beauty, tech, home & more.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      --card-hover-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      --bg-primary: #f8fafc;
-      --text-primary: #1e293b;
-      --text-secondary: #64748b;
-      --border-color: #e2e8f0;
+      --bg: #fefefe;
+      --glass: rgba(255,255,255,0.85);
+      --glass-border: rgba(255,255,255,0.2);
+      --shadow-lg: 0 25px 50px -12px rgba(0,0,0,0.1);
+      --shadow-xl: 0 35px 60px -12px rgba(0,0,0,0.15);
+      --gradient-1: 180deg, #f8fafc 0%, #e2e8f0 100%;
+      --gradient-2: 135deg, #3b82f6 0%, #1d4ed8 50%, #1e3a8a 100%;
+      --radius: 24px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(var(--gradient-1)) fixed;
+      color: #1e293b;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 2rem;
     }
 
-    header {
+    /* Hero */
+    .hero {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      padding: 4rem 2rem;
       text-align: center;
-      padding: 60px 20px 40px;
-      background: var(--primary-gradient);
-      color: white;
-      border-radius: 20px;
-      margin-bottom: 40px;
+      margin-bottom: 4rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      background: linear-gradient(var(--gradient-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      letter-spacing: -0.025em;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: #64748b;
+      max-width: 600px;
+      margin: 0 auto;
+      font-weight: 400;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 4rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #1e293b;
+    }
+
+    /* Trending Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .product-card {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: var(--shadow-lg);
       position: relative;
       overflow: hidden;
     }
 
-    header::before {
-      content: '';
-      position: absolute;
-      top: -50%; right: -50%;
-      width: 200%; height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      animation: float 6s ease-in-out infinite;
+    .product-card:hover {
+      transform: translateY(-1rem) scale(1.02);
+      box-shadow: var(--shadow-xl);
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(180deg); }
-    }
-
-    header h1 {
-      font-size: 3rem; font-weight: 800;
-      margin: 0 0 16px; position: relative; z-index: 1;
-    }
-
-    header p {
-      font-size: 1.2rem; opacity: 0.95;
-      max-width: 600px; margin: 0 auto;
-      position: relative; z-index: 1;
-    }
-
-    .section-title {
-      font-size: 2rem; font-weight: 700;
-      margin: 40px 0 20px;
-      display: flex; align-items: center; gap: 12px;
-      color: var(--text-primary);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin-top: 20px;
-    }
-
-    .card {
-      background: white; border-radius: 20px;
-      padding: 24px; box-shadow: var(--card-shadow);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative; overflow: hidden;
-      border: 1px solid var(--border-color);
-    }
-
-    .card::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 4px;
-      background: var(--accent-gradient);
-      transform: scaleX(0); transition: transform 0.4s ease;
-    }
-
-    .card:hover { 
-      transform: translateY(-12px); 
-      box-shadow: var(--card-hover-shadow); 
-    }
-
-    .card:hover::before { transform: scaleX(1); }
-
-    .card h3 {
-      font-size: 1.25rem; font-weight: 700;
-      margin: 0 0 12px; line-height: 1.3;
-      color: var(--text-primary);
+    .product-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
     }
 
     .price {
-      font-size: 1.5rem; font-weight: 800;
-      color: #dc2626; margin: 8px 0 16px;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #dc2626;
+      margin-bottom: 1.5rem;
     }
 
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      margin-top: 16px; padding: 12px 24px;
-      background: var(--primary-gradient); color: white;
-      text-decoration: none; border-radius: 12px;
-      font-size: 1rem; font-weight: 600;
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(var(--gradient-2));
+      color: white;
+      text-decoration: none;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 1rem;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 10px 25px rgba(59,130,246,0.3);
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    .cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(59,130,246,0.4);
     }
 
+    /* Category Hubs */
     .hub-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Optimized for 9 */
-      gap: 18px;
-      margin-top: 30px;
-      max-width: 100%;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
     }
 
-    .hub {
-      background: white; padding: 28px;
-      border-radius: 20px; box-shadow: var(--card-shadow);
-      transition: all 0.4s ease;
-      border: 1px solid var(--border-color);
-      text-align: center; position: relative;
+    .hub-card {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
     }
 
-    .hub:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--card-hover-shadow);
+    .hub-card:hover {
+      transform: translateY(-0.75rem) scale(1.02);
+      box-shadow: var(--shadow-xl);
     }
 
-    .hub h3 {
-      font-size: 1.5rem; font-weight: 700;
-      margin: 0 0 12px; color: var(--text-primary);
+    .hub-card h3 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(var(--gradient-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .hub p {
-      color: var(--text-secondary); margin: 0 0 20px;
-      font-size: 1.05rem;
+    .hub-card p {
+      color: #64748b;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
     }
 
-    .hub a {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 12px 24px; background: var(--accent-gradient);
-      color: white; border-radius: 12px;
-      text-decoration: none; font-weight: 600;
+    .hub-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1.75rem;
+      background: rgba(59,130,246,0.1);
+      color: #1d4ed8;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 14px rgba(245, 87, 108, 0.4);
+      border: 1px solid rgba(59,130,246,0.2);
     }
 
-    .hub a:hover {
+    .hub-link:hover {
+      background: rgba(59,130,246,0.2);
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(245, 87, 108, 0.5);
     }
 
     /* Responsive */
     @media (max-width: 768px) {
-      header h1 { font-size: 2.25rem; }
-      .section-title { font-size: 1.75rem; }
-      .grid { grid-template-columns: 1fr; gap: 20px; }
-      .hub-grid { 
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
-      }
-      .container { padding: 16px; }
-    }
-
-    @media (max-width: 480px) {
-      header { padding: 40px 16px 30px; }
-      .card, .hub { padding: 20px; }
+      .container { padding: 1rem; }
+      .product-grid, .hub-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .hero { padding: 2.5rem 1.5rem; margin-bottom: 2.5rem; }
     }
   </style>
 </head>
 
 <body>
-<div class="container">
+  <div class="container">
+    
+    <!-- Hero -->
+    <section class="hero">
+      <h1>🔥 BrightLane Deals</h1>
+      <p>Premium Amazon products across 9 curated categories</p>
+    </section>
 
-  <!-- HEADER -->
-  <header>
-    <h1>🔥 BrightLane Deals Store 2026</h1>
-    <p>Curated Amazon deals across 9 hot categories – your affiliate tag embedded everywhere!</p>
-  </header>
+    <!-- Trending -->
+    <section class="section">
+      <h2 class="section-title">⭐ Trending Now</h2>
+      <div id="trending" class="product-grid"></div>
+    </section>
 
-  <!-- TRENDING PRODUCTS -->
-  <h2 class="section-title">🔥 Trending Products</h2>
-  <div id="trending" class="grid"></div>
+    <!-- Categories -->
+    <section class="section">
+      <h2 class="section-title">🧭 Explore Categories</h2>
+      <div class="hub-grid">
+        <div class="hub-card">
+          <h3>☕ Coffee Makers</h3>
+          <p>Espresso & drip perfection</p>
+          <a href="category.html?type=coffee" class="hub-link">Shop Now →</a>
+        </div>
+        <div class="hub-card">
+          <h3>⚡ Survival Gear</h3>
+          <p>Emergency essentials</p>
+          <a href="category.html?type=survival" class="hub-link">Shop Now →</a>
+        </div>
+        <div class="hub-card">
+          <h3>💡 Ring Lights</h3>
+          <p>Creator lighting</p>
+          <a href="category.html?type=ringlight" class="hub-link">Shop Now →</a>
+        </div>
+        <div class="hub-card">
+          <h3>🧴 Acne Patches</h3>
+          <p>Skincare heroes</p>
+          <a href="category.html?type=acne" class="hub-link">Shop Now →</a>
+        </div>
+        <div class="hub-card">
+          <h3>🥤 Stanley Tumblers</h3>
+          <p>Viral drinkware</p>
+          <a href="category.html?type=tumblers" class="hub-link">Shop Now →</a>
+        </div>
+        <div class="hub-card">
+          <h3>🏠 Smart Home</h3>
+          <p>Roborock & Alexa</p>
+          <a href="category.html?type=smarthome" class="hub-link">Shop Now →</a>
+        </div>
+        <div class="hub-card">
+          <h3>🎃 Seasonal Deals</h3>
+          <p>Costumes & events</p>
+          <a href="category.html?type=seasonal" class="hub-link">Shop Now →</a>
+        </div>
+        <div class="hub-card">
+          <h3>🔋 Phone Chargers</h3>
+          <p>Fast charge essentials</p>
+          <a href="category.html?type=chargers" class="hub-link">Shop Now →</a>
+        </div>
+        <div class="hub-card">
+          <h3>👕 Athleisure</h3>
+          <p>Comfortable style</p>
+          <a href="category.html?type=athleisure" class="hub-link">Shop Now →</a>
+        </div>
+      </div>
+    </section>
 
-  <!-- 9 CATEGORY HUBS -->
-  <h2 class="section-title">🧭 Shop by Category</h2>
-
-  <div class="hub-grid">
-    <div class="hub">
-      <h3>☕ Coffee Makers</h3>
-      <p>Best espresso and drip machines</p>
-      <a href="category.html?type=coffee">Explore →</a>
-    </div>
-
-    <div class="hub">
-      <h3>⚡ Survival Gear</h3>
-      <p>Emergency + off-grid tools</p>
-      <a href="category.html?type=survival">Explore →</a>
-    </div>
-
-    <div class="hub">
-      <h3>💡 Ring Lights</h3>
-      <p>Phone/content creator lighting</p>
-      <a href="category.html?type=ringlight">Explore →</a>
-    </div>
-
-    <div class="hub">
-      <h3>🧴 Acne Patches</h3>
-      <p>Mighty Patch & skincare heroes</p>
-      <a href="category.html?type=acne">Explore →</a>
-    </div>
-
-    <div class="hub">
-      <h3>🥤 Stanley Tumblers</h3>
-      <p>Viral quenchers & drinkware</p>
-      <a href="category.html?type=tumblers">Explore →</a>
-    </div>
-
-    <div class="hub">
-      <h3>🏠 Smart Home</h3>
-      <p>Roborock + Alexa vacuums</p>
-      <a href="category.html?type=smarthome">Explore →</a>
-    </div>
-
-    <div class="hub">
-      <h3>🎃 Seasonal Deals</h3>
-      <p>Halloween costumes & events</p>
-      <a href="category.html?type=seasonal">Explore →</a>
-    </div>
-
-    <div class="hub">
-      <h3>🔋 Phone Chargers</h3>
-      <p>Cables, banks & fast charge</p>
-      <a href="category.html?type=chargers">Explore →</a>
-    </div>
-
-    <div class="hub">
-      <h3>👕 Athleisure</h3>
-      <p>Loungewear & activewear</p>
-      <a href="category.html?type=athleisure">Explore →</a>
-    </div>
   </div>
 
-</div>
-
-<!-- CRITICAL: Your Amazon affiliate config (NEVER FORGET) -->
-<script src="affiliate-config.js"></script>
-
-<script>
-const trendingProducts = [
-  { title: "Moccamaster KBGV Coffee Maker", asin: "B01N6N2ARX", price: "$359.00" },
-  { title: "Breville Bambino Plus", asin: "B07GQVY4FR", price: "$499.00" },
-  { title: "Nespresso Vertuo Plus", asin: "B01N6N3A2K", price: "$179.00" }
-];
-
-function renderTrending() {
-  const container = document.getElementById("trending");
+  <!-- YOUR AFFILIATE CONFIG (EMBEDDED FOREVER) -->
+  <script src="affiliate-config.js"></script>
   
-  trendingProducts.forEach(p => {
-    // YOUR AFFILIATE URL: Uses your tag/ID from affiliate-config.js
-    const affiliateUrl = AFFILIATE_CONFIG.buildUrl(p.asin); 
-    
-    container.innerHTML += `
-      <div class="card">
-        <h3>${p.title}</h3>
-        <p class="price">${p.price}</p>
-        <a class="btn" href="${affiliateUrl}" target="_blank" rel="noopener sponsored">
-          🛒 View on Amazon
-        </a>
-      </div>
-    `;
-  });
-}
+  <script>
+    const products = [
+      { title: "Moccamaster KBGV Coffee Maker", asin: "B01N6N2ARX", price: "$359" },
+      { title: "Breville Bambino Plus", asin: "B07GQVY4FR", price: "$499" },
+      { title: "Nespresso Vertuo Plus", asin: "B01N6N3A2K", price: "$179" }
+    ];
 
-renderTrending();
-</script>
+    function renderProducts() {
+      const container = document.getElementById('trending');
+      products.forEach(p => {
+        const affiliateUrl = AFFILIATE_CONFIG.buildUrl(p.asin); // YOUR TAG EMBEDDED
+        container.innerHTML += `
+          <div class="product-card">
+            <h3>${p.title}</h3>
+            <div class="price">${p.price}</div>
+            <a href="${affiliateUrl}" class="cta" target="_blank" rel="noopener sponsored">
+              🛒 Shop Amazon
+            </a>
+          </div>
+        `;
+      });
+    }
 
+    renderProducts();
+  </script>
 </body>
 </html>
