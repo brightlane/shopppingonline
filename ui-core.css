@@ -22,32 +22,29 @@ body {
   padding: 24px;
 }
 
-h1, h2, h3 {
-  letter-spacing: -0.02em;
-}
-
-a {
-  color: var(--primary);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
 /* HEADER */
 .site-header {
-  background: #111827;
+  background: linear-gradient(135deg, #111827, #1f2937);
   color: white;
   padding: 60px 20px;
   text-align: center;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 34px;
+}
+
+.site-header p {
+  margin-top: 10px;
+  color: #cbd5e1;
 }
 
 /* NAV */
 .nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 14px;
   justify-content: center;
   padding: 12px;
   background: #0f172a;
@@ -57,6 +54,7 @@ a:hover {
   color: white;
   font-size: 14px;
   opacity: 0.85;
+  text-decoration: none;
 }
 
 .nav a:hover {
@@ -91,6 +89,7 @@ a:hover {
   color: white;
   border-radius: 10px;
   font-weight: 600;
+  text-decoration: none;
 }
 
 /* PRODUCT BLOCK */
