@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Product Page</title>
+<title>Product</title>
 
 <script src="config.js"></script>
 
 <style>
-body {font-family: Arial; margin:0; background:#f4f6f8;}
-.container {max-width:900px;margin:auto;padding:20px;}
-.card {background:white;padding:20px;border-radius:12px;}
-img {width:100%;border-radius:10px;}
-a {display:inline-block;margin-top:10px;padding:12px 14px;background:#ff9900;color:white;text-decoration:none;border-radius:8px;}
+body {font-family:Arial;margin:0;background:#f4f6f8}
+.container{max-width:900px;margin:auto;padding:20px}
+.card{background:#fff;padding:20px;border-radius:12px}
+img{width:100%;border-radius:10px}
+a{display:inline-block;margin-top:10px;padding:12px 14px;background:#ff9900;color:#fff;text-decoration:none;border-radius:8px}
 </style>
 </head>
 
@@ -20,11 +20,11 @@ a {display:inline-block;margin-top:10px;padding:12px 14px;background:#ff9900;col
 
   <div class="card">
 
-    <img src="https://m.media-amazon.com/images/I/EXAMPLE.jpg">
+    <img src="https://m.media-amazon.com/images/I/REAL.jpg">
 
-    <h2>Product Name</h2>
+    <h2>PRODUCT NAME</h2>
 
-    <p>Product description goes here.</p>
+    <p>PRODUCT DESCRIPTION</p>
 
     <a id="buyLink" target="_blank">View on Amazon</a>
 
@@ -33,9 +33,8 @@ a {display:inline-block;margin-top:10px;padding:12px 14px;background:#ff9900;col
 </div>
 
 <script>
-  // LOCKED AFFILIATE LINK SYSTEM
-  document.getElementById("buyLink").href =
-    window.amazonLink("B07PXGQC1Q");
+document.getElementById("buyLink").href =
+  window.amazonLink("REPLACE_ASIN");
 </script>
 
 </body>
