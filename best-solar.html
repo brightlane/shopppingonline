@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Best Solar Panels for 2026</title>
+<script src="products.js"></script>
+</head>
+
+<body>
+
+<h1>Best Solar Panels (2026)</h1>
+<p>Top rated solar panels for camping, emergency power, and off-grid use.</p>
+
+<div id="list"></div>
+
+<script>
+const solarProducts = PRODUCTS.filter(p => p.category === "solar");
+
+const list = document.getElementById("list");
+
+solarProducts.forEach(p => {
+  list.innerHTML += `
+    <div style="margin-bottom:30px;">
+      <h2>${p.title}</h2>
+      <img src="${p.image}" width="200"/>
+      <p>${p.description}</p>
+
+      <a href="product-template.html?id=${p.id}">
+        View Deal →
+      </a>
+    </div>
+  `;
+});
+</script>
+
+</body>
+</html>
