@@ -1,41 +1,24 @@
 name: Generate Site
 
 on:
+  workflow_dispatch:  # Enables "Run workflow" button
   push:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install deps
-        run: npm install || true
-
-      - name: Run generator
-        run: node generate.js
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Deploy
-        uses: actions/deploy-pages@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - run: npm install  # If you have package.json; else skip
+    - run: node your-script.js  # Rename your JS file, e.g., generate.js
+    - name: Commit generated files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add *.html
+        git commit -m "Generate product pages" || exit 0
+        git push
