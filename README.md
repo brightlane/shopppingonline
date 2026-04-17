@@ -1,31 +1,22 @@
-# 🔥 Amazon Affiliate Deals Site (Locked System)
+## System Overview
 
-This is a structured Amazon affiliate website built for scalable product pages, SEO growth, and consistent monetization using a locked affiliate link system.
+Static site built with a lightweight generation pipeline.
 
----
+Content is compiled from a structured data source and rendered into pages during build.  
+Pages include category hubs, product detail views, and outbound links.
 
-# 🧱 SYSTEM OVERVIEW
+Basic safeguards are in place to ensure:
+- valid product identifiers
+- consistent page generation
+- fallback handling for missing assets
 
-This project uses a **centralized affiliate lock system** to ensure all Amazon links are consistent and never lose tracking.
-
-### ✔ Key Features
-- Central affiliate tag system
-- Reusable product template
-- Scalable category structure
-- SEO-ready pages (sitemap + robots included)
-- Click tracking support (tracker.js)
-- Mobile-friendly responsive design
+Build output is written to `/dist` and deployed via GitHub Pages.
 
 ---
 
-# 🔒 AFFILIATE LOCK SYSTEM
+## Usage
 
-All Amazon links are generated using a single global function:
+Run build:
 
-### 📁 `config.js`
-```js
-window.AFFILIATE_TAG = "brightlane201-20";
-
-window.amazonLink = function (asin) {
-  return `https://www.amazon.com/dp/${asin}?tag=${window.AFFILIATE_TAG}`;
-};
+```bash
+node master-orchestrator.js
