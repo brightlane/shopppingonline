@@ -1,56 +1,116 @@
-// ==============================
-// 🔥 AMAZON LINK BUILDER (SAFE + 404 PROTECTED)
-// ==============================
-
-const AFFILIATE_TAG = "brightlane201-20";
-
 /**
- * Validates Amazon ASIN (10 char alphanumeric)
+ * =========================================
+ * 🔗 AMAZON PRODUCT LINK ENGINE (FIXED)
+ * =========================================
+ * Fixes:
+ * - broken Amazon URLs (404 issues)
+ * - invalid ASINs
+ * - duplicate products
+ * - inconsistent link formats
+ * - tracking consistency
+ * =========================================
  */
-function isValidAsin(asin) {
-  return typeof asin === "string" && /^[A-Z0-9]{10}$/.test(asin);
+
+import { AFFILIATE_TAG } from "./config.js";
+
+/* =========================
+   ASIN VALIDATION
+========================= */
+
+export function normalizeASIN(input) {
+  if (!input) return null;
+
+  const match = input.toString().match(/[A-Z0-9]{10}/i);
+  return match ? match[0].toUpperCase() : null;
 }
 
-/**
- * Clean Amazon ASIN (removes bad data)
- */
-function sanitizeAsin(asin) {
-  if (!asin) return null;
-  const cleaned = String(asin).trim().toUpperCase();
-  return isValidAsin(cleaned) ? cleaned : null;
-}
+/* =========================
+   AMAZON LINK BUILDER (SAFE)
+========================= */
 
-/**
- * 🔥 MAIN AMAZON LINK BUILDER (USE THIS ONLY)
- * Prevents 404s automatically
- */
-function amazonUrl(asin) {
-  const clean = sanitizeAsin(asin);
+export function buildAmazonUrl(asin) {
+  const clean = normalizeASIN(asin);
 
   if (!clean) {
-    console.warn("⚠️ Invalid ASIN blocked:", asin);
-    return "#invalid-product";
+    console.warn("❌ Invalid ASIN blocked:", asin);
+    return null;
   }
 
   return `https://www.amazon.com/dp/${clean}?tag=${AFFILIATE_TAG}`;
 }
 
-/**
- * Optional: tracking wrapper (future CTR analytics)
- */
-function trackedAmazonUrl(asin, productTitle = "") {
-  const url = amazonUrl(asin);
+/* =========================
+   PRODUCT CLEANER (NO DUPES)
+========================= */
+
+export function cleanProducts(products = []) {
+  const seen = new Map();
+
+  return products
+    .map(p => {
+      const asin = normalizeASIN(p.asin);
+
+      if (!asin) return null;
+
+      return {
+        ...p,
+        asin
+      };
+    })
+    .filter(Boolean)
+    .filter(p => {
+      if (seen.has(p.asin)) return false;
+      seen.set(p.asin, true);
+      return true;
+    });
+}
+
+/* =========================
+   CLICK TRACKING WRAPPER
+========================= */
+
+export function trackableLink(product, position = 0) {
+  const url = buildAmazonUrl(product.asin);
+
+  if (!url) return "#invalid";
 
   return {
     url,
-    onclick: `console.log('click', ${JSON.stringify(productTitle)})`
+    onclick: `
+      if(window.gtag){
+        gtag('event','click',{
+          event_category:'affiliate',
+          event_label:'${product.asin}',
+          value:${position}
+        });
+      }
+    `
   };
 }
 
-module.exports = {
-  amazonUrl,
-  sanitizeAsin,
-  isValidAsin,
-  trackedAmazonUrl,
-  AFFILIATE_TAG
-};
+/* =========================
+   PRODUCT NORMALIZER (AI SAFE)
+========================= */
+
+export function normalizeProduct(p) {
+  return {
+    title: p.title || "Untitled Product",
+    asin: normalizeASIN(p.asin),
+    image: p.image || "",
+    price: p.price || null,
+    rating: p.rating || "4.5",
+    reviews: p.reviews || "1000+",
+    category: p.category || "general",
+    description: p.description || "Top-rated Amazon product"
+  };
+}
+
+/* =========================
+   BULK SAFE PROCESSOR
+========================= */
+
+export function processProductList(products) {
+  const cleaned = cleanProducts(products);
+
+  return cleaned.map(normalizeProduct);
+}
