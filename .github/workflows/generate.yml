@@ -1,37 +1,20 @@
-name: Generate Product Pages
-
-on:
-  workflow_dispatch:  # ✅ Manual "Run workflow" button
-  push:
-    branches: [ main ]
-    paths:
-      - 'products-data.json'
-      - 'generate.js'
-
-jobs:
-  generate:
-    runs-on: ubuntu-latest
+- name: Commit & Push generated files
+  run: |
+    git config --local user.email "action@github.com"
+    git config --local user.name "GitHub Action"
     
-    steps:
-    - uses: actions/checkout@v4
+    # CLEAN SLATE - discard any unstaged changes
+    git checkout -- .
+    git clean -fd
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+    # Pull latest changes
+    git pull origin main --rebase || true
     
-    - name: Generate HTML pages
-      run: node generate.js
+    # Add ONLY generated HTML files
+    git add *.html index.html sitemap.xml robots.txt
     
-    - name: Commit & Push generated files
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        # Pull latest changes first
-        git pull --rebase origin main
-        
-        git add *.html index.html
-        git commit -m "🤖 Regenerate product pages [skip ci]" || exit 0
-        git push origin HEAD:main
+    # Commit if changes exist
+    git commit -m "🤖 Generate $(ls *.html | wc -l) SEO pages [skip ci]" || exit 0
+    
+    # Force push generated files
+    git push origin HEAD:main --force
