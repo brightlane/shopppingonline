@@ -232,3 +232,107 @@ module.exports = {
   buildAffiliateUrl,
   getAmazonDomain
 };
+/**
+ * core.orchestrator.js
+ * BrightLane / Global Affiliate Engine Core
+ */
+
+const fs = require("fs");
+const path = require("path");
+
+// ===== CONFIG LOADER =====
+const CONFIG = require("./config/workflow.config.json");
+
+// ===== MODULE IMPORTS (future layers) =====
+const seoEngine = require("./scripts/seo.js");
+const keywordEngine = require("./scripts/keyword-generator.js");
+const articleEngine = require("./scripts/article-generator.js");
+
+// ===== AFFILIATE ROUTER =====
+const AFFILIATE_TAG = "brightlane201-20";
+
+const AMAZON_DOMAINS = {
+  US: "amazon.com",
+  DE: "amazon.de",
+  UK: "amazon.co.uk",
+  FR: "amazon.fr",
+  ES: "amazon.es",
+  IT: "amazon.it",
+  CA: "amazon.ca",
+  JP: "amazon.co.jp",
+  AU: "amazon.com.au",
+  IN: "amazon.in"
+};
+
+// detect marketplace
+function resolveAmazonDomain(country) {
+  return AMAZON_DOMAINS[country?.toUpperCase()] || "amazon.com";
+}
+
+// build affiliate URL
+function buildAffiliateUrl(asin, country = "US") {
+  const domain = resolveAmazonDomain(country);
+  return `https://www.${domain}/dp/${asin}?tag=${AFFILIATE_TAG}`;
+}
+
+// ===== PRODUCT ROUTING BRAIN =====
+function routeProduct(product, country) {
+  return {
+    ...product,
+    url: buildAffiliateUrl(product.asin, country),
+    country
+  };
+}
+
+// ===== SEO GENERATION PIPELINE =====
+async function generateSEO(product, country) {
+  const enriched = routeProduct(product, country);
+
+  const article = await articleEngine.generate({
+    product: enriched,
+    country
+  });
+
+  const keywords = keywordEngine.generate(product.title);
+
+  return {
+    product: enriched,
+    keywords,
+    article
+  };
+}
+
+// ===== PAGE BUILDER =====
+function writePage(fileName, content) {
+  const outPath = path.join(__dirname, "pages", fileName);
+  fs.writeFileSync(outPath, content, "utf-8");
+}
+
+// ===== AUTONOMOUS RUNNER =====
+async function runEngine(products, countries = ["US"]) {
+  console.log("🚀 Orchestrator started...");
+
+  for (const country of countries) {
+    for (const product of products) {
+      const seoPackage = await generateSEO(product, country);
+
+      const html = seoEngine.renderPage(seoPackage);
+
+      const fileName = `${product.slug}-${country.toLowerCase()}.html`;
+
+      writePage(fileName, html);
+
+      console.log(`✔ Generated: ${fileName}`);
+    }
+  }
+
+  console.log("✅ Orchestrator complete.");
+}
+
+// ===== EXPORT =====
+module.exports = {
+  runEngine,
+  buildAffiliateUrl,
+  routeProduct,
+  resolveAmazonDomain
+};
