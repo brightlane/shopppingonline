@@ -1,8 +1,5 @@
 const fs = require("fs");
 
-// Optional: replace with real Amazon PA-API client later
-// const amazonApi = require("./amazon-api-client");
-
 const PRODUCT_ENGINE = {
   cacheFile: "./cache/product-graph.json",
 
@@ -62,25 +59,53 @@ const PRODUCT_ENGINE = {
     return Math.round(score);
   },
 
+  // 📊 Assigning targeted keywords
+  assignKeywords: function (product) {
+    const keywords = [];
+
+    // Add keywords based on product category and title
+    if (product.title.toLowerCase().includes("air fryer")) {
+      keywords.push("best air fryer", "top rated air fryer", "air fryer 2023");
+    }
+
+    if (product.title.toLowerCase().includes("laptop")) {
+      keywords.push("best laptop", "affordable laptop", "laptop for students", "gaming laptop");
+    }
+
+    if (product.title.toLowerCase().includes("bluetooth")) {
+      keywords.push("bluetooth speaker", "best bluetooth headphones", "bluetooth headphones review");
+    }
+
+    if (product.price < 50) {
+      keywords.push("cheap", "affordable", "budget");
+    }
+
+    if (product.rating >= 4.5) {
+      keywords.push("top-rated", "best-reviewed");
+    }
+
+    // Add generic product keywords
+    keywords.push("best", "buy", "2023", "review", "cheap", "top");
+
+    product.keywords = [...new Set(keywords)]; // Remove duplicates
+
+    return product;
+  },
+
   // 🧠 Build product cluster (intent grouping)
   clusterProduct: function (product) {
     const clusters = [];
 
-    const title = product.title.toLowerCase();
-
-    if (title.includes("wireless") || title.includes("bluetooth")) {
+    // Check for relevant clusters based on keywords
+    if (product.keywords.includes("bluetooth")) {
       clusters.push("wireless-tech");
     }
 
-    if (title.includes("vacuum") || title.includes("cleaner")) {
-      clusters.push("home-cleaning");
-    }
-
-    if (title.includes("laptop") || title.includes("macbook")) {
+    if (product.keywords.includes("laptop")) {
       clusters.push("computing");
     }
 
-    if (title.includes("air fryer") || title.includes("kitchen")) {
+    if (product.keywords.includes("kitchen")) {
       clusters.push("kitchen");
     }
 
@@ -94,7 +119,13 @@ const PRODUCT_ENGINE = {
     const enriched = products.map(p => {
       const product = this.normalizeProduct(p);
 
+      // Assign targeted keywords to the product
+      this.assignKeywords(product);
+
+      // Score products
       product.score = this.scoreProduct(product);
+
+      // Cluster the product based on keywords
       product.clusters = this.clusterProduct(product);
 
       return product;
