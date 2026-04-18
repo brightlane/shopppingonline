@@ -1,0 +1,60 @@
+name: AAIS Autonomous SEO Engine
+
+on:
+  schedule:
+    # Runs every day at 3:00 AM UTC
+    - cron: "0 3 * * *"
+
+  workflow_dispatch: # manual trigger button in GitHub UI
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # =========================
+      # 1. Checkout repo
+      # =========================
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # =========================
+      # 2. Setup Node
+      # =========================
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # =========================
+      # 3. Install dependencies
+      # =========================
+      - name: Install Dependencies
+        run: npm install
+
+      # =========================
+      # 4. Run Engine Runner (AUTONOMOUS CORE)
+      # =========================
+      - name: Run AAIS Engine
+        run: node engine.runner.js
+
+      # =========================
+      # 5. Commit generated SEO pages
+      # =========================
+      - name: Commit Generated Pages
+        run: |
+          git config --global user.name "aais-bot"
+          git config --global user.email "aais@bot.com"
+
+          git add .
+          git commit -m "🚀 AAIS Auto-Generated SEO Update" || echo "No changes to commit"
+          git push
+
+      # =========================
+      # 6. Deploy (GitHub Pages or static host)
+      # =========================
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
