@@ -1,0 +1,123 @@
+/**
+ * =====================================================
+ * AAIS ENGINE RUNNER
+ * AUTONOMOUS EXECUTION LAYER
+ * =====================================================
+ *
+ * PURPOSE:
+ * - Executes core.orchestrator.js automatically
+ * - Controls daily rebuild cycles
+ * - Handles GitHub Actions / cron jobs
+ * - Adds self-healing execution retries
+ * - Logs system health
+ */
+
+const fs = require("fs");
+const path = require("path");
+
+// Import core brain
+const orchestrator = require("./core.orchestrator");
+
+// =====================================================
+// CONFIG
+// =====================================================
+
+const CONFIG = {
+  logFile: path.join(__dirname, "engine-log.txt"),
+
+  retryLimit: 3,
+
+  modes: {
+    dev: true,
+    production: false
+  }
+};
+
+// =====================================================
+// LOGGING
+// =====================================================
+
+function log(msg) {
+  const line = `[ENGINE ${new Date().toISOString()}] ${msg}\n`;
+  fs.appendFileSync(CONFIG.logFile, line);
+  console.log(msg);
+}
+
+// =====================================================
+// HEALTH CHECK
+// =====================================================
+
+function healthCheck() {
+  try {
+    if (!orchestrator) {
+      throw new Error("Orchestrator not found");
+    }
+
+    log("System health: OK");
+    return true;
+  } catch (err) {
+    log("System health: FAILED -> " + err.message);
+    return false;
+  }
+}
+
+// =====================================================
+// EXECUTION WRAPPER
+// =====================================================
+
+async function executeWithRetry(fn, retries = CONFIG.retryLimit) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await fn();
+      return true;
+    } catch (err) {
+      log(`Execution failed (attempt ${i + 1}): ${err.message}`);
+    }
+  }
+
+  log("❌ Execution failed after retries");
+  return false;
+}
+
+// =====================================================
+// MAIN RUNNER
+// =====================================================
+
+async function runEngine() {
+  log("==================================");
+  log("🚀 AAIS ENGINE RUNNER STARTED");
+  log("==================================");
+
+  const healthy = healthCheck();
+
+  if (!healthy) {
+    log("Aborting execution due to system failure");
+    return;
+  }
+
+  await executeWithRetry(async () => {
+    await orchestrator.run();
+  });
+
+  log("==================================");
+  log("✅ ENGINE RUN COMPLETE");
+  log("==================================");
+}
+
+// =====================================================
+// AUTO-MODE DETECTION
+// =====================================================
+
+// If GitHub Actions or CLI triggers this file
+if (require.main === module) {
+  runEngine();
+}
+
+// =====================================================
+// EXPORT FOR GITHUB ACTIONS / EXTERNAL CONTROL
+// =====================================================
+
+module.exports = {
+  runEngine,
+  healthCheck
+};
