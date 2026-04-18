@@ -1,109 +1,148 @@
 /**
  * core.orchestrator.js
- * Affiliate Autonomous Core (AAC) – Master System Controller
+ * AAC Global Control Orchestrator
+ * Single brain that runs all system layers in correct order
  */
+
+const { buildGlobalUniverse, prioritizeUniverse } = require("./scripts/global-expansion-engine");
+const { applyRouting } = require("./scripts/affiliate-routing-brain");
+const { enrichWithImages } = require("./scripts/image-ctr-engine");
+const { runLearningLoop } = require("./scripts/self-learning-seo-loop");
 
 const fs = require("fs");
 const path = require("path");
 
-// === CONFIG LOADER ===
-const config = require("./config/config.js");
-
-// === MODULE IMPORTS (future layers) ===
-const productEngine = require("./scripts/auto-product-feed.js");
-const seoEngine = require("./scripts/seo.js");
-const keywordEngine = require("./scripts/keyword-generator.js");
-const imageEngine = require("./scripts/amazon-image-fetcher.js");
-const rankEngine = require("./scripts/trending-engine.js");
-
-// === GLOBAL STATE ===
-let SYSTEM_STATE = {
-  lastRun: null,
-  productsProcessed: 0,
-  pagesGenerated: 0,
-  errors: []
+// === CONFIG ===
+const CONFIG = {
+  country: "us",
+  maxProducts: 1000,
+  outputDir: path.join(__dirname, "dist")
 };
 
-// === AMAZON ROUTING BRAIN ===
-function resolveAmazonDomain(country) {
-  const map = {
-    us: "amazon.com",
-    de: "amazon.de",
-    uk: "amazon.co.uk",
-    ca: "amazon.ca",
-    fr: "amazon.fr",
-    es: "amazon.es",
-    it: "amazon.it",
-    jp: "amazon.co.jp",
-    au: "amazon.com.au",
-    nl: "amazon.nl"
-  };
-
-  return map[country] || "amazon.com";
-}
-
-function buildAffiliateUrl(asin, country = "us", tag = config?.affiliateTag || "brightlane201-20") {
-  const domain = resolveAmazonDomain(country);
-  return `https://${domain}/dp/${asin}?tag=${tag}`;
-}
-
-// === CORE PIPELINE ===
-async function runPipeline() {
+// === ENTRY POINT ===
+async function runOrchestrator() {
   console.log("🚀 AAC Orchestrator Starting...");
 
-  try {
-    // 1. Load product data
-    const products = productEngine.loadProducts();
+  // 1. LOAD BASE DATA (placeholder seed products)
+  const baseProducts = loadSeedProducts();
 
-    // 2. Expand keywords (AI layer)
-    const expandedKeywords = keywordEngine.expand(products);
+  // 2. EXPAND GLOBAL PRODUCT UNIVERSE
+  let universe = buildGlobalUniverse(baseProducts);
 
-    // 3. Rank products (CTR + SEO scoring)
-    const ranked = rankEngine.rank(products, expandedKeywords);
+  console.log(`🌍 Universe size: ${universe.length}`);
 
-    // 4. Generate images (future CTR layer)
-    const enriched = imageEngine.enrichWithImages(ranked);
+  // 3. PRIORITIZE PRODUCTS
+  universe = prioritizeUniverse(universe);
 
-    // 5. Generate SEO pages
-    const pages = seoEngine.generatePages(enriched);
+  // 4. LIMIT TOP SET
+  universe = universe.slice(0, CONFIG.maxProducts);
 
-    // 6. Write output
-    writePages(pages);
+  // 5. APPLY AFFILIATE ROUTING
+  universe = applyRouting(universe, CONFIG.country);
 
-    SYSTEM_STATE.lastRun = new Date().toISOString();
-    SYSTEM_STATE.productsProcessed = products.length;
-    SYSTEM_STATE.pagesGenerated = pages.length;
+  // 6. APPLY IMAGE CTR ENGINE
+  universe = enrichWithImages(universe);
 
-    console.log("✅ Pipeline Complete:", SYSTEM_STATE);
-  } catch (err) {
-    SYSTEM_STATE.errors.push(err.message);
-    console.error("❌ Pipeline Error:", err);
-  }
+  // 7. GENERATE PAGES
+  generatePages(universe);
+
+  // 8. RUN SELF-LEARNING LOOP
+  runLearningLoop();
+
+  console.log("✅ Orchestrator complete");
 }
 
-// === PAGE WRITER ===
-function writePages(pages) {
-  const outputDir = path.join(__dirname, "dist");
+// === SEED DATA ===
+function loadSeedProducts() {
+  return [
+    {
+      asin: "B000TEST1",
+      title: "Smart Vacuum Cleaner",
+      category: "vacuum cleaners",
+      score: 3
+    },
+    {
+      asin: "B000TEST2",
+      title: "Premium Coffee Maker",
+      category: "coffee makers",
+      score: 4
+    },
+    {
+      asin: "B000TEST3",
+      title: "Portable Power Station",
+      category: "portable power",
+      score: 5
+    }
+  ];
+}
 
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir);
+// === PAGE GENERATION ENGINE ===
+function generatePages(products) {
+  const dir = CONFIG.outputDir;
+
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
   }
 
-  pages.forEach(page => {
-    const filePath = path.join(outputDir, page.slug + ".html");
-    fs.writeFileSync(filePath, page.html, "utf8");
+  products.forEach((p, index) => {
+    const html = buildHTMLPage(p, index);
+
+    const fileName = `${slugify(p.title)}.html`;
+    const filePath = path.join(dir, fileName);
+
+    fs.writeFileSync(filePath, html, "utf8");
   });
+
+  console.log(`📄 Generated ${products.length} pages`);
 }
 
-// === EXPORTS ===
-module.exports = {
-  runPipeline,
-  buildAffiliateUrl,
-  resolveAmazonDomain,
-  SYSTEM_STATE
-};
+// === HTML BUILDER ===
+function buildHTMLPage(product, index) {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>${product.title}</title>
+  <meta name="description" content="Best ${product.category} review and comparison">
+</head>
+<body>
 
-// === AUTO RUN (GitHub Actions safe) ===
+<h1>${product.title}</h1>
+
+<img src="${product.image}" alt="${product.title}" />
+
+<p>Category: ${product.category}</p>
+
+<a href="${product.affiliateUrl}" target="_blank">
+  View on Amazon
+</a>
+
+<!-- AAC metadata -->
+<script>
+  window.AAC = {
+    score: ${product.score},
+    imageVariant: "${product.imageVariant}"
+  };
+</script>
+
+</body>
+</html>
+`;
+}
+
+// === SLUGIFY ===
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+// === RUN ===
 if (require.main === module) {
-  runPipeline();
+  runOrchestrator();
 }
+
+module.exports = {
+  runOrchestrator
+};
