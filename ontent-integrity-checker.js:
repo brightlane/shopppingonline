@@ -1,0 +1,65 @@
+const CONTENT_INTEGRITY_CHECKER = {
+  log: function(msg) {
+    console.log("[CONTENT INTEGRITY CHECKER]", msg);
+  },
+
+  /**
+   * Validate the product's image URL and replace any placeholder with a real image
+   */
+  validateImage: function(imageUrl, product) {
+    // Check if image URL contains placeholder text
+    if (!imageUrl || imageUrl.includes("placeholder") || imageUrl.includes("no-image")) {
+      this.log(`❌ Invalid image for product: ${product.title}`);
+
+      // If placeholder, use the product's backup image URL (if any)
+      if (product.backupImage) {
+        imageUrl = product.backupImage;
+        this.log(`✅ Replaced with backup image for product: ${product.title}`);
+      } else {
+        // Optionally, fetch a default image or log an error
+        imageUrl = "https://example.com/default-image.jpg"; // Default Image URL
+        this.log(`✅ Default image applied for product: ${product.title}`);
+      }
+    }
+
+    return imageUrl;
+  },
+
+  /**
+   * Replace placeholder descriptions with actual descriptions or generate a generic description
+   */
+  validateDescription: function(description, product) {
+    if (!description || description.toLowerCase().includes("coming soon") || description.toLowerCase().includes("no description")) {
+      this.log(`❌ Missing description for product: ${product.title}`);
+
+      // Replace with a generated or default description
+      description = `Check out the ${product.title} for an amazing user experience. Explore now for top-rated features and affordable prices.`;
+      this.log(`✅ Added default description for product: ${product.title}`);
+    }
+
+    return description;
+  },
+
+  /**
+   * Ensure all content (images, descriptions) are real, replacing placeholders
+   */
+  validateContent: function(product) {
+    product.image = this.validateImage(product.image, product);
+    product.description = this.validateDescription(product.description, product);
+
+    return product;
+  },
+
+  /**
+   * Run the integrity check for all products
+   */
+  processProductList: function(products) {
+    this.log("🚀 Running content integrity check...");
+
+    return products.map(product => {
+      return this.validateContent(product);
+    });
+  }
+};
+
+module.exports = CONTENT_INTEGRITY_CHECKER;
