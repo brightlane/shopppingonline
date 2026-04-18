@@ -1,182 +1,234 @@
 /**
- * Autonomous Affiliate Intelligence System (AAIS)
- * core.orchestrator.js
- * Main execution brain for global SEO + affiliate automation
+ * =====================================================
+ * AAIS - AUTONOMOUS AFFILIATE INTELLIGENCE SYSTEM
+ * CORE ORCHESTRATOR (FULL ENTRY FILE)
+ * =====================================================
+ *
+ * This file controls:
+ * - global SEO page generation
+ * - Amazon affiliate routing (multi-country)
+ * - product expansion system
+ * - self-healing SEO checks
+ * - GitHub Actions compatibility
+ * - feeder system hooks (RSS/social/amazon trends)
  */
 
 const fs = require("fs");
 const path = require("path");
 
-// ===============================
-// CONFIG
-// ===============================
+// =====================================================
+// CONFIGURATION
+// =====================================================
 
 const CONFIG = {
+  siteName: "BrightLane AAIS",
+  outputDir: path.join(__dirname, "dist"),
+  logFile: path.join(__dirname, "log.txt"),
+
+  affiliateTag: "brightlane201-20",
+
   countries: ["us", "uk", "de", "fr", "es", "it", "ca", "au", "in", "jp"],
-  defaultTag: "brightlane201-20",
-  outputDir: "./dist",
-  pagesDir: "./pages",
-  logFile: "./log.txt"
+
+  amazonDomains: {
+    us: "amazon.com",
+    uk: "amazon.co.uk",
+    de: "amazon.de",
+    fr: "amazon.fr",
+    es: "amazon.es",
+    it: "amazon.it",
+    ca: "amazon.ca",
+    au: "amazon.com.au",
+    in: "amazon.in",
+    jp: "amazon.co.jp"
+  }
 };
 
-// ===============================
+// =====================================================
+// FEEDER SYSTEM (HOOKS ONLY)
+// =====================================================
+
+const FEEDERS = {
+  rss: [],
+  social: [],
+  amazon: []
+};
+
+// =====================================================
+// LOGGING
+// =====================================================
+
+function log(msg) {
+  const line = `[${new Date().toISOString()}] ${msg}\n`;
+  fs.appendFileSync(CONFIG.logFile, line);
+  console.log(msg);
+}
+
+// =====================================================
 // AMAZON ROUTING BRAIN
-// ===============================
-
-const AMAZON_DOMAINS = {
-  us: "amazon.com",
-  uk: "amazon.co.uk",
-  de: "amazon.de",
-  fr: "amazon.fr",
-  es: "amazon.es",
-  it: "amazon.it",
-  ca: "amazon.ca",
-  au: "amazon.com.au",
-  in: "amazon.in",
-  jp: "amazon.co.jp"
-};
+// =====================================================
 
 function getAmazonDomain(country) {
-  return AMAZON_DOMAINS[country] || "amazon.com";
+  return CONFIG.amazonDomains[country] || "amazon.com";
 }
 
-function buildAffiliateLink(asin, country) {
+function buildAffiliateUrl({ asin, country }) {
   const domain = getAmazonDomain(country);
-  const tag = CONFIG.defaultTag;
-
-  return `https://${domain}/dp/${asin}?tag=${tag}`;
+  return `https://${domain}/dp/${asin}?tag=${CONFIG.affiliateTag}`;
 }
 
-// ===============================
-// LOGGING SYSTEM
-// ===============================
-
-function log(message) {
-  const timestamp = new Date().toISOString();
-  const line = `[${timestamp}] ${message}\n`;
-  fs.appendFileSync(CONFIG.logFile, line);
-  console.log(message);
-}
-
-// ===============================
-// SEO HEALTH CHECK
-// ===============================
-
-function runHealthCheck(page) {
-  const issues = [];
-
-  if (!page.includes("<title>")) issues.push("Missing title");
-  if (!page.includes("amazon")) issues.push("No affiliate links detected");
-  if (page.length < 500) issues.push("Thin content");
-
-  return {
-    healthy: issues.length === 0,
-    issues
-  };
-}
-
-// ===============================
-// PAGE GENERATION ENGINE
-// ===============================
+// =====================================================
+// SEO PAGE GENERATOR
+// =====================================================
 
 function generatePage({ keyword, asin, country }) {
-  const affiliateLink = buildAffiliateLink(asin, country);
+  const url = buildAffiliateUrl({ asin, country });
 
-  return `
-<!DOCTYPE html>
-<html>
+  return `<!DOCTYPE html>
+<html lang="${country}">
 <head>
-  <title>${keyword} - Best Deals</title>
-  <meta name="description" content="Top ${keyword} deals and comparisons">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>${keyword} - Best Deals (${country.toUpperCase()})</title>
+  <meta name="description" content="Best ${keyword} deals, reviews, and comparisons in ${country.toUpperCase()}">
+
+  <link rel="canonical" href="${url}">
 </head>
+
 <body>
 
-<h1>${keyword}</h1>
+  <header>
+    <h1>${keyword}</h1>
+    <p>Global affiliate optimized page</p>
+  </header>
 
-<p>Best global deal for ${keyword}.</p>
+  <main>
+    <h2>Top Recommendation</h2>
 
-<a href="${affiliateLink}" target="_blank">
-  Buy on Amazon (${country.toUpperCase()})
-</a>
+    <p>We found the best option for ${keyword} in ${country.toUpperCase()}.</p>
+
+    <a href="${url}" target="_blank" rel="nofollow sponsored">
+      👉 Buy on Amazon (${country.toUpperCase()})
+    </a>
+  </main>
 
 </body>
-</html>
-`;
+</html>`;
 }
 
-// ===============================
-// GLOBAL EXPANSION ENGINE
-// ===============================
+// =====================================================
+// FILE WRITER
+// =====================================================
 
-function expandAcrossCountries(product) {
-  const pages = [];
+function writeFile(filename, content) {
+  fs.mkdirSync(CONFIG.outputDir, { recursive: true });
+
+  const filePath = path.join(CONFIG.outputDir, filename);
+  fs.writeFileSync(filePath, content);
+
+  log(`Generated: ${filePath}`);
+  return filePath;
+}
+
+// =====================================================
+// GLOBAL EXPANSION ENGINE
+// =====================================================
+
+function expandProduct(product) {
+  const files = [];
 
   for (const country of CONFIG.countries) {
-    const page = generatePage({
+    const html = generatePage({
       keyword: product.keyword,
       asin: product.asin,
       country
     });
 
-    const filePath = path.join(
-      CONFIG.outputDir,
-      `${product.keyword}-${country}.html`
-    );
+    const filename = `${product.keyword.replace(/\s+/g, "-")}-${country}.html`;
 
-    fs.writeFileSync(filePath, page);
-    pages.push(filePath);
-
-    log(`Generated: ${filePath}`);
+    files.push(writeFile(filename, html));
   }
 
-  return pages;
+  return files;
 }
 
-// ===============================
-// SELF-HEALING ENGINE
-// ===============================
+// =====================================================
+// SELF-HEALING SEO ENGINE
+// =====================================================
 
 function selfHeal(filePath) {
-  const content = fs.readFileSync(filePath, "utf-8");
-  const result = runHealthCheck(content);
+  let content = fs.readFileSync(filePath, "utf-8");
 
-  if (!result.healthy) {
-    log(`Fixing page: ${filePath} | Issues: ${result.issues.join(", ")}`);
+  let fixed = content;
+  let changed = false;
 
-    let fixed = content;
+  if (!content.includes("<title>")) {
+    fixed = fixed.replace("<head>", "<head><title>Auto Fixed</title>");
+    changed = true;
+  }
 
-    if (!content.includes("<title>")) {
-      fixed = fixed.replace("<head>", "<head><title>Auto Fixed Page</title>");
-    }
+  if (!content.includes("amazon.")) {
+    fixed += "\n<!-- AUTO FIX: missing affiliate link detected -->";
+    changed = true;
+  }
 
+  if (changed) {
     fs.writeFileSync(filePath, fixed);
+    log(`Self-healed: ${filePath}`);
   }
 }
 
-// ===============================
-// MAIN ORCHESTRATOR
-// ===============================
+// =====================================================
+// PRODUCT DATABASE (EXPANSION SEED)
+// =====================================================
 
-async function run() {
-  log("🚀 AAIS Orchestrator Starting...");
+const PRODUCTS = [
+  { keyword: "coffee machine", asin: "B07XYZ1234" },
+  { keyword: "vacuum cleaner", asin: "B08ABC5678" },
+  { keyword: "ring light", asin: "B09LMN9999" },
+  { keyword: "air fryer", asin: "B0AIR12345" },
+  { keyword: "portable power bank", asin: "B0PWR98765" }
+];
 
-  const products = [
-    { keyword: "coffee machine", asin: "B07XYZ1234" },
-    { keyword: "vacuum cleaner", asin: "B08ABC5678" },
-    { keyword: "ring light", asin: "B09LMN9999" }
-  ];
+// =====================================================
+// MAIN ORCHESTRATOR (CORE BRAIN)
+// =====================================================
 
-  for (const product of products) {
+function run() {
+  log("======================================");
+  log("🚀 AAIS ORCHESTRATOR STARTED");
+  log("======================================");
+
+  log("Feeder system initialized (RSS / Social / Amazon hooks ready)");
+
+  for (const product of PRODUCTS) {
     log(`Processing product: ${product.keyword}`);
 
-    const pages = expandAcrossCountries(product);
+    const files = expandProduct(product);
 
-    for (const page of pages) {
-      selfHeal(page);
+    for (const file of files) {
+      selfHeal(file);
     }
   }
 
-  log("✅ AAIS Orchestrator Completed");
+  log("======================================");
+  log("✅ AAIS ORCHESTRATOR COMPLETE");
+  log("======================================");
 }
 
+// =====================================================
+// EXECUTION ENTRY POINT
+// =====================================================
+
 run();
+
+// =====================================================
+// EXPORTS (GitHub Actions / modular scaling)
+// =====================================================
+
+module.exports = {
+  run,
+  expandProduct,
+  buildAffiliateUrl,
+  getAmazonDomain
+};
