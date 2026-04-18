@@ -1,93 +1,129 @@
-/**
- * revenue-optimization-engine.js
- * AAC Revenue Intelligence Layer
- * Optimizes product ranking based on estimated revenue potential (not just CTR)
- */
+const REVENUE_OPTIMIZATION_ENGINE = {
+  affiliateId: "your-affiliate-id", // Your unique affiliate ID for tracking
+  currentPageUrl: window.location.href,
+  userLocation: navigator.language, // User's language/region (could be extended for IP geolocation)
+  userHistory: [],
 
-const fs = require("fs");
-const path = require("path");
+  /**
+   * Logs any actions performed by the user for further optimization
+   * This is where behavioral data is stored and analyzed
+   */
+  logUserAction: function (action, product) {
+    this.userHistory.push({ action, product, timestamp: new Date() });
+    this.optimizeAffiliateLinks();
+  },
 
-// === CONFIG ===
-const DATA_FILE = path.join(__dirname, "cache/revenue-data.json");
+  /**
+   * Dynamically optimize affiliate links based on the user's browsing behavior
+   */
+  optimizeAffiliateLinks: function () {
+    const mostClickedProduct = this.getMostClickedProduct();
+    const optimizedLinks = this.getOptimizedLinks(mostClickedProduct);
 
-// === ENTRY POINT ===
-function runRevenueEngine() {
-  console.log("💰 Running Revenue Optimization Engine...");
+    this.updateAffiliateLinks(optimizedLinks);
+  },
 
-  const data = loadData();
+  /**
+   * Returns the most clicked product based on user behavior
+   */
+  getMostClickedProduct: function () {
+    if (this.userHistory.length === 0) return null;
+    const products = this.userHistory.map(entry => entry.product);
+    const productCounts = products.reduce((acc, product) => {
+      acc[product] = (acc[product] || 0) + 1;
+      return acc;
+    }, {});
+    return Object.keys(productCounts).reduce((a, b) => productCounts[a] > productCounts[b] ? a : b);
+  },
 
-  const optimized = optimizeRevenue(data);
+  /**
+   * Get optimized affiliate links for a specific product
+   */
+  getOptimizedLinks: function (product) {
+    // Here, simulate an optimization process, like checking which products have the highest conversion
+    // For simplicity, assume you have a function that fetches a set of optimized links for the product.
+    return [
+      `https://www.amazon.com/dp/${product}?tag=${this.affiliateId}`,
+      `https://www.amazon.de/dp/${product}?tag=${this.affiliateId}`,
+      // Add more links for other countries...
+    ];
+  },
 
-  saveData(optimized);
+  /**
+   * Update the product display with optimized affiliate links
+   */
+  updateAffiliateLinks: function (optimizedLinks) {
+    const productElements = document.querySelectorAll('.product-link');
+    productElements.forEach((el, index) => {
+      // Assign a new affiliate link based on optimization
+      if (optimizedLinks[index]) {
+        el.href = optimizedLinks[index];
+      }
+    });
+  },
 
-  console.log("✅ Revenue optimization complete");
-}
-
-// === LOAD DATA ===
-function loadData() {
-  try {
-    if (!fs.existsSync(DATA_FILE)) {
-      return {
-        products: {}
-      };
+  /**
+   * Display price comparison (for example between Amazon and other affiliate links)
+   */
+  displayPriceComparison: function (product) {
+    const priceComparisonElement = document.querySelector('.price-comparison');
+    if (priceComparisonElement) {
+      const prices = this.fetchPricesForProduct(product);
+      priceComparisonElement.innerHTML = this.formatPriceComparison(prices);
     }
+  },
 
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-  } catch (err) {
+  /**
+   * Fetch prices for a product across different markets
+   */
+  fetchPricesForProduct: function (product) {
     return {
-      products: {}
+      amazonUS: this.getPriceFromAmazon('us', product),
+      amazonDE: this.getPriceFromAmazon('de', product),
+      // Add other markets as needed...
     };
-  }
-}
+  },
 
-// === CORE REVENUE OPTIMIZATION ===
-function optimizeRevenue(data) {
-  const products = data.products || {};
+  /**
+   * Get price from a specific Amazon region
+   */
+  getPriceFromAmazon: function (region, product) {
+    // Simulate fetching the price from Amazon for the product in the given region
+    // In reality, this would involve calling the Amazon Product Advertising API or scraping product pages
+    return Math.random() * 100 + 10; // Random price for demo
+  },
 
-  Object.keys(products).forEach(id => {
-    const p = products[id];
+  /**
+   * Format and display the price comparison
+   */
+  formatPriceComparison: function (prices) {
+    return `
+      <div>Amazon US: $${prices.amazonUS.toFixed(2)}</div>
+      <div>Amazon DE: €${prices.amazonDE.toFixed(2)}</div>
+      <!-- Add more markets as needed -->
+    `;
+  },
 
-    const ctr = safeDivide(p.clicks, p.impressions);
-    const conversion = safeDivide(p.sales, p.clicks);
-    const avgOrderValue = p.aov || 0;
+  /**
+   * Track the conversion rate of the affiliate links
+   */
+  trackConversion: function (product) {
+    // This would typically be handled with a tracking system like Google Analytics, affiliate networks, etc.
+    console.log(`Tracking conversion for: ${product}`);
+  },
 
-    const revenuePerImpression =
-      ctr * conversion * avgOrderValue;
-
-    // === NEW SCORE MODEL (REVENUE FIRST) ===
-    p.revenueScore = revenuePerImpression * 100;
-
-    // === STRATEGIC FLAGS ===
-    p.priority =
-      p.revenueScore > 5 ? "HIGH_REVENUE" :
-      p.revenueScore > 2 ? "MID_REVENUE" : "LOW_REVENUE";
-
-    // === AUTO OPTIMIZATION SIGNALS ===
-    p.boostRanking = p.revenueScore > 3;
-    p.demoteRanking = p.revenueScore < 1;
-  });
-
-  return data;
-}
-
-// === SAFE DIVISION ===
-function safeDivide(a, b) {
-  if (!a || !b) return 0;
-  return a / b;
-}
-
-// === SAVE DATA ===
-function saveData(data) {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-}
-
-// === EXPORTS ===
-module.exports = {
-  runRevenueEngine
+  /**
+   * Run the revenue optimization system on page load
+   */
+  init: function () {
+    this.logUserAction("page-load", this.currentPageUrl);
+    this.optimizeAffiliateLinks();
+    // Example of price comparison for a specific product
+    this.displayPriceComparison("B08K7GHZ3V"); // Example product ID
+  },
 };
 
-// === AUTO RUN ===
-if (require.main === module) {
-  runRevenueEngine();
-}
+// Initialize the revenue optimization engine
+document.addEventListener('DOMContentLoaded', function () {
+  REVENUE_OPTIMIZATION_ENGINE.init();
+});
