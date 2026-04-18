@@ -1,0 +1,63 @@
+name: BrightLane Full System Runner
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-system:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # 1. Checkout repo
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Node
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 3. Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Run full system master pipeline
+      - name: Run Master System
+        run: node master-system-runner.js
+
+      # 5. Verify output exists
+      - name: Check Output
+        run: |
+          if [ -f dist/index.html ]; then
+            echo "✅ Build successful"
+          else
+            echo "❌ Build failed - no index.html found"
+            exit 1
+          fi
+
+      # 6. Upload artifact (backup build)
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: dist/
+
+  deploy:
+    needs: build-system
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
