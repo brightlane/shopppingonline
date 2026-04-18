@@ -1,0 +1,66 @@
+name: Autonomous Affiliate Engine
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # every day at 03:00 UTC
+  workflow_dispatch:       # manual trigger button
+
+jobs:
+  build-system:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ============================
+      # 1. Checkout repo
+      # ============================
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # ============================
+      # 2. Setup Node
+      # ============================
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ============================
+      # 3. Install dependencies
+      # ============================
+      - name: Install Dependencies
+        run: npm install
+
+      # ============================
+      # 4. Run Core Orchestrator
+      # ============================
+      - name: Run Core Orchestrator
+        run: node core.orchestrator.js
+
+      # ============================
+      # 5. Run Self-Healing SEO Engine
+      # ============================
+      - name: Run SEO Self-Healing
+        run: node self-healing-seo-engine.js
+
+      # ============================
+      # 6. Run Traffic Acquisition Layer
+      # ============================
+      - name: Run Traffic Engine
+        run: node autonomous-traffic-acquisition-layer.js
+
+      # ============================
+      # 7. Commit regenerated files
+      # ============================
+      - name: Commit Updated Pages
+        run: |
+          git config --global user.name "autobot"
+          git config --global user.email "autobot@users.noreply.github.com"
+          git add .
+          git commit -m "🤖 Auto update: SEO + traffic + affiliate refresh" || exit 0
+          git push
+
+      # ============================
+      # 8. Deployment confirmation
+      # ============================
+      - name: Done
+        run: echo "🚀 Autonomous engine run complete"
