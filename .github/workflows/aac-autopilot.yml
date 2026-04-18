@@ -1,0 +1,43 @@
+name: AAC Autonomous SEO Engine
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # runs daily at 3 AM UTC
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run AAC Core Orchestrator
+        run: node core.orchestrator.js
+
+      - name: Generate SEO pages batch
+        run: node scripts/seo.js
+
+      - name: Run product feed update
+        run: node scripts/auto-product-feed.js
+
+      - name: Run trending rank engine
+        run: node scripts/trending-engine.js
+
+      - name: Commit generated pages
+        run: |
+          git config --global user.name "aac-bot"
+          git config --global user.email "bot@aac.system"
+
+          git add .
+          git commit -m "🚀 Auto SEO update (AAC engine run)" || echo "No changes to commit"
+          git push
