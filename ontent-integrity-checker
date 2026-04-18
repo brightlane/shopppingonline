@@ -1,0 +1,47 @@
+// content-integrity-checker.js
+
+const fs = require('fs');
+const path = require('path');
+
+module.exports = {
+  checkIntegrity: function(directoryPath) {
+    try {
+      // Check if directory exists
+      if (!fs.existsSync(directoryPath)) {
+        throw new Error(`Directory does not exist: ${directoryPath}`);
+      }
+
+      // Check if files exist in the directory
+      const files = fs.readdirSync(directoryPath);
+      if (files.length === 0) {
+        throw new Error(`No files found in directory: ${directoryPath}`);
+      }
+
+      console.log(`Integrity check passed for directory: ${directoryPath}`);
+      return true;
+    } catch (error) {
+      console.error(`Integrity check failed: ${error.message}`);
+      return false;
+    }
+  },
+
+  validateFileContent: function(filePath) {
+    try {
+      // Check if the file exists
+      if (!fs.existsSync(filePath)) {
+        throw new Error(`File does not exist: ${filePath}`);
+      }
+
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      if (fileContent.trim() === '') {
+        throw new Error(`File is empty: ${filePath}`);
+      }
+
+      console.log(`Content validation passed for file: ${filePath}`);
+      return true;
+    } catch (error) {
+      console.error(`Content validation failed: ${error.message}`);
+      return false;
+    }
+  }
+};
