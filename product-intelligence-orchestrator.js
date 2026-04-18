@@ -1,160 +1,117 @@
 const PRODUCT_INTELLIGENCE_ORCHESTRATOR = {
 
   log: function(msg) {
-    console.log("[INTELLIGENCE ORCHESTRATOR]", msg);
+    console.log("[PRODUCT INTELLIGENCE]", msg);
   },
 
   /**
-   * MAIN ENTRY
-   * products → raw amazon-style data
-   * feeders → FEEDER_REGISTRY_SYSTEM
-   * region → US/UK/DE/etc
+   * Product ranking parameters
+   * These can be expanded as needed.
    */
-  run: async function(products, feeders, region = "us") {
-
-    this.log("🚀 Starting intelligence pipeline...");
-
-    // STEP 1: run feeder system
-    let enriched = await feeders.run(products);
-
-    // STEP 2: score products
-    enriched = this.scoreProducts(enriched);
-
-    // STEP 3: rank products
-    enriched = this.rankProducts(enriched);
-
-    // STEP 4: apply global routing
-    enriched = this.applyGeoRouting(enriched, region);
-
-    // STEP 5: inject affiliate links
-    enriched = this.injectAffiliateLinks(enriched, region);
-
-    // STEP 6: select winners
-    const winners = this.selectWinners(enriched);
-
-    this.log(`✅ Pipeline complete: ${winners.length} winners selected`);
-
-    return winners;
+  rankingFactors: {
+    ratingWeight: 0.3,
+    priceWeight: 0.2,
+    reviewCountWeight: 0.2,
+    keywordRelevanceWeight: 0.3
   },
 
   /**
-   * SCORE ENGINE (core monetization logic)
+   * Rank products based on metrics
    */
-  scoreProducts: function(products) {
-    return products.map(p => {
+  rankProducts: function(products, keyword) {
 
-      let score = 0;
+    this.log("🔍 Ranking products based on predefined metrics...");
 
-      // rating weight
-      score += (p.rating || 0) * 2;
+    const rankedProducts = products.map(product => {
 
-      // review weight
-      score += Math.min((p.reviews || 0) / 100, 10);
-
-      // price advantage (mid-range sweet spot)
-      if (p.price > 50 && p.price < 300) score += 5;
-
-      // cluster boost
-      if (p.clusters?.length > 0) score += 3;
-
-      // SEO boost
-      if (p.seoKeywords?.includes("best")) score += 2;
+      const score = this.calculateScore(product, keyword);
 
       return {
-        ...p,
+        ...product,
         score
       };
     });
+
+    // Sort by score (highest first)
+    rankedProducts.sort((a, b) => b.score - a.score);
+
+    this.log("✅ Products ranked successfully.");
+
+    return rankedProducts;
   },
 
   /**
-   * SORT BY VALUE
+   * Calculate product score based on weights
    */
-  rankProducts: function(products) {
-    return products.sort((a, b) => b.score - a.score);
+  calculateScore: function(product, keyword) {
+
+    let score = 0;
+
+    // Rating: 0.3 weight
+    score += (product.rating || 0) * this.rankingFactors.ratingWeight;
+
+    // Price: 0.2 weight (lower price = higher score)
+    score += (1 / (product.price + 1)) * this.rankingFactors.priceWeight;
+
+    // Review count: 0.2 weight
+    score += (product.reviews || 0) * this.rankingFactors.reviewCountWeight;
+
+    // Keyword relevance: 0.3 weight (based on how well the product matches the target keyword)
+    score += this.calculateKeywordRelevance(product.title, keyword) * this.rankingFactors.keywordRelevanceWeight;
+
+    return score;
   },
 
   /**
-   * GEO ROUTING
+   * Simple keyword relevance calculation (basic keyword matching)
    */
-  applyGeoRouting: function(products, region) {
-    return products.map(p => {
+  calculateKeywordRelevance: function(productTitle, keyword) {
 
-      let currency = "USD";
-      let domain = "amazon.com";
+    const keywordLower = keyword.toLowerCase();
+    const titleLower = productTitle.toLowerCase();
 
-      if (region === "uk") {
-        currency = "GBP";
-        domain = "amazon.co.uk";
-      }
+    const matches = titleLower.split(" ").filter(word => word.includes(keywordLower)).length;
 
-      if (region === "de") {
-        currency = "EUR";
-        domain = "amazon.de";
-      }
-
-      return {
-        ...p,
-        geo: { region, currency, domain }
-      };
-    });
+    return matches;
   },
 
   /**
-   * AFFILIATE INJECTION
+   * Fetch product info and rank them
    */
-  injectAffiliateLinks: function(products, region) {
-    return products.map(p => {
+  getProductRanking: function(products, keyword) {
 
-      const domain = p.geo?.domain || "amazon.com";
+    this.log(`📦 Ranking products based on the keyword: "${keyword}"`);
 
-      return {
-        ...p,
-        affiliateUrl: `https://${domain}/dp/${p.asin}?tag=brightlane201-20`
-      };
-    });
+    return this.rankProducts(products, keyword);
   },
 
   /**
-   * WINNER SELECTION ENGINE
+   * Integrate with content strategy pipeline
+   * This can be called to integrate products into content generation based on performance.
    */
-  selectWinners: function(products) {
+  integrateWithContentPipeline: function(products, keyword) {
 
-    // top 20% = money products
-    const cutoff = Math.max(1, Math.floor(products.length * 0.2));
+    const rankedProducts = this.getProductRanking(products, keyword);
 
-    const winners = products.slice(0, cutoff);
+    this.log("📈 Products ranked. Integrating with content generation...");
 
-    return winners.map(p => ({
-      ...p,
-      badge: this.assignBadge(p)
-    }));
+    // Return the top-ranked products for content integration
+    return rankedProducts.slice(0, 5); // Use top 5 products
   },
 
   /**
-   * BADGE SYSTEM (conversion psychology layer)
+   * MAIN FUNCTION
    */
-  assignBadge: function(product) {
+  run: function(products, keyword) {
 
-    if (product.score > 15) return "🔥 BEST PICK";
-    if (product.price < 50) return "💰 BUDGET DEAL";
-    if (product.rating >= 4.5) return "⭐ TOP RATED";
-    return "✔ RECOMMENDED";
-  },
+    this.log("🧠 Running product intelligence...");
 
-  /**
-   * CONNECT TO FRONTEND
-   */
-  render: function(products) {
+    // Get top 5 ranked products
+    const topRankedProducts = this.integrateWithContentPipeline(products, keyword);
 
-    return products.map(p => `
-      <a class="card" href="${p.affiliateUrl}">
-        <div class="badge">${p.badge}</div>
-        <div class="title">${p.title}</div>
-        <div class="desc">${p.description || ""}</div>
-        <div class="review">${p.rating} ⭐ (${p.reviews} reviews)</div>
-      </a>
-    `).join("");
+    this.log("✅ Product intelligence run complete.");
+
+    return topRankedProducts;
   }
 };
 
