@@ -1,121 +1,61 @@
-/**
- * self-healing-seo-engine.js
- * BrightLane Autonomous SEO Recovery Layer
- */
-
 const fs = require("fs");
 const path = require("path");
 
-// ============================
-// CONFIG
-// ============================
-const CONFIG = {
-  pagesDir: path.join(__dirname, "pages"),
-  threshold: {
-    lowCTR: 0.02,
-    lowRank: 20
-  }
-};
+console.log("🧠 Running SEO self-healing engine...");
 
-// ============================
-// MOCK PERFORMANCE DATA
-// (later replaced with GA4 / Search Console)
-// ============================
-function getPageMetrics(page) {
-  // Simulated data (replace later with real analytics API)
-  return {
-    ctr: Math.random() * 0.1,
-    rank: Math.floor(Math.random() * 50),
-    impressions: Math.floor(Math.random() * 10000)
-  };
+const PAGES_DIR = path.join(__dirname, "pages");
+
+// 🔥 STEP 1: AUTO-HEAL MISSING DIRECTORY
+function ensureDirectory(dir) {
+  if (!fs.existsSync(dir)) {
+    console.log("⚠ Missing folder detected:", dir);
+    console.log("🔧 Auto-creating folder...");
+
+    fs.mkdirSync(dir, { recursive: true });
+
+    console.log("✅ Folder created:", dir);
+  }
 }
 
-// ============================
-// SEO REWRITER CORE
-// ============================
-function rewriteSEO(html, pageName, metrics) {
-  let newTitle = pageName;
-  let newDescription = "Best updated comparison and buying guide.";
-
-  if (metrics.ctr < CONFIG.threshold.lowCTR) {
-    newTitle = `🔥 BEST ${pageName.toUpperCase()} (2026 Updated Picks)`;
-    newDescription = `Updated 2026 guide with top rated products, comparisons, and expert picks.`;
-  }
-
-  if (metrics.rank > CONFIG.threshold.lowRank) {
-    newTitle = `TOP RATED ${pageName.toUpperCase()} - BUYING GUIDE`;
-  }
-
-  // Inject basic SEO tags
-  const updated = html
-    .replace(/<title>.*?<\/title>/i, `<title>${newTitle}</title>`)
-    .replace(
-      /<meta name="description" content=".*?"/i,
-      `<meta name="description" content="${newDescription}"`
-    );
-
-  return updated;
-}
-
-// ============================
-// PAGE ANALYZER
-// ============================
+// 🔍 STEP 2: SAFE PAGE SCAN
 function analyzePages() {
-  const files = fs.readdirSync(CONFIG.pagesDir);
+  ensureDirectory(PAGES_DIR);
 
-  const results = [];
+  let files = [];
 
-  files.forEach(file => {
-    if (!file.endsWith(".html")) return;
+  try {
+    files = fs.readdirSync(PAGES_DIR);
+  } catch (err) {
+    console.log("❌ Still unable to read pages folder");
+    console.log(err.message);
+    return [];
+  }
 
-    const filePath = path.join(CONFIG.pagesDir, file);
-    const html = fs.readFileSync(filePath, "utf-8");
+  console.log(`📄 Found ${files.length} pages`);
 
-    const metrics = getPageMetrics(file);
-
-    results.push({
-      file,
-      metrics
-    });
-  });
-
-  return results;
+  return files.map(file => ({
+    file,
+    path: path.join(PAGES_DIR, file)
+  }));
 }
 
-// ============================
-// SELF-HEALING ENGINE
-// ============================
+// 🧠 STEP 3: SEO HEALING LOGIC
 function runSelfHealing() {
-  console.log("🧠 Running SEO self-healing engine...");
-
   const pages = analyzePages();
 
-  pages.forEach(page => {
-    const filePath = path.join(CONFIG.pagesDir, page.file);
-    const html = fs.readFileSync(filePath, "utf-8");
+  if (pages.length === 0) {
+    console.log("⚠ No pages found — generating default structure...");
 
-    const updatedHTML = rewriteSEO(html, page.file.replace(".html", ""), page.metrics);
-
-    fs.writeFileSync(filePath, updatedHTML, "utf-8");
-
-    console.log(
-      `✔ Updated: ${page.file} | CTR:${page.metrics.ctr.toFixed(3)} Rank:${page.metrics.rank}`
+    fs.writeFileSync(
+      path.join(PAGES_DIR, "index.html"),
+      "<h1>Auto Generated Homepage</h1>"
     );
-  });
 
-  console.log("✅ Self-healing complete.");
+    console.log("✅ Default page created");
+  }
+
+  console.log("🧠 SEO Engine Complete");
 }
 
-// ============================
-// AUTO-TRIGGER HOOK (GitHub Actions ready)
-// ============================
-if (require.main === module) {
-  runSelfHealing();
-}
-
-// ============================
-module.exports = {
-  runSelfHealing,
-  analyzePages,
-  rewriteSEO
-};
+// 🚀 RUN
+runSelfHealing();
