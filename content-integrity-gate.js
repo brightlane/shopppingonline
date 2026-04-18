@@ -1,137 +1,67 @@
-const CONTENT_INTEGRITY_GATE = {
+'use strict';
 
-  log: function(msg) {
-    console.log("[CONTENT INTEGRITY]", msg);
+const fs = require("fs");
+const path = require("path");
+
+console.log("[CONTENT CHECKER] Initializing...");
+
+const ContentIntegrityChecker = {
+  log: (msg) => console.log("[CONTENT CHECKER]", msg),
+
+  fileExists(filePath) {
+    return fs.existsSync(path.join(__dirname, filePath));
   },
 
-  /**
-   * DEFAULT CATEGORY FALLBACK IMAGES
-   */
-  fallbackImages: {
-    default: "https://via.placeholder.com/300x300?text=Product",
-    laptop: "https://via.placeholder.com/300x300?text=Laptop",
-    audio: "https://via.placeholder.com/300x300?text=Audio",
-    kitchen: "https://via.placeholder.com/300x300?text=Kitchen",
-    home: "https://via.placeholder.com/300x300?text=Home",
-    tech: "https://via.placeholder.com/300x300?text=Tech",
-    fitness: "https://via.placeholder.com/300x300?text=Fitness"
-  },
+  validateRequiredModules() {
+    const required = [
+      "master-system-runner.js",
+      "engine.runner.js",
+      "core.orchestrator.js",
+      "boot.resolver.js"
+    ];
 
-  /**
-   * MAIN CLEANING PIPELINE
-   */
-  clean: function(products, strictMode = false) {
+    let missing = [];
 
-    this.log("🧹 Running content integrity check...");
+    required.forEach(file => {
+      if (!this.fileExists(file)) {
+        missing.push(file);
+      }
+    });
 
-    return products
-      .map(p => this.normalize(p))
-      .filter(p => strictMode ? this.isValid(p) : true);
-  },
-
-  /**
-   * NORMALIZE PRODUCT
-   */
-  normalize: function(product) {
-
-    const cleanTitle = this.cleanText(product.title, "Untitled Product");
-    const cleanDesc = this.cleanText(product.description, "");
-    const cleanImage = this.fixImage(product);
-
-    return {
-      ...product,
-      title: cleanTitle,
-      description: cleanDesc,
-      image: cleanImage
-    };
-  },
-
-  /**
-   * CLEAN TEXT FIELDS
-   */
-  cleanText: function(value, fallback) {
-
-    if (!value) return fallback;
-
-    const invalid = ["-", "N/A", "null", "undefined", ""];
-
-    if (invalid.includes(value)) return fallback;
-
-    return value;
-  },
-
-  /**
-   * IMAGE VALIDATION + FIX
-   */
-  fixImage: function(product) {
-
-    const invalid = ["-", "N/A", "", null, undefined];
-
-    if (!product.image || invalid.includes(product.image)) {
-      return this.getFallbackByCategory(product);
+    if (missing.length > 0) {
+      this.log("❌ Missing critical system files:");
+      missing.forEach(f => this.log(" - " + f));
+      throw new Error("System integrity failed: missing modules");
     }
 
-    return product.image;
-  },
-
-  /**
-   * CATEGORY-BASED FALLBACK IMAGE
-   */
-  getFallbackByCategory: function(product) {
-
-    const title = (product.title || "").toLowerCase();
-
-    if (title.includes("laptop")) return this.fallbackImages.laptop;
-    if (title.includes("headphone") || title.includes("speaker")) return this.fallbackImages.audio;
-    if (title.includes("air fryer") || title.includes("kitchen")) return this.fallbackImages.kitchen;
-    if (title.includes("vacuum") || title.includes("home")) return this.fallbackImages.home;
-    if (title.includes("fitness") || title.includes("bike")) return this.fallbackImages.fitness;
-
-    return this.fallbackImages.default;
-  },
-
-  /**
-   * VALIDATION RULES
-   */
-  isValid: function(product) {
-
-    if (!product.title || product.title === "Untitled Product") {
-      this.log(`❌ Invalid product (title): ${product.asin}`);
-      return false;
-    }
-
-    if (!product.asin) {
-      this.log(`❌ Invalid product (ASIN missing)`);
-      return false;
-    }
-
-    if (!product.image) {
-      this.log(`❌ Invalid product (image missing): ${product.asin}`);
-      return false;
-    }
-
+    this.log("✅ All core modules present");
     return true;
   },
 
-  /**
-   * PRE-RENDER SAFETY CHECK
-   */
-  prepareForRender: function(products) {
+  validatePagesFolder() {
+    const pagesPath = path.join(__dirname, "pages");
 
-    this.log("🎯 Preparing safe render output...");
+    if (!fs.existsSync(pagesPath)) {
+      this.log("⚠ pages folder missing → creating...");
+      fs.mkdirSync(pagesPath, { recursive: true });
+    }
 
-    return this.clean(products, false);
+    const files = fs.readdirSync(pagesPath);
+
+    this.log(`📄 Pages found: ${files.length}`);
+
+    return files;
   },
 
-  /**
-   * STRICT MODE (no weak products allowed)
-   */
-  prepareStrict: function(products) {
+  run() {
+    this.log("Running full integrity scan...");
 
-    this.log("🚨 STRICT MODE ACTIVE");
+    this.validateRequiredModules();
+    this.validatePagesFolder();
 
-    return this.clean(products, true);
+    this.log("🧠 Integrity check COMPLETE");
+    return true;
   }
 };
 
-module.exports = CONTENT_INTEGRITY_GATE;
+module.exports = ContentIntegrityChecker;
