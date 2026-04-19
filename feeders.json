@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Apple AirTag",
+    "description": "Precision item tracker using Apple Find My network for real-time location tracking of keys, luggage, and valuables.",
+    "link": "https://www.amazon.com/dp/B0933BVK6T?tag=brightlane201-20",
+    "badge": "APPLE",
+    "review": "“Found my lost bag instantly.” — Michael R.",
+    "comparisonLink": "https://www.amazon.com/dp/B07W86T94V?tag=brightlane201-20",
+    "comparisonBadge": "BUDGET",
+    "comparisonTitle": "Tile Mate Tracker",
+    "comparisonDescription": "Bluetooth tracking device compatible with iOS and Android for everyday item recovery.",
+    "comparisonReview": "“Simple and reliable.” — Jessica L."
+  },
+  {
+    "title": "Anker PowerCore",
+    "description": "High-capacity fast-charging portable power bank designed for travel and heavy device usage.",
+    "link": "https://www.amazon.com/dp/B07S829LBX?tag=brightlane201-20",
+    "badge": "TOP",
+    "review": "“Saved my entire trip.” — David K.",
+    "comparisonLink": "https://www.amazon.com/dp/B08K7GHZ3V?tag=brightlane201-20",
+    "comparisonBadge": "SLIM",
+    "comparisonTitle": "Belkin Power Bank",
+    "comparisonDescription": "Slim portable charger designed for pocket carry and emergency backup power.",
+    "comparisonReview": "“Perfect everyday charger.” — Sarah T."
+  }
+]
