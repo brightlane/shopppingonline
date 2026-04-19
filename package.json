@@ -7,7 +7,7 @@
     "start": "node generate.js"
   },
   "dependencies": {
-    "axios": "^0.21.1"  // Ensure axios is installed and listed here
+    "axios": "^0.21.1"
   },
   "devDependencies": {},
   "author": "",
