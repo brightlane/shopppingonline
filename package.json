@@ -1,10 +1,15 @@
 {
-  "name": "brightlane-affiliate-site",
+  "name": "your-project-name",
   "version": "1.0.0",
-  "type": "commonjs",
+  "description": "",
+  "main": "feeder-update.js",
   "scripts": {
-    "generate": "node generate.js",
-    "build": "node generate.js",
-    "start": "node generate.js"
-  }
+    "start": "node feeder-update.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"  # Version of axios you're using
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC"
 }
