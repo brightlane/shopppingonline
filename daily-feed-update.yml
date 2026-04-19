@@ -2,36 +2,38 @@ name: Daily Feed Update
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Run every day at midnight UTC
-  push:
-    branches:
-      - main  # Optional: Trigger this workflow when changes are pushed to `main`
+    # This cron expression runs every day at midnight UTC
+    - cron: '0 0 * * *'  # Run at 00:00 UTC every day
+  workflow_dispatch:  # Allows you to manually trigger this workflow from GitHub UI
 
 jobs:
-  update-feed:
+  update_feed:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout the repository
-      uses: actions/checkout@v2
+      # Step 1: Checkout your code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      # Step 2: Set up Node.js (if your script is Node.js based)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'  # You can specify your preferred Node.js version
 
-    - name: Install dependencies
-      run: |
-        npm install
+      # Step 3: Install dependencies (if you have a package.json)
+      - name: Install dependencies
+        run: npm install
 
-    - name: Update Feed
-      run: |
-        node updateFeed.js
+      # Step 4: Run the script to update the feed
+      - name: Update Feed
+        run: node updateFeed.js  # Replace with your script's filename if different
 
-    - name: Commit and push changes
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git add index.html
-        git commit -m "Automated daily feed update"
-        git push origin main
+      # Step 5: Commit changes (if required)
+      - name: Commit updates
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add .
+          git commit -m "Daily feed update"
+          git push
