@@ -1,16 +1,16 @@
-// Step 1: Import the 'axios' library
+// Import the 'axios' library
 const axios = require('axios');
 
-// Example API URL (Replace with your actual API or data source)
-const apiUrl = 'https://jsonplaceholder.typicode.com/todos/1';
+// Define the API URL (you can replace this with your actual URL)
+const apiUrl = 'https://jsonplaceholder.typicode.com/todos/1';  // Example URL for testing
 
-// Step 2: Make an HTTP GET request using 'axios'
+// Make the GET request using axios
 axios.get(apiUrl)
-  .then(response => {
-    // Success: Output the response data
-    console.log('Data:', response.data);
+  .then((response) => {
+    // Log the response if it's successful
+    console.log('Data received:', response.data);
   })
-  .catch(error => {
-    // Error: Output the error message
+  .catch((error) => {
+    // Log the error if something goes wrong
     console.error('Error fetching data:', error);
   });
