@@ -1,14 +1,12 @@
 import os
 import openai
-import random
-import time
 from datetime import datetime
 
-# Set up your OpenAI API key
-openai.api_key = "YOUR_OPENAI_API_KEY"  # Replace with your actual OpenAI API key
+# Set up your OpenAI API key (you will use GitHub Secrets for this)
+openai.api_key = os.getenv("OPENAI_API_KEY")  # Using the GitHub secret for the API key
 
 # Path to the folder where your HTML files are stored
-html_files_directory = "./html_files"  # Assuming you store HTML files in this directory
+html_files_directory = "./html_files"  # Make sure this folder exists
 
 # Function to generate a 3000-word article using OpenAI GPT-3/4
 def generate_article(prompt, word_count_target=3000):
@@ -45,8 +43,16 @@ def create_html_file(content, file_name):
 
 # Function to process each HTML file and generate an article for each
 def process_html_files():
+    if not os.path.exists(html_files_directory):
+        print(f"Error: The directory {html_files_directory} does not exist.")
+        return
+
     # Get all HTML files in the specified directory
     html_files = [f for f in os.listdir(html_files_directory) if f.endswith('.html')]
+
+    if not html_files:
+        print(f"Error: No HTML files found in the {html_files_directory} directory.")
+        return
 
     for html_file in html_files:
         # You can customize the prompt here based on the content you want to generate
