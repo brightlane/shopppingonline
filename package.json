@@ -1,13 +1,13 @@
 {
-  "name": "your-project-name",
+  "name": "shopppingonline",
   "version": "1.0.0",
-  "description": "",
-  "main": "feeder-update.js",
+  "description": "A project for daily article generation",
+  "main": "generate.js", 
   "scripts": {
-    "start": "node feeder-update.js"
+    "start": "node generate.js"
   },
   "dependencies": {
-    "axios": "^0.21.1"  # Version of axios you're using
+    "axios": "^0.21.1"  // Ensure axios is installed and listed here
   },
   "devDependencies": {},
   "author": "",
