@@ -1,29 +1,33 @@
-// feeder-update.js
+// Step 1: Import the axios library
+const axios = require('axios');  // This is the correct way to import axios
 
-const axios = require('axios');
-const fs = require('fs');
-
-// Example function to fetch data from an API (this can be replaced with any source)
+// Step 2: Write an asynchronous function to fetch data from an API
 async function fetchData() {
   try {
-    const response = await axios.get('https://api.example.com/data'); // Replace with your actual API
+    // Step 3: Make an API call using axios
+    const response = await axios.get('https://api.example.com/data');  // Replace with your API URL
+    console.log('Data fetched successfully:', response.data);
+
+    // Example: return the data to be used in another function
     return response.data;
+
   } catch (error) {
+    // Step 4: Handle errors (if any)
     console.error('Error fetching data:', error);
     return null;
   }
 }
 
-// Function to update the data
+// Step 5: Function to update the feeder (you can modify this to your needs)
 async function updateFeeder() {
-  const data = await fetchData();
+  const data = await fetchData();  // Fetch the data
   if (data) {
-    // Assuming you're updating a file with new data, for example, JSON
-    fs.writeFileSync('feeder-data.json', JSON.stringify(data, null, 2));
-    console.log('Feeder data updated!');
+    console.log('Data fetched and updated!');
+    // Here you would normally update your feeder (e.g., write the data to a file or update your system)
   } else {
     console.log('No data to update.');
   }
 }
 
+// Step 6: Execute the update feeder function
 updateFeeder();
