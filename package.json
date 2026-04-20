@@ -2,7 +2,7 @@
   "name": "shopppingonline",
   "version": "1.0.0",
   "description": "A project for daily article generation",
-  "main": "generate.js", 
+  "main": "generate.js",
   "scripts": {
     "start": "node generate.js"
   },
