@@ -1,35 +1,25 @@
 name: Daily Feed Update
 
 on:
-  # Trigger on a daily schedule
   schedule:
-    - cron: '0 0 * * *'  # Runs every day at midnight UTC
-  # Trigger manually via GitHub UI
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
   update-feed:
-    runs-on: ubuntu-latest  # This is the runner environment
+    runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
-    # Step 2: Set up Node.js
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - uses: actions/setup-node@v4
       with:
-        node-version: '14'  # Specify Node.js version
+        node-version: '18'
 
-    # Step 3: Install dependencies (including axios)
     - name: Install dependencies
-      run: |
-        cd /path/to/your/repository/scripts  # Update to correct folder if needed
-        npm install  # Installs dependencies including axios
+      run: npm install
+      working-directory: scripts
 
-    # Step 4: Run the feeder update script
     - name: Run feeder update script
-      run: |
-        cd /path/to/your/repository/scripts  # Update to correct folder if needed
-        node feeder-update.js  # Run your main script
+      run: node feeder-update.js
+      working-directory: scripts
