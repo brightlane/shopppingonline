@@ -1,29 +1,52 @@
 const fs = require("fs");
-const products = require("./amazon-products");
+const path = require("path");
 
-// safety check
-if (!products || !products.length) {
-  console.error("No products found in amazon-products.js");
+// =========================
+// CONFIG
+// =========================
+const pagesDir = path.join(__dirname, "../pages");
+const outputFile = path.join(__dirname, "../sitemap.xml");
+
+// =========================
+// CHECK PAGES
+// =========================
+if (!fs.existsSync(pagesDir)) {
+  console.error("❌ pages folder not found. Run build-pages.js first.");
   process.exit(1);
 }
 
-// build URL entries
-const urls = products
-  .map((p) => {
-    return `
-  <url>
-    <loc>https://yourdomain.com/${p.asin}.html</loc>
-  </url>`;
-  })
-  .join("");
+const files = fs.readdirSync(pagesDir).filter(f => f.endsWith(".html"));
 
-// full sitemap XML
+// =========================
+// BASE URL (CHANGE THIS)
+// =========================
+const BASE_URL = "https://yourdomain.com/pages";
+
+// =========================
+// BUILD SITEMAP URLS
+// =========================
+const urls = files.map(file => {
+  return `
+  <url>
+    <loc>${BASE_URL}/${file}</loc>
+  </url>`;
+}).join("\n");
+
+// =========================
+// FINAL XML
+// =========================
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>`;
 
-// write file to ROOT of project
-fs.writeFileSync("sitemap.xml", sitemap.trim());
+// =========================
+// WRITE FILE
+// =========================
+fs.writeFileSync(outputFile, sitemap);
 
-console.log("✅ Sitemap generated successfully");
+console.log("====================================");
+console.log("✅ SITEMAP GENERATED");
+console.log("📄 Pages indexed:", files.length);
+console.log("📁 Output:", outputFile);
+console.log("====================================");
