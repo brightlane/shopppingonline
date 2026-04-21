@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "github-pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. OPTIONAL: run your generator (only if you use it)
+      - name: Build site files
+        run: |
+          if [ -f generator/build-amazon-pages.js ]; then
+            node generator/build-amazon-pages.js
+          else
+            echo "No generator found, skipping build step"
+          fi
+
+      # 3. Upload site artifact (THIS IS REQUIRED)
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .   # uploads entire repo (index.html, product pages, sitemap)
+
+  deploy:
+    environment:
+      name: github-pages   # 🔥 THIS FIXES YOUR ERROR
+
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
