@@ -1,78 +1,128 @@
 const fs = require("fs");
+const products = require("./amazon-products");
 
-if (!fs.existsSync("data.json")) {
-  console.error("Missing data.json");
-  process.exit(1);
-}
+// group products by category
+const categories = {};
 
-const data = JSON.parse(fs.readFileSync("data.json", "utf8"));
+products.forEach((p) => {
+  if (!categories[p.category]) categories[p.category] = [];
+  categories[p.category].push(p);
+});
 
-// ---------- SEO TOPIC ENGINE ----------
-const topic = "Print on Demand Business Guide";
-
-// ---------- SECTION BUILDER ----------
-function section(title, text) {
-  return `
-  <section>
-    <h2>${title}</h2>
-    <p>${text}</p>
-  </section>
-  `;
-}
-
-// ---------- LONG CONTENT GENERATOR ----------
-function generateLongArticle(data) {
-  return `
+function buildProductPage(product) {
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
-  <title>${topic}</title>
-  <meta name="description" content="Complete 5000-word guide to Print on Demand business strategy">
+  <title>${product.title} Review (2026 Guide)</title>
+  <meta name="description" content="Detailed review of ${product.title}">
 </head>
 
 <body>
 
-<h1>${topic}</h1>
+<a href="index.html">Home</a>
 
-<p>
-This is a complete guide covering Print on Demand, strategies, mistakes, scaling methods, and niche selection.
-We will break everything into actionable steps so beginners can build a profitable business.
-</p>
+<h1>${product.title}</h1>
 
-${section(
-  "What is Print on Demand?",
-  "Print on Demand (POD) is a business model where products are printed only after a customer places an order. This reduces inventory risk and allows entrepreneurs to start with minimal investment."
-)}
+<p>${product.description}</p>
 
-${section(
-  "How the Business Model Works",
-  "You create designs, upload them to platforms like Printify, and when a customer buys a product, the supplier prints and ships it directly."
-)}
+<h2>Features</h2>
+<ul>
+  ${product.features.map((f) => `<li>${f}</li>`).join("")}
+</ul>
 
-${section(
-  "Best Niches for POD",
-  "Successful niches include fitness, pets, memes, motivational quotes, and micro-communities. Niche selection is the most important factor for success."
-)}
+<h2>Category: ${product.category}</h2>
 
-${section(
-  "Common Mistakes",
-  "Most beginners fail due to poor niche selection, low-quality designs, and lack of marketing strategy."
-)}
+<h3>More in this category</h3>
+<ul>
+  ${categories[product.category]
+    .filter((p) => p.asin !== product.asin)
+    .map((p) => `<li><a href="${p.asin}.html">${p.title}</a></li>`)
+    .join("")}
+</ul>
 
-${section(
-  "Scaling Strategy",
-  "To scale, focus on winning designs, duplicate successful niches, and optimize listings for SEO and ads."
-)}
-
-<h2>Raw Data Insight</h2>
-<pre>${JSON.stringify(data, null, 2)}</pre>
+<h2>Buy on Amazon</h2>
+<a href="${product.affiliateUrl}" target="_blank">View Product</a>
 
 </body>
 </html>
 `;
+
+  fs.writeFileSync(`${product.asin}.html`, html);
+  console.log("Generated:", product.asin);
 }
 
-// ---------- WRITE FILE ----------
-fs.writeFileSync("index.html", generateLongArticle(data));
+// generate product pages
+products.forEach(buildProductPage);
 
-console.log("Generated long-form SEO page (3000–5000 word structure)");
+// build category pages
+Object.keys(categories).forEach((cat) => {
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>${cat} Products</title>
+</head>
+
+<body>
+
+<h1>${cat} Products</h1>
+
+<ul>
+  ${categories[cat]
+    .map((p) => `<li><a href="${p.asin}.html">${p.title}</a></li>`)
+    .join("")}
+</ul>
+
+<a href="index.html">Back Home</a>
+
+</body>
+</html>
+`;
+
+  fs.writeFileSync(`${cat.toLowerCase()}.html`, html);
+});
+
+// homepage
+const indexHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Amazon Product Review Hub</title>
+</head>
+
+<body>
+
+<h1>Top Product Categories</h1>
+
+<ul>
+  ${Object.keys(categories)
+    .map((c) => `<li><a href="${c.toLowerCase()}.html">${c}</a></li>`)
+    .join("")}
+</ul>
+
+</body>
+</html>
+`;
+
+fs.writeFileSync("index.html", indexHTML);
+
+// sitemap
+const sitemap = `
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${products
+  .map(
+    (p) => `
+  <url>
+    <loc>https://yourdomain.com/${p.asin}.html</loc>
+  </url>
+`
+  )
+  .join("")}
+</urlset>
+`;
+
+fs.writeFileSync("sitemap.xml", sitemap);
+
+console.log("Sitemap generated");
