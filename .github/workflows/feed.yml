@@ -1,9 +1,12 @@
-name: Daily Feed + Page Generator
+name: Daily Amazon SEO Generator
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # runs daily at midnight UTC
-  workflow_dispatch:     # manual run button
+    - cron: '0 0 * * *'   # runs daily at midnight UTC
+  workflow_dispatch:       # manual run button
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -25,15 +28,19 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    # 4. Run feeder (fetch API → data.json)
+    # 4. Run feeder (API → data if you use it)
     - name: Run feeder
       run: node feeder.js
 
-    # 5. Build HTML pages from data.json
-    - name: Build pages
-      run: node generator/build-pages.js
+    # 5. Build Amazon SEO pages
+    - name: Build product pages
+      run: node generator/build-amazon-pages.js
 
-    # 6. Commit changes back to repo
+    # 6. Build sitemap
+    - name: Build sitemap
+      run: node generator/build-sitemap.js
+
+    # 7. Commit and push changes
     - name: Commit changes
       run: |
         git config user.name "seo-bot"
@@ -41,11 +48,11 @@ jobs:
 
         git add .
 
-        # Skip commit if nothing changed
+        # prevent empty commits
         if git diff --cached --quiet; then
           echo "No changes to commit"
           exit 0
         fi
 
-        git commit -m "auto build pages"
+        git commit -m "auto: update amazon SEO pages + sitemap"
         git push
