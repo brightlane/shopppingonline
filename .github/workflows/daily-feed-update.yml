@@ -16,10 +16,11 @@ jobs:
       with:
         node-version: '18'
 
+    - name: Debug structure
+      run: ls -R
+
     - name: Install dependencies
       run: npm install
-      working-directory: scripts
 
-    - name: Run feeder update script
+    - name: Run script
       run: node feeder-update.js
-      working-directory: scripts
