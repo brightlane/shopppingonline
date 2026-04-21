@@ -1,34 +1,38 @@
 const fs = require("fs");
 
-function slugify(text) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+if (!fs.existsSync("data.json")) {
+  console.error("Missing data.json");
+  process.exit(1);
 }
 
-// Load data from feeder output
 const data = JSON.parse(fs.readFileSync("data.json", "utf8"));
 
-// Example: create 1 page from API data
-const title = `Todo ${data.id}`;
-const slug = slugify(title);
+// Create ONE strong page instead of spam pages
+const title = "Printify & POD Guide Hub";
 
 const html = `
 <!DOCTYPE html>
 <html>
 <head>
   <title>${title}</title>
+  <meta name="description" content="Complete guide to Print on Demand and Printify strategies">
 </head>
 <body>
   <h1>${title}</h1>
-  <p>Status: ${data.completed}</p>
-  <p>User ID: ${data.userId}</p>
+
+  <h2>Latest Data</h2>
+  <pre>${JSON.stringify(data, null, 2)}</pre>
+
+  <h2>Guides</h2>
+  <ul>
+    <li>Print on Demand Strategy</li>
+    <li>Best POD Niches</li>
+    <li>How to Start POD Business</li>
+  </ul>
 </body>
 </html>
 `;
 
-fs.writeFileSync(`${slug}.html`, html);
+fs.writeFileSync("index.html", html);
 
-console.log("Page created:", slug + ".html");
+console.log("Generated homepage");
