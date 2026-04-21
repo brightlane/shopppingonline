@@ -1,34 +1,77 @@
 const fs = require("fs");
 
-// Example feed data (replace later with real Amazon/JSON/API feed)
+// Central feed source (this drives ALL page generation)
 const feed = [
   {
+    id: "coffee-makers",
     title: "Best Coffee Makers 2026",
-    url: "best-coffee-makers-2026-model-1.html"
+    keyword: "coffee makers",
+    category: "kitchen-appliances",
+    url: "best-coffee-makers-2026-model-1.html",
+    description: "High-quality coffee makers ranked for 2026 buyers and Amazon shoppers."
   },
   {
-    title: "Top Vacuum Cleaners 2026",
-    url: "best-vacuum-cleaners-2026-model-1.html"
+    id: "vacuum-cleaners",
+    title: "Best Vacuum Cleaners 2026",
+    keyword: "vacuum cleaners",
+    category: "home-cleaning",
+    url: "best-vacuum-cleaners-2026-model-1.html",
+    description: "Top rated vacuum cleaners for home and commercial use."
   },
   {
-    title: "Smart Home Devices Guide",
-    url: "best-smart-home-2026-model-1.html"
+    id: "smart-home",
+    title: "Best Smart Home Devices 2026",
+    keyword: "smart home devices",
+    category: "smart-home",
+    url: "best-smart-home-2026-model-1.html",
+    description: "Smart home automation devices ranked and reviewed."
+  },
+  {
+    id: "portable-power",
+    title: "Best Portable Power Stations 2026",
+    keyword: "portable power station",
+    category: "electronics",
+    url: "best-portable-power-2026-model-1.html",
+    description: "Reliable portable power solutions for outdoor and emergency use."
   }
 ];
 
-// Write feed JSON for your generator system
-fs.writeFileSync(
-  "feed.json",
-  JSON.stringify(feed, null, 2)
-);
+// 1. Save main feed JSON
+fs.writeFileSync("feed.json", JSON.stringify(feed, null, 2));
+console.log("✅ feed.json created");
 
-console.log("✅ Feed generated successfully");
+// 2. Create sitemap entries for SEO
+const sitemap = feed
+  .map(item => {
+    return `
+  <url>
+    <loc>https://yourdomain.com/${item.url}</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+  })
+  .join("\n");
 
-// Optional: also output sitemap-style links
-const sitemap = feed.map(item => {
-  return `<url><loc>https://yourdomain.com/${item.url}</loc></url>`;
-}).join("\n");
+const sitemapFinal = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemap}
+</urlset>`;
 
-fs.writeFileSync("feed-sitemap.xml", sitemap);
+fs.writeFileSync("feed-sitemap.xml", sitemapFinal);
+console.log("✅ feed-sitemap.xml created");
 
-console.log("✅ Feed sitemap generated");
+// 3. Optional: category index for generator logic
+const categories = {};
+
+for (const item of feed) {
+  if (!categories[item.category]) {
+    categories[item.category] = [];
+  }
+  categories[item.category].push(item);
+}
+
+fs.writeFileSync("feed-categories.json", JSON.stringify(categories, null, 2));
+console.log("✅ feed-categories.json created");
+
+// 4. Logging
+console.log("🚀 Feed system complete. Ready for generator.");
