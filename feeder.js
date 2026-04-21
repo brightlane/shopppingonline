@@ -1,77 +1,99 @@
-const fs = require("fs");
+/**
+ * feeder.js
+ * -------------------------
+ * Generates product feed for build pipeline
+ * Outputs: feed.json
+ */
 
-// Central feed source (this drives ALL page generation)
-const feed = [
+const fs = require("fs");
+const path = require("path");
+
+// =========================
+// CONFIG
+// =========================
+const OUTPUT_FILE = path.join(__dirname, "feed.json");
+
+// =========================
+// SAMPLE DATA (replace later with API / Amazon PA-API)
+// =========================
+const rawProducts = [
   {
-    id: "coffee-makers",
-    title: "Best Coffee Makers 2026",
-    keyword: "coffee makers",
-    category: "kitchen-appliances",
-    url: "best-coffee-makers-2026-model-1.html",
-    description: "High-quality coffee makers ranked for 2026 buyers and Amazon shoppers."
-  },
-  {
-    id: "vacuum-cleaners",
-    title: "Best Vacuum Cleaners 2026",
-    keyword: "vacuum cleaners",
-    category: "home-cleaning",
-    url: "best-vacuum-cleaners-2026-model-1.html",
-    description: "Top rated vacuum cleaners for home and commercial use."
-  },
-  {
-    id: "smart-home",
-    title: "Best Smart Home Devices 2026",
-    keyword: "smart home devices",
-    category: "smart-home",
-    url: "best-smart-home-2026-model-1.html",
-    description: "Smart home automation devices ranked and reviewed."
-  },
-  {
-    id: "portable-power",
-    title: "Best Portable Power Stations 2026",
-    keyword: "portable power station",
+    asin: "B08TEST123",
+    title: "Wireless Bluetooth Headphones",
+    price: 39.99,
     category: "electronics",
-    url: "best-portable-power-2026-model-1.html",
-    description: "Reliable portable power solutions for outdoor and emergency use."
+    rating: 4.5,
+    image: "https://via.placeholder.com/300",
+    url: "https://amazon.com/dp/B08TEST123"
+  },
+  {
+    asin: "B08TEST456",
+    title: "Stainless Steel Water Bottle",
+    price: 19.99,
+    category: "home",
+    rating: 4.7,
+    image: "https://via.placeholder.com/300",
+    url: "https://amazon.com/dp/B08TEST456"
+  },
+  {
+    asin: "B08TEST789",
+    title: "Portable LED Ring Light",
+    price: 24.99,
+    category: "content-creation",
+    rating: 4.6,
+    image: "https://via.placeholder.com/300",
+    url: "https://amazon.com/dp/B08TEST789"
   }
 ];
 
-// 1. Save main feed JSON
-fs.writeFileSync("feed.json", JSON.stringify(feed, null, 2));
-console.log("✅ feed.json created");
-
-// 2. Create sitemap entries for SEO
-const sitemap = feed
-  .map(item => {
-    return `
-  <url>
-    <loc>https://yourdomain.com/${item.url}</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>`;
-  })
-  .join("\n");
-
-const sitemapFinal = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitemap}
-</urlset>`;
-
-fs.writeFileSync("feed-sitemap.xml", sitemapFinal);
-console.log("✅ feed-sitemap.xml created");
-
-// 3. Optional: category index for generator logic
-const categories = {};
-
-for (const item of feed) {
-  if (!categories[item.category]) {
-    categories[item.category] = [];
-  }
-  categories[item.category].push(item);
+// =========================
+// VALIDATION
+// =========================
+function validateProduct(p) {
+  return (
+    p &&
+    typeof p.asin === "string" &&
+    typeof p.title === "string" &&
+    typeof p.price === "number"
+  );
 }
 
-fs.writeFileSync("feed-categories.json", JSON.stringify(categories, null, 2));
-console.log("✅ feed-categories.json created");
+// filter out bad entries
+const products = rawProducts.filter(validateProduct);
 
-// 4. Logging
-console.log("🚀 Feed system complete. Ready for generator.");
+// =========================
+// ENRICH DATA (future SEO layer ready)
+// =========================
+const enriched = products.map((p) => ({
+  ...p,
+  slug: p.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, ""),
+
+  timestamp: new Date().toISOString(),
+
+  affiliateLink: `https://amazon.com/dp/${p.asin}?tag=yourtag-20`
+}));
+
+// =========================
+// WRITE FILE
+// =========================
+try {
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(enriched, null, 2));
+
+  console.log("====================================");
+  console.log("✅ FEEDER SUCCESS");
+  console.log("📦 Products:", enriched.length);
+  console.log("📁 Output:", OUTPUT_FILE);
+  console.log("====================================");
+} catch (err) {
+  console.error("❌ FEEDER FAILED:", err);
+  process.exit(1);
+}
+
+// =========================
+// DEBUG OUTPUT (optional)
+// =========================
+console.log("First product preview:");
+console.log(enriched[0] || "No products generated");
