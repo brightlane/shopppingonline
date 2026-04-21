@@ -1,58 +1,22 @@
-name: Daily Amazon SEO Generator (Stable)
+name: Daily Feed System
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  build:
+  run-feed:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
 
     steps:
-    # Checkout repo
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    # Setup Node
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
 
-    # Install dependencies (safe even if none exist)
-    - name: Install dependencies
-      run: |
-        if [ -f package.json ]; then
-          npm install
-        else
-          echo "No package.json found — skipping npm install"
-        fi
-
-    # Build Amazon product pages
-    - name: Build product pages
-      run: node generator/build-amazon-pages.js
-
-    # Build sitemap
-    - name: Build sitemap
-      run: node generator/build-sitemap.js
-
-    # Commit changes safely
-    - name: Commit changes
-      run: |
-        git config user.name "seo-bot"
-        git config user.email "seo-bot@example.com"
-
-        git add .
-
-        if git diff --cached --quiet; then
-          echo "No changes to commit"
-          exit 0
-        fi
-
-        git commit -m "auto: update SEO pages + sitemap"
-        git push
+      - name: Run unified runner
+        run: node runner.js
