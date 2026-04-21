@@ -1,0 +1,51 @@
+name: Daily Feed + Page Generator
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # runs daily at midnight UTC
+  workflow_dispatch:     # manual run button
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+    # 1. Checkout repo
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 2. Setup Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    # 3. Install dependencies
+    - name: Install dependencies
+      run: npm install
+
+    # 4. Run feeder (fetch API → data.json)
+    - name: Run feeder
+      run: node feeder.js
+
+    # 5. Build HTML pages from data.json
+    - name: Build pages
+      run: node generator/build-pages.js
+
+    # 6. Commit changes back to repo
+    - name: Commit changes
+      run: |
+        git config user.name "seo-bot"
+        git config user.email "seo-bot@example.com"
+
+        git add .
+
+        # Skip commit if nothing changed
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
+
+        git commit -m "auto build pages"
+        git push
