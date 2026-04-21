@@ -1,56 +1,79 @@
 const fs = require("fs");
 const path = require("path");
 
-// Load feed
+// =========================
+// LOAD FEED
+// =========================
 const feedPath = path.join(__dirname, "../feed.json");
 
 if (!fs.existsSync(feedPath)) {
-  console.log("❌ feed.json not found. Run feeder.js first.");
+  console.error("❌ feed.json not found. Run feeder.js first.");
   process.exit(1);
 }
 
-const feed = JSON.parse(fs.readFileSync(feedPath, "utf-8"));
+const products = JSON.parse(fs.readFileSync(feedPath, "utf-8"));
 
-// Ensure output directory exists
-const outputDir = path.join(__dirname, "../");
+// =========================
+// OUTPUT FOLDER
+// =========================
+const outputDir = path.join(__dirname, "../pages");
+
 if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
+  fs.mkdirSync(outputDir);
 }
 
-// Simple HTML template (you can upgrade later)
-function generateHTML(item) {
-  return `<!DOCTYPE html>
+// =========================
+// PAGE TEMPLATE
+// =========================
+function buildHTML(product) {
+  return `
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>${item.title}</title>
-  <meta name="description" content="${item.description}">
+  <meta charset="utf-8">
+  <title>${product.title}</title>
+  <meta name="description" content="Buy ${product.title} at the best price on Amazon.">
 </head>
+
 <body>
+  <h1>${product.title}</h1>
 
-  <h1>${item.title}</h1>
+  <img src="${product.image || ''}" alt="${product.title}" style="max-width:300px;" />
 
-  <p>${item.description}</p>
+  <p><strong>Price:</strong> $${product.price}</p>
+  <p><strong>Category:</strong> ${product.category}</p>
+  <p><strong>Rating:</strong> ⭐ ${product.rating || "N/A"}</p>
 
-  <p>Keyword focus: <strong>${item.keyword}</strong></p>
-
-  <a href="https://www.amazon.com/s?k=${encodeURIComponent(item.keyword)}" target="_blank">
-    View products on Amazon
+  <a href="${product.affiliateLink}" target="_blank">
+    🛒 Buy on Amazon
   </a>
 
+  <hr>
+
+  <p>ASIN: ${product.asin}</p>
 </body>
-</html>`;
+</html>
+`;
 }
 
-// Build pages
+// =========================
+// BUILD PAGES
+// =========================
 let count = 0;
 
-feed.forEach(item => {
-  const filePath = path.join(outputDir, item.url);
+for (const product of products) {
+  const filePath = path.join(outputDir, `${product.asin}.html`);
+  const html = buildHTML(product);
 
-  fs.writeFileSync(filePath, generateHTML(item));
-  console.log(`✅ Generated: ${item.url}`);
+  fs.writeFileSync(filePath, html);
   count++;
-});
+}
 
-console.log(`🚀 Done. ${count} pages generated.`);
+// =========================
+// DONE
+// =========================
+console.log("====================================");
+console.log("✅ BUILD COMPLETE");
+console.log("📄 Pages created:", count);
+console.log("📁 Output folder:", outputDir);
+console.log("====================================");
