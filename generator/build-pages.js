@@ -1,128 +1,56 @@
 const fs = require("fs");
-const products = require("./amazon-products");
+const path = require("path");
 
-// group products by category
-const categories = {};
+// Load feed
+const feedPath = path.join(__dirname, "../feed.json");
 
-products.forEach((p) => {
-  if (!categories[p.category]) categories[p.category] = [];
-  categories[p.category].push(p);
-});
-
-function buildProductPage(product) {
-  const html = `
-<!DOCTYPE html>
-<html>
-<head>
-  <title>${product.title} Review (2026 Guide)</title>
-  <meta name="description" content="Detailed review of ${product.title}">
-</head>
-
-<body>
-
-<a href="index.html">Home</a>
-
-<h1>${product.title}</h1>
-
-<p>${product.description}</p>
-
-<h2>Features</h2>
-<ul>
-  ${product.features.map((f) => `<li>${f}</li>`).join("")}
-</ul>
-
-<h2>Category: ${product.category}</h2>
-
-<h3>More in this category</h3>
-<ul>
-  ${categories[product.category]
-    .filter((p) => p.asin !== product.asin)
-    .map((p) => `<li><a href="${p.asin}.html">${p.title}</a></li>`)
-    .join("")}
-</ul>
-
-<h2>Buy on Amazon</h2>
-<a href="${product.affiliateUrl}" target="_blank">View Product</a>
-
-</body>
-</html>
-`;
-
-  fs.writeFileSync(`${product.asin}.html`, html);
-  console.log("Generated:", product.asin);
+if (!fs.existsSync(feedPath)) {
+  console.log("❌ feed.json not found. Run feeder.js first.");
+  process.exit(1);
 }
 
-// generate product pages
-products.forEach(buildProductPage);
+const feed = JSON.parse(fs.readFileSync(feedPath, "utf-8"));
 
-// build category pages
-Object.keys(categories).forEach((cat) => {
-  const html = `
-<!DOCTYPE html>
-<html>
+// Ensure output directory exists
+const outputDir = path.join(__dirname, "../");
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
+
+// Simple HTML template (you can upgrade later)
+function generateHTML(item) {
+  return `<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>${cat} Products</title>
+  <meta charset="UTF-8">
+  <title>${item.title}</title>
+  <meta name="description" content="${item.description}">
 </head>
-
 <body>
 
-<h1>${cat} Products</h1>
+  <h1>${item.title}</h1>
 
-<ul>
-  ${categories[cat]
-    .map((p) => `<li><a href="${p.asin}.html">${p.title}</a></li>`)
-    .join("")}
-</ul>
+  <p>${item.description}</p>
 
-<a href="index.html">Back Home</a>
+  <p>Keyword focus: <strong>${item.keyword}</strong></p>
+
+  <a href="https://www.amazon.com/s?k=${encodeURIComponent(item.keyword)}" target="_blank">
+    View products on Amazon
+  </a>
 
 </body>
-</html>
-`;
+</html>`;
+}
 
-  fs.writeFileSync(`${cat.toLowerCase()}.html`, html);
+// Build pages
+let count = 0;
+
+feed.forEach(item => {
+  const filePath = path.join(outputDir, item.url);
+
+  fs.writeFileSync(filePath, generateHTML(item));
+  console.log(`✅ Generated: ${item.url}`);
+  count++;
 });
 
-// homepage
-const indexHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Amazon Product Review Hub</title>
-</head>
-
-<body>
-
-<h1>Top Product Categories</h1>
-
-<ul>
-  ${Object.keys(categories)
-    .map((c) => `<li><a href="${c.toLowerCase()}.html">${c}</a></li>`)
-    .join("")}
-</ul>
-
-</body>
-</html>
-`;
-
-fs.writeFileSync("index.html", indexHTML);
-
-// sitemap
-const sitemap = `
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${products
-  .map(
-    (p) => `
-  <url>
-    <loc>https://yourdomain.com/${p.asin}.html</loc>
-  </url>
-`
-  )
-  .join("")}
-</urlset>
-`;
-
-fs.writeFileSync("sitemap.xml", sitemap);
-
-console.log("Sitemap generated");
+console.log(`🚀 Done. ${count} pages generated.`);
