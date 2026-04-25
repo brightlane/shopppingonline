@@ -1,27 +1,23 @@
 {
-  "name": "affiliate-seo-generator",
+  "name": "seo-product-engine",
   "version": "1.0.0",
-  "description": "Automated affiliate SEO product page generator",
-  "main": "generator.js",
+  "description": "Programmatic SEO system for large keyword datasets (2k+ safe)",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build": "node generator.js",
-    "generate:products": "node generate-products.js",
-    "deploy": "node deploy.js"
+    "generate": "node scripts/generate-pages.js",
+    "keywords": "node scripts/build-keywords.js",
+    "sitemap": "node scripts/build-sitemap.js",
+    "crosslink": "node scripts/internal-linking.js",
+    "build": "node scripts/build-all.js",
+    "batch": "node scripts/batch-generator.js",
+    "validate": "node scripts/validate-keywords.js"
   },
-  "keywords": [
-    "seo",
-    "affiliate",
-    "automation",
-    "product pages",
-    "programmatic seo",
-    "content generator",
-    "affiliate marketing",
-    "trending products",
-    "ecommerce seo"
-  ],
-  "author": "your-site",
-  "license": "MIT",
   "dependencies": {
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.3.0",
+    "slugify": "^1.6.6",
+    "xmlbuilder2": "^3.1.1",
+    "axios": "^1.6.0",
+    "p-limit": "^5.0.0"
   }
 }
