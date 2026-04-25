@@ -1,15 +1,27 @@
 {
-  "name": "shopppingonline",
+  "name": "affiliate-seo-generator",
   "version": "1.0.0",
-  "description": "A project for daily article generation",
-  "main": "generate.js",
+  "description": "Automated affiliate SEO product page generator",
+  "main": "generator.js",
   "scripts": {
-    "start": "node generate.js"
+    "build": "node generator.js",
+    "generate:products": "node generate-products.js",
+    "deploy": "node deploy.js"
   },
+  "keywords": [
+    "seo",
+    "affiliate",
+    "automation",
+    "product pages",
+    "programmatic seo",
+    "content generator",
+    "affiliate marketing",
+    "trending products",
+    "ecommerce seo"
+  ],
+  "author": "your-site",
+  "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1"
-  },
-  "devDependencies": {},
-  "author": "",
-  "license": "ISC"
+    "fs-extra": "^11.2.0"
+  }
 }
