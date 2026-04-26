@@ -1,34 +1,21 @@
 {
-  "scripts": {
-    "start": "node master-orchestrator.js",
-
-    "build": "node master-orchestrator.js",
-
-    "safe-build": "node --max-old-space-size=4096 master-orchestrator.js",
-
-    "keywords:run": "node keyword-evolution-engine.js",
-
-    "keywords:batch": "node scripts/run-keyword-batches.js",
-
-    "pages:generate": "node generate-seo-pages.js",
-
-    "pages:batch": "node scripts/generate-pages-batched.js",
-
-    "hubs:build": "node auto-hub-generator.js",
-
-    "affiliate:sync": "node affiliate-router.js",
-
-    "crosslink:build": "node cross-link-engine.js",
-
-    "pipeline:light": "npm run keywords:run && npm run pages:generate",
-
-    "pipeline:full": "npm run keywords:run && npm run keywords:batch && npm run pages:batch && npm run hubs:build && npm run crosslink:build && npm run affiliate:sync",
-
-    "pipeline:safe": "node --max-old-space-size=4096 master-orchestrator.js"
-  }
-}{
   "name": "shopping-feed",
   "version": "1.0.0",
+  "scripts": {
+    "start": "node master-orchestrator.js",
+    "build": "node master-orchestrator.js",
+    "safe-build": "node --max-old-space-size=4096 master-orchestrator.js",
+    "keywords:run": "node keyword-evolution-engine.js",
+    "keywords:batch": "node scripts/run-keyword-batches.js",
+    "pages:generate": "node generate-seo-pages.js",
+    "pages:batch": "node scripts/generate-pages-batched.js",
+    "hubs:build": "node auto-hub-generator.js",
+    "affiliate:sync": "node affiliate-router.js",
+    "crosslink:build": "node cross-link-engine.js",
+    "pipeline:light": "npm run keywords:run && npm run pages:generate",
+    "pipeline:full": "npm run keywords:run && npm run keywords:batch && npm run pages:batch && npm run hubs:build && npm run crosslink:build && npm run affiliate:sync",
+    "pipeline:safe": "node --max-old-space-size=4096 master-orchestrator.js"
+  },
   "dependencies": {
     "axios": "^1.6.0"
   }
