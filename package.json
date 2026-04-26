@@ -1,5 +1,5 @@
 {
-  "name": "shoppingonline",
+  "name": "shopppingonline",
   "version": "1.0.0",
   "scripts": {
     "start": "node master-orchestrator.js",
@@ -16,7 +16,5 @@
     "pipeline:full": "npm run keywords:run && npm run keywords:batch && npm run pages:batch && npm run hubs:build && npm run crosslink:build && npm run affiliate:sync",
     "pipeline:safe": "node --max-old-space-size=4096 master-orchestrator.js"
   },
-  "dependencies": {
-    "axios": "^1.6.0"
-  }
+  "dependencies": {}
 }
