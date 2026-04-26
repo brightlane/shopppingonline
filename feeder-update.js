@@ -1,13 +1,17 @@
-const axios = require("axios");
 const fs = require("fs");
 
 const apiUrl = "https://jsonplaceholder.typicode.com/todos/1";
 
 async function run() {
   try {
-    const { data } = await axios.get(apiUrl);
+    const res = await fetch(apiUrl);
 
-    // Save data to a file instead of just printing
+    if (!res.ok) {
+      throw new Error(`HTTP error: ${res.status}`);
+    }
+
+    const data = await res.json();
+
     fs.writeFileSync(
       "data.json",
       JSON.stringify(data, null, 2)
