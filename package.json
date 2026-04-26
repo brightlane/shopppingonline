@@ -26,4 +26,10 @@
 
     "pipeline:safe": "node --max-old-space-size=4096 master-orchestrator.js"
   }
+}{
+  "name": "shopping-feed",
+  "version": "1.0.0",
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
 }
