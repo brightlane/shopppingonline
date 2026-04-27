@@ -1,27 +1,20 @@
-const fs = require("fs");
+const axios = require('axios');
+const fs = require('fs');
 
-const apiUrl = "https://jsonplaceholder.typicode.com/todos/1";
-
-async function run() {
-  try {
-    const res = await fetch(apiUrl);
-
-    if (!res.ok) {
-      throw new Error(`HTTP error: ${res.status}`);
+async function updateFeeder() {
+    try {
+        console.log("Fetching latest product data...");
+        // Replace the URL below with your actual data source
+        const response = await axios.get('https://api.example.com/products'); 
+        
+        const data = response.data;
+        fs.writeFileSync('products.json', JSON.stringify(data, null, 2));
+        
+        console.log("✅ products.json updated successfully.");
+    } catch (error) {
+        console.error("❌ Failed to update feeder:", error.message);
+        process.exit(1); // Tells GitHub Actions the script failed
     }
-
-    const data = await res.json();
-
-    fs.writeFileSync(
-      "data.json",
-      JSON.stringify(data, null, 2)
-    );
-
-    console.log("Data saved to data.json");
-  } catch (error) {
-    console.error("Error:", error.message);
-    process.exit(1);
-  }
 }
 
-run();
+updateFeeder();
