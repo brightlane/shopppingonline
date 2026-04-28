@@ -1,0 +1,36 @@
+name: Daily Feed Update
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight
+  push:
+    branches:
+      - main
+  workflow_dispatch:      # Allows you to run it manually for testing
+
+jobs:
+  update-feed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛰️ Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 📦 Install Axios
+        run: npm install axios
+
+      - name: 🚀 Run Feed Update
+        run: node feeder-update.js
+
+      - name: 💾 Commit and Push Changes
+        run: |
+          git config --global user.name "shopppingonline-bot"
+          git config --global user.email "bot@shopppingonline.io"
+          git add .
+          git commit -m "Automated Feed Update: $(date)" || exit 0
+          git push
